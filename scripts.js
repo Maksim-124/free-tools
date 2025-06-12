@@ -1,141 +1,123 @@
-document.addEventListener('DOMContentLoaded', () => {
-  class ToolAggregator {
-    constructor() {
-      this.currentCategory = 'all';
-      this.currentSearchTerm = '';
-      this.init();
-    }
-
-    init() {
-      try {
-        this.cacheElements();
-        this.setupEventListeners();
-        this.filterTools();
-        this.animateTools();
-      } catch (error) {
-        this.handleCriticalError(error);
-      }
-    }
-
-    cacheElements() {
-      this.elements = {
-        toolsContainer: document.querySelector('.tools-container'),
-        categoryButtons: document.querySelector('.categories'),
-        searchInput: document.getElementById('search'),
-        toolItems: document.querySelectorAll('.tool')
-      };
-
-      // Валидация обязательных элементов
-      ['toolsContainer', 'categoryButtons', 'searchInput'].forEach(key => {
-        if (!this.elements[key]) {
-          throw new Error(`Не найден обязательный элемент: ${key}`);
-        }
-      });
-    }
-
-    setupEventListeners() {
-      // Обработчик категорий
-      this.elements.categoryButtons.addEventListener('click', (e) => {
-        const targetBtn = e.target.closest('.category-btn');
-        if (!targetBtn) return;
+document.addEventListener('DOMContentLoaded', function() {
+    // Элементы DOM
+    const searchInput = document.getElementById('search');
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const tools = document.querySelectorAll('.tool');
+    const copyButtons = document.querySelectorAll('.copy-link');
+    const moreButtons = document.querySelectorAll('.btn-more');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalClose = document.getElementById('modalClose');
+    const modalContent = document.getElementById('modalContent');
+    
+    // Создаем элемент для отображения уведомления о копировании
+    const copyFeedback = document.createElement('div');
+    copyFeedback.className = 'copy-feedback';
+    document.body.appendChild(copyFeedback);
+    
+    // Функция фильтрации инструментов
+    function filterTools() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const activeCategory = document.querySelector('.category-btn.active').dataset.category;
+        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
         
-        this.handleCategoryChange(targetBtn);
-      });
-
-      // Обработчик поиска
-      this.elements.searchInput.addEventListener('input', (e) => {
-        this.currentSearchTerm = e.target.value.trim().toLowerCase();
-        this.filterTools();
-      });
-
-      // Копирование ссылок
-      this.elements.toolsContainer.addEventListener('click', (e) => {
-        const copyBtn = e.target.closest('.copy-link');
-        if (!copyBtn) return;
-        
-        this.handleCopyLink(copyBtn);
-      });
+        tools.forEach(tool => {
+            const title = tool.querySelector('h2').textContent.toLowerCase();
+            const description = tool.querySelector('p').textContent.toLowerCase();
+            const category = tool.dataset.category;
+            const isAvailable = tool.dataset.available === 'yes';
+            
+            const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+            const matchesCategory = activeCategory === 'all' || category === activeCategory;
+            let matchesFilter = true;
+            
+            if (activeFilter === 'available') {
+                matchesFilter = isAvailable;
+            } else if (activeFilter === 'vpn') {
+                matchesFilter = !isAvailable;
+            }
+            
+            tool.style.display = (matchesSearch && matchesCategory && matchesFilter) ? 'block' : 'none';
+        });
     }
-
-    handleCategoryChange(targetBtn) {
-      // Обновляем активную кнопку
-      document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.classList.toggle('active', btn === targetBtn);
-      });
-      
-      this.currentCategory = targetBtn.dataset.category || 'all';
-      this.filterTools();
-    }
-
-    async handleCopyLink(copyBtn) {
-      const linkElement = copyBtn.previousElementSibling;
-      if (!linkElement?.href) {
-        this.showFeedback(copyBtn, 'Ошибка!', '#F44336');
-        return;
-      }
-
-      try {
-        await navigator.clipboard.writeText(linkElement.href);
-        this.showFeedback(copyBtn, '✓ Скопировано', '#4CAF50');
-      } catch (err) {
-        console.error('Ошибка копирования:', err);
-        this.showFeedback(copyBtn, 'Ошибка!', '#F44336');
-      }
-    }
-
-    filterTools() {
-      this.elements.toolItems.forEach(tool => {
-        try {
-          const title = tool.querySelector('h3')?.textContent?.toLowerCase() || '';
-          const matchesCategory = this.currentCategory === 'all' || 
-                                tool.dataset.category === this.currentCategory;
-          const matchesSearch = title.includes(this.currentSearchTerm);
-          
-          tool.style.display = matchesCategory && matchesSearch ? 'block' : 'none';
-          tool.style.opacity = matchesCategory && matchesSearch ? '1' : '0.3';
-        } catch (err) {
-          console.error('Ошибка фильтрации инструмента:', tool, err);
+    
+    // Обработчики событий
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            filterTools();
+        });
+    });
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            filterTools();
+        });
+    });
+    
+    searchInput.addEventListener('input', filterTools);
+    
+    copyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const tool = this.closest('.tool');
+            const link = tool.querySelector('a').href;
+            
+            navigator.clipboard.writeText(link).then(() => {
+                showCopyFeedback('Ссылка скопирована!', '#28a745');
+            }).catch(err => {
+                showCopyFeedback('Ошибка копирования', '#dc3545');
+                console.error('Ошибка при копировании: ', err);
+            });
+        });
+    });
+    
+    moreButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const tool = this.closest('.tool');
+            const title = tool.querySelector('h2').textContent;
+            const description = tool.querySelector('p').textContent;
+            const details = tool.querySelector('.tool-details').innerHTML;
+            
+            modalContent.innerHTML = `
+                <h2>${title}</h2>
+                <p class="modal-description">${description}</p>
+                ${details}
+            `;
+            
+            modalOverlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+    });
+    
+    modalClose.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) {
+            closeModal();
         }
-      });
+    });
+    
+    function closeModal() {
+        modalOverlay.style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
-
-    animateTools() {
-      if (this.elements.toolsContainer) {
+    
+    function showCopyFeedback(message, color) {
+        copyFeedback.textContent = message;
+        copyFeedback.style.backgroundColor = color;
+        copyFeedback.style.display = 'block';
+        
         setTimeout(() => {
-          this.elements.toolsContainer.style.opacity = '1';
-          this.elements.toolsContainer.style.transform = 'translateY(0)';
-        }, 100);
-      }
+            copyFeedback.style.opacity = '0';
+            setTimeout(() => {
+                copyFeedback.style.display = 'none';
+                copyFeedback.style.opacity = '1';
+            }, 300);
+        }, 2000);
     }
-
-    showFeedback(element, text, color) {
-      const originalText = element.textContent;
-      element.textContent = text;
-      element.style.backgroundColor = color;
-      
-      setTimeout(() => {
-        element.textContent = originalText;
-        element.style.backgroundColor = '';
-      }, 2000);
-    }
-
-    handleCriticalError(error) {
-      console.error('Критическая ошибка:', error);
-      
-      const errorHtml = `
-        <div class="error-overlay">
-          <div class="error-content">
-            <h3>Произошла ошибка</h3>
-            <p>${error.message}</p>
-            <button onclick="location.reload()">Обновить страницу</button>
-          </div>
-        </div>
-      `;
-      
-      document.body.insertAdjacentHTML('beforeend', errorHtml);
-    }
-  }
-
-  // Инициализация приложения
-  new ToolAggregator();
+    
+    // Первоначальная фильтрация
+    filterTools();
 });

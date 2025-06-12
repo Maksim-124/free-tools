@@ -3,43 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бесплатные онлайн-инструменты</title>
+    <meta name="description" content="Бесплатные онлайн-инструменты для работы и творчества с российскими аналогами">
+    <meta name="keywords" content="бесплатные инструменты, онлайн сервисы, R7-Офис, Photopea, Яндекс.Формы">
+    <meta property="og:title" content="Бесплатные онлайн-инструменты для рунета">
+    <meta property="og:description" content="Подборка рабочих онлайн-инструментов и их российских аналогов">
+    <title>Онлайн-инструменты и аналоги для рунета</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="images/favicon.ico">
+    <link rel="icon" href="favicon.ico">
+    <link rel="canonical" href="https://вашсайт.ru" />
 </head>
 <body>
-    <h1>Бесплатные онлайн-инструменты</h1>
-    <input type="text" id="search" placeholder="Найти инструмент...">
+    <header>
+        <h1>Бесплатные онлайн-инструменты</h1>
+        <p class="subtitle">Рабочие сервисы и российские аналоги</p>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Найти инструмент..." class="search-input">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">Все</button>
+            <button class="filter-btn" data-filter="available">Доступные</button>
+            <button class="filter-btn" data-filter="vpn">Требуют VPN</button>
+        </div>
+    </div>
     
     <div class="categories">
         <button class="category-btn active" data-category="all">Все</button>
         <button class="category-btn" data-category="office">Офис</button>
         <button class="category-btn" data-category="design">Дизайн</button>
         <button class="category-btn" data-category="vpn">VPN</button>
+        <button class="category-btn" data-category="dev">Разработка</button>
+        <button class="category-btn" data-category="storage">Хранение</button>
+        <button class="category-btn" data-category="ai">AI</button>
+        <button class="category-btn" data-category="other">Другие</button>
     </div>
 
-    <div class="tools-container">
-        <div class="tool" data-category="office" data-available="yes">
+    <div class="tools-container" id="toolsContainer">
+        <!-- Офисные инструменты -->
+        <div class="tool" data-category="office" data-available="yes" data-rating="4.5">
+            <span class="popular-badge">Популярное</span>
             <h2>R7-Офис</h2>
-            <p>Полный аналог Microsoft Office</p>
-            <p class="availability">Доступен в РФ</p>
-            <a href="https://r7-office.ru" target="_blank" rel="noopener noreferrer">Открыть</a>
+            <p>Полный аналог Microsoft Office с поддержкой всех форматов</p>
+            <div class="tool-meta">
+                <span class="availability available">Доступен в РФ</span>
+                <span class="rating">★★★★☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://r7-office.ru" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>R7-Офис</h3>
+                <ul>
+                    <li>Полная совместимость с форматами DOCX, XLSX, PPTX</li>
+                    <li>Встроенные облачные сервисы для совместной работы</li>
+                    <li>Поддержка PDF и электронной подписи</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Полный функционал офисного пакета</p>
+                <p><strong>Платные функции:</strong> Корпоративная поддержка и дополнительные облачные сервисы</p>
+            </div>
         </div>
 
-        <div class="tool" data-category="design" data-available="no">
+        <div class="tool" data-category="office" data-available="yes" data-rating="4.0">
+            <h2>Яндекс.Документы</h2>
+            <p>Онлайн-редактор документов с совместным доступом</p>
+            <div class="tool-meta">
+                <span class="availability available">Доступен в РФ</span>
+                <span class="rating">★★★★☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://disk.yandex.ru" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>Яндекс.Документы</h3>
+                <ul>
+                    <li>Редакторы текста, таблиц и презентаций</li>
+                    <li>Совместная работа в реальном времени</li>
+                    <li>Интеграция с Яндекс.Диском</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Полный функционал с ограничением по объему хранилища</p>
+                <p><strong>Платные функции:</strong> Увеличенное облачное хранилище</p>
+            </div>
+        </div>
+
+        <div class="tool" data-category="office" data-available="yes" data-rating="4.8">
+            <span class="popular-badge">Популярное</span>
+            <h2>LibreOffice</h2>
+            <p>Бесплатный и открытый офисный пакет</p>
+            <div class="tool-meta">
+                <span class="availability available">Доступен в РФ</span>
+                <span class="rating">★★★★★</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://www.libreoffice.org" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>LibreOffice</h3>
+            <div class="general-description">
+                <p><strong>Общее описание:</strong></p>
+                <p>LibreOffice — это бесплатный и открытый офисный пакет, который предоставляет пользователям набор инструментов для работы с текстовыми документами, таблицами, презентациями и другими типами файлов.</p>
+            </div>
+                <ul>
+                    <li><strong>Writer:</strong> Текстовый редактор</li>
+                    <li><strong>Calc:</strong> Табличный процессор</li>
+                    <li><strong>Impress:</strong> Редактор презентаций</li>
+                    <li><strong>Draw:</strong> Графический редактор</li>
+                    <li><strong>Base:</strong> Система управления базами данных</li>
+                    <li><strong>Math:</strong> Редактор формул</li>
+                    <a></a>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Полностью бесплатен с открытым исходным кодом</p>
+                <p><strong>Платные функции:</strong> Отсутствуют</p>
+            </div>
+        </div>
+
+        <!-- Дизайн -->
+        <div class="tool" data-category="design" data-available="yes" data-rating="4.7">
+            <span class="popular-badge">Популярное</span>
+            <h2>Photopea</h2>
+            <p>Онлайн-аналог Photoshop с поддержкой PSD</p>
+            <div class="tool-meta">
+                <span class="availability available">Доступен в РФ</span>
+                <span class="rating">★★★★★</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://www.photopea.com" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>Photopea</h3>
+                <ul>
+                    <li>Поддержка PSD, XCF, Sketch и других форматов</li>
+                    <li>Более 30 инструментов для работы с графикой</li>
+                    <li>Экспорт в PNG, JPG, SVG, PDF и другие форматы</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Полный функционал с рекламой</p>
+                <p><strong>Платные функции:</strong> Премиум-версия без рекламы</p>
+            </div>
+        </div>
+
+        <div class="tool" data-category="design" data-available="no" data-rating="4.3">
             <h2>Figma</h2>
-            <p>Профессиональный дизайн-инструмент</p>
-            <p class="availability">Требуется VPN</p>
-            <a href="https://figma.com" target="_blank" rel="noopener noreferrer">Открыть</a>
+            <p>Профессиональный дизайн-инструмент (требует VPN)</p>
+            <div class="tool-meta">
+                <span class="availability unavailable">Требуется VPN</span>
+                <span class="rating">★★★★☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://figma.com" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>Figma</h3>
+                <ul>
+                    <li>Инструмент для UI/UX дизайна</li>
+                    <li>Совместная работа в реальном времени</li>
+                    <li>Библиотеки компонентов и стилей</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Базовые функции с ограничением на количество проектов</p>
+                <p><strong>Платные функции:</strong> Командные функции и расширенные возможности</p>
+            </div>
         </div>
 
-        <div class="tool" data-category="vpn" data-available="yes">
+        <div class="tool" data-category="design" data-available="yes" data-rating="4.2">
+            <h2>Cutout.pro</h2>
+            <p>AI-инструменты для улучшения и обработки фотографий</p>
+            <div class="tool-meta">
+                <span class="availability available">Доступен в РФ</span>
+                <span class="rating">★★★★☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://www.cutout.pro" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>Cutout.pro</h3>
+                <ul>
+                    <li><strong>Улучшение фотографий:</strong> Повышение резкости изображений</li>
+                    <li><strong>Увеличение разрешения:</strong> Преобразование изображений для получения более высококачественных результатов</li>
+                    <li><strong>Простота использования:</strong> Удобный интерфейс для загрузки фотографий</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Ограниченное количество обработок или сниженное качество итоговых изображений.</p>
+                <p><strong>Платные функции:</strong> Доступ к полному набору инструментов и высококачественной обработке.</p>
+            </div>
+        </div>
+
+        <div class="tool" data-category="design" data-available="yes" data-rating="3.9">
+            <h2>Remplanner</h2>
+            <p>Онлайн-планировщик ремонта с 3D-визуализацией</p>
+            <div class="tool-meta">
+                <span class="availability available">Доступен в РФ</span>
+                <span class="rating">★★★☆☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://remplanner.ru" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>Remplanner</h3>
+                <ul>
+                    <li><strong>Планировщик ремонта:</strong> Создание и управление проектами ремонта</li>
+                    <li><strong>3D-планировка:</strong> Визуализация идей в 3D</li>
+                    <li><strong>Библиотека материалов:</strong> Доступ к материалам и элементам дизайна</li>
+                    <li><strong>Расчет стоимости:</strong> Предварительный расчет стоимости ремонта</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Основные функции планирования</p>
+                <p><strong>Платные функции:</strong> Расширенная библиотека и функционал</p>
+            </div>
+        </div>
+
+        <!-- AI инструменты -->
+        <div class="tool" data-category="ai" data-available="yes" data-rating="4.1">
+            <h2>PikaAI</h2>
+            <p>Генерация видеороликов с использованием искусственного интеллекта</p>
+            <div class="tool-meta">
+                <span class="availability available">Доступен в РФ</span>
+                <span class="rating">★★★★☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://pika.art" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>PikaAI</h3>
+                <ul>
+                    <li><strong>AI Kiss Video Generator:</strong> Создание видеороликов по заданным параметрам</li>
+                    <li><strong>Персонализация:</strong> Кастомизация входных данных для уникальных видео</li>
+                    <li><strong>Интуитивный интерфейс:</strong> Простое управление процессом генерации</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Ограниченное количество генераций</p>
+                <p><strong>Платные функции:</strong> Полный функционал и высокие разрешения</p>
+            </div>
+        </div>
+
+        <div class="tool" data-category="ai" data-available="no" data-rating="4.4">
+            <h2>RunwayML</h2>
+            <p>AI-инструменты для работы с видео и изображениями</p>
+            <div class="tool-meta">
+                <span class="availability unavailable">Требуется VPN</span>
+                <span class="rating">★★★★☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://runwayml.com" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>RunwayML</h3>
+                <ul>
+                    <li><strong>AI-инструменты для видео:</strong> Генерация и редактирование контента</li>
+                    <li><strong>Создание видео:</strong> Использование технологий глубокого обучения</li>
+                    <li><strong>Командная работа:</strong> Совместное создание и редактирование</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Базовые инструменты с ограничениями</p>
+                <p><strong>Платные функции:</strong> Полный функционал и больше ресурсов</p>
+            </div>
+        </div>
+
+        <div class="tool" data-category="ai" data-available="no" data-rating="3.8">
+            <h2>Suno</h2>
+            <p>Создание AI-контента: текст, аудио и видео</p>
+            <div class="tool-meta">
+                <span class="availability unavailable">Требуется VPN</span>
+                <span class="rating">★★★☆☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://suno.com" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>Suno</h3>
+                <ul>
+                    <li><strong>Создание AI-контента:</strong> Генерация текста, аудио и видео</li>
+                    <li><strong>Индивидуальные профили:</strong> Настройка контента под интересы</li>
+                    <li><strong>Сообщество:</strong> Взаимодействие с другими пользователями</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Основные инструменты с ограничениями</p>
+                <p><strong>Платные функции:</strong> Продвинутые возможности и больше генераций</p>
+            </div>
+        </div>
+
+        <!-- Разработка -->
+        <div class="tool" data-category="dev" data-available="yes" data-rating="3.8">
+            <h2>GitFlic</h2>
+            <p>Российский аналог GitHub для хранения кода</p>
+            <div class="tool-meta">
+                <span class="availability available">Доступен в РФ</span>
+                <span class="rating">★★★☆☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://gitflic.ru" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>GitFlic</h3>
+                <ul>
+                    <li>Хостинг Git-репозиториев</li>
+                    <li>Система управления проектами</li>
+                    <li>CI/CD инструменты</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Публичные репозитории и базовые функции</p>
+                <p><strong>Платные функции:</strong> Приватные репозитории и расширенные возможности</p>
+            </div>
+        </div>
+
+        <!-- Хранение -->
+        <div class="tool" data-category="storage" data-available="yes" data-rating="4.2">
+            <span class="popular-badge">Популярное</span>
+            <h2>Яндекс.Диск</h2>
+            <p>Облачное хранилище с 10 ГБ бесплатно</p>
+            <div class="tool-meta">
+                <span class="availability available">Доступен в РФ</span>
+                <span class="rating">★★★★☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://disk.yandex.ru" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>Яндекс.Диск</h3>
+                <ul>
+                    <li>Облачное хранилище файлов</li>
+                    <li>Синхронизация между устройствами</li>
+                    <li>Общий доступ к файлам и папкам</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> 10 ГБ хранилища</p>
+                <p><strong>Платные функции:</strong> Увеличенное хранилище и дополнительные возможности</p>
+            </div>
+        </div>
+
+        <!-- Другие инструменты -->
+        <div class="tool" data-category="other" data-available="yes" data-rating="4.0">
+            <h2>I Love PDF</h2>
+            <p>Онлайн-инструменты для работы с PDF</p>
+            <div class="tool-meta">
+                <span class="availability available">Доступен в РФ</span>
+                <span class="rating">★★★★☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://www.ilovepdf.com" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>I Love PDF</h3>
+                <ul>
+                    <li><strong>Редактор PDF:</strong> Добавление текста, изображений, аннотаций</li>
+                    <li><strong>Конвертация PDF:</strong> В Word, PowerPoint, Excel и изображения</li>
+                    <li><strong>Объединение и разделение PDF</strong></li>
+                    <li><strong>Сжатие PDF:</strong> Уменьшение размера файлов</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Базовые функции с ограничениями</p>
+                <p><strong>Платные функции:</strong> Премиум-версия без ограничений</p>
+            </div>
+        </div>
+
+        <div class="tool" data-category="other" data-available="yes" data-rating="3.5">
+            <h2>Service Online</h2>
+            <p>Информация о тарифах и услугах в различных сферах</p>
+            <div class="tool-meta">
+                <span class="availability available">Доступен в РФ</span>
+                <span class="rating">★★★☆☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://service-online.su" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>Service Online</h3>
+                <ul>
+                    <li><strong>Ценники и услуги:</strong> Доступ к различным ценникам на услуги</li>
+                    <li><strong>Информация о тарифах:</strong> Актуальные тарифы и расценки</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Доступ к информации о ценах</p>
+                <p><strong>Платные функции:</strong> Расширенная информация или специфические услуги</p>
+            </div>
+        </div>
+
+        <div class="tool" data-category="other" data-available="yes" data-rating="3.7">
+            <h2>SaleBot</h2>
+            <p>Инструменты для автоматизации продаж</p>
+            <div class="tool-meta">
+                <span class="availability available">Доступен в РФ</span>
+                <span class="rating">★★★☆☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://www.salebot.pro" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>SaleBot</h3>
+                <ul>
+                    <li><strong>Автоматизация продаж:</strong> Чат-боты и интеграции</li>
+                    <li><strong>Интеграции:</strong> С CRM, мессенджерами и другими инструментами</li>
+                    <li><strong>Управление проектами:</strong> Оптимизация рабочих процессов</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Базовые функции и интеграции</p>
+                <p><strong>Платные функции:</strong> Продвинутые возможности и полный набор интеграций</p>
+            </div>
+        </div>
+
+        <!-- VPN -->
+        <div class="tool" data-category="vpn" data-available="yes" data-rating="4.0">
             <h2>Cloudflare WARP</h2>
             <p>Бесплатный VPN для базового доступа</p>
-            <p class="availability">Доступен в РФ</p>
-            <a href="https://1.1.1.1" target="_blank" rel="noopener noreferrer">Открыть</a>
+            <div class="tool-meta">
+                <span class="availability available">Доступен в РФ</span>
+                <span class="rating">★★★★☆</span>
+            </div>
+            <div class="tool-actions">
+                <a href="https://1.1.1.1" target="_blank" class="btn-primary">Открыть</a>
+                <button class="btn-secondary copy-link">Копировать ссылку</button>
+                <button class="btn-more">Подробнее</button>
+            </div>
+            <div class="tool-details">
+                <h3>Cloudflare WARP</h3>
+                <ul>
+                    <li>Бесплатный VPN сервис</li>
+                    <li>Улучшенная приватность в интернете</li>
+                    <li>Ускорение загрузки страниц</li>
+                </ul>
+                <p><strong>Бесплатные функции:</strong> Базовый VPN</p>
+                <p><strong>Платные функции:</strong> Расширенные функции безопасности</p>
+            </div>
         </div>
     </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="modal">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-content" id="modalContent"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2023 Онлайн-инструменты для рунета</p>
+        <p>Все ссылки на внешние ресурсы открываются в новой вкладке</p>
+    </footer>
 
     <script src="scripts.js"></script>
 </body>
