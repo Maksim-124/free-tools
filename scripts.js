@@ -4,6 +4,11 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM полностью загружен");
+    
+    // Инициализация частиц
+    initParticles();
+    
     // Основные элементы DOM
     const searchInput = document.getElementById('search');
     const categoryButtons = document.querySelectorAll('.category-btn');
@@ -30,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!response.ok) throw new Error('Ошибка загрузки данных');
             
             toolsData = await response.json();
+            console.log('Инструменты загружены:', toolsData.length);
             renderTools(toolsData);
         } catch (error) {
             console.error('Ошибка при загрузке инструментов:', error);
@@ -169,8 +175,8 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     function filterTools() {
         const searchTerm = searchInput.value.toLowerCase();
-        const activeCategory = document.querySelector('.category-btn.active').dataset.category;
-        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+        const activeCategory = document.querySelector('.category-btn.active')?.dataset.category || 'all';
+        const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
         
         const filteredTools = toolsData.filter(tool => {
             // Проверка соответствия поисковому запросу
@@ -250,3 +256,54 @@ document.addEventListener('DOMContentLoaded', function() {
     // Загрузка инструментов при старте
     loadTools();
 });
+
+// ===== ФУНКЦИИ ДЛЯ ЧАСТИЦ =====
+function createParticles() {
+  const particlesContainer = document.getElementById('particles');
+  if (!particlesContainer) {
+    console.warn("Контейнер для частиц не найден");
+    return;
+  }
+  
+  // Очищаем старые частицы
+  particlesContainer.innerHTML = '';
+  
+  const header = document.querySelector('.header');
+  if (!header) return;
+  
+  const particleCount = 15;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.classList.add('particle');
+    
+    // Случайные параметры частиц
+    const size = Math.random() * 4 + 2;
+    const posX = Math.random() * 100;
+    const duration = Math.random() * 10 + 5;
+    const delay = Math.random() * 3;
+    
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    particle.style.left = `${posX}%`;
+    particle.style.animationDuration = `${duration}s`;
+    particle.style.animationDelay = `${delay}s`;
+    
+    particlesContainer.appendChild(particle);
+  }
+  
+  console.log(`Создано ${particleCount} частиц`);
+}
+
+// Обновляем частицы при изменении размера окна
+let resizeTimer;
+function initParticles() {
+  createParticles();
+  
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      createParticles();
+    }, 250);
+  });
+}
