@@ -1,13 +1,5 @@
-/**
- * Основной скрипт сайта
- * Загружает данные инструментов из JSON и управляет интерфейсом
- */
-
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM полностью загружен");
-    
-    // Инициализация частиц
-    initParticles();
     
     // Основные элементы DOM
     const searchInput = document.getElementById('search');
@@ -17,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalOverlay = document.getElementById('modalOverlay');
     const modalClose = document.getElementById('modalClose');
     const modalContent = document.getElementById('modalContent');
+    const header = document.querySelector('.header');
+    const loader = document.getElementById('loader');
     
     // Данные инструментов
     let toolsData = [];
@@ -26,11 +20,24 @@ document.addEventListener('DOMContentLoaded', function() {
     copyFeedback.className = 'copy-feedback';
     document.body.appendChild(copyFeedback);
     
+    // Эффект при скролле для шапки
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+    
     /**
      * Загружает данные инструментов из JSON-файла
      */
     async function loadTools() {
         try {
+            // Показать лоадер
+            loader.style.display = 'flex';
+            toolsContainer.innerHTML = '';
+            
             const response = await fetch('tools.json');
             if (!response.ok) throw new Error('Ошибка загрузки данных');
             
@@ -40,6 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Ошибка при загрузке инструментов:', error);
             toolsContainer.innerHTML = '<p class="error">Не удалось загрузить инструменты. Пожалуйста, попробуйте позже.</p>';
+        } finally {
+            // Скрыть лоадер
+            loader.style.display = 'none';
         }
     }
     
@@ -131,6 +141,26 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {string} text - Текст для копирования
      */
     function copyToClipboard(text) {
+        // Проверка поддержки API буфера обмена
+        if (!navigator.clipboard) {
+            // Fallback для старых браузеров
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopyFeedback('Ссылка скопирована!', '#28a745');
+            } catch (err) {
+                showCopyFeedback('Ошибка копирования', '#dc3545');
+                console.error('Fallback: Ошибка при копировании: ', err);
+            }
+            
+            document.body.removeChild(textArea);
+            return;
+        }
+        
         navigator.clipboard.writeText(text).then(() => {
             showCopyFeedback('Ссылка скопирована!', '#28a745');
         }).catch(err => {
@@ -256,54 +286,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // Загрузка инструментов при старте
     loadTools();
 });
-
-// ===== ФУНКЦИИ ДЛЯ ЧАСТИЦ =====
-function createParticles() {
-  const particlesContainer = document.getElementById('particles');
-  if (!particlesContainer) {
-    console.warn("Контейнер для частиц не найден");
-    return;
-  }
-  
-  // Очищаем старые частицы
-  particlesContainer.innerHTML = '';
-  
-  const header = document.querySelector('.header');
-  if (!header) return;
-  
-  const particleCount = 15;
-  
-  for (let i = 0; i < particleCount; i++) {
-    const particle = document.createElement('div');
-    particle.classList.add('particle');
-    
-    // Случайные параметры частиц
-    const size = Math.random() * 4 + 2;
-    const posX = Math.random() * 100;
-    const duration = Math.random() * 10 + 5;
-    const delay = Math.random() * 3;
-    
-    particle.style.width = `${size}px`;
-    particle.style.height = `${size}px`;
-    particle.style.left = `${posX}%`;
-    particle.style.animationDuration = `${duration}s`;
-    particle.style.animationDelay = `${delay}s`;
-    
-    particlesContainer.appendChild(particle);
-  }
-  
-  console.log(`Создано ${particleCount} частиц`);
-}
-
-// Обновляем частицы при изменении размера окна
-let resizeTimer;
-function initParticles() {
-  createParticles();
-  
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      createParticles();
-    }, 250);
-  });
-}

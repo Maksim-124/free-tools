@@ -1,8 +1,31 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(102614891, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/102614891" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Фавиконы -->
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
     <title>Бесплатные сервисы и AI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,16 +33,15 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Шапка сайта с частицами -->
+    <!-- Шапка сайта -->
     <header class="header">
-        <div id="particles" class="particles"></div>
         <div class="header__container">
+            <!-- Логотип -->
             <div class="logo">
-                <span class="logo-icon">🛠️</span>
-                <h1 class="logo-text">Бесплатные сервисы и AI</h1>
+                <img src="images/logo.png" alt="Бесплатные сервисы и AI" class="logo-image" loading="lazy">
             </div>
             
-            <nav class="nav">
+            <nav class="nav" aria-label="Основное меню">
                 <ul class="nav-list">
                     <li><a href="#" class="nav-link active">Главная</a></li>
                     <li><a href="#" class="nav-link">Категории</a></li>
@@ -28,8 +50,11 @@
                 </ul>
             </nav>
             
-            <button class="search-button">
-                🔍 <span class="search-text">Поиск</span>
+            <button class="search-button" aria-label="Поиск по сайту">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.5 15H14.71L14.43 14.73C15.41 13.59 16 12.11 16 10.5C16 6.91 13.09 4 9.5 4C5.91 4 3 6.91 3 10.5C3 14.09 5.91 17 9.5 17C11.11 17 12.59 16.41 13.73 15.43L14 15.71V16.5L19 21.49L20.49 20L15.5 15Z" fill="currentColor"/>
+                </svg>
+                <span class="search-text">Поиск</span>
             </button>
         </div>
     </header>
@@ -40,19 +65,47 @@
             <input type="text" id="search" class="search-input" placeholder="Поиск по названию или описанию...">
             
             <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="all">Все</button>
-                <button class="filter-btn" data-filter="available">Доступны в РФ</button>
-                <button class="filter-btn" data-filter="vpn">Требуют VPN</button>
-            </div>
-            
-            <div class="categories">
-                <button class="category-btn active" data-category="all">Все категории</button>
-                <button class="category-btn" data-category="office">Офис</button>
-                <button class="category-btn" data-category="design">Дизайн</button>
-                <button class="category-btn" data-category="ai">AI</button>
-                <button class="category-btn" data-category="development">Разработка</button>
-                <button class="category-btn" data-category="marketing">Маркетинг</button>
-            </div>
+    <button class="filter-btn active" data-filter="all">
+        <span class="icon">≡</span> Все
+    </button>
+    <button class="filter-btn" data-filter="available">
+        <span class="icon">✓</span> Доступны в РФ
+    </button>
+    <button class="filter-btn" data-filter="vpn">
+        <span class="icon">🔒</span> Требуют VPN
+    </button>
+</div>
+
+<div class="categories">
+    <button class="category-btn active" data-category="all">
+        <span class="icon">*</span> Все
+    </button>
+    <button class="category-btn" data-category="office">
+        <span class="icon">📊</span> Офис
+    </button>
+    <button class="category-btn" data-category="design">
+        <span class="icon">✎</span> Дизайн
+    </button>
+    <button class="category-btn" data-category="ai">
+        <span class="icon">ΑΙ</span> AI
+    </button>
+    <button class="category-btn" data-category="development">
+        <span class="icon">&lt;/&gt;</span> Разработка
+    </button>
+    <button class="category-btn" data-category="marketing">
+        <span class="icon">📈</span> Маркетинг
+    </button>
+    <button class="category-btn" data-category="storage">
+        <span class="icon">💾</span> Хранилища
+    </button>
+    <button class="category-btn" data-category="other">
+        <span class="icon">?</span> Другое
+    </button>
+</div>
+        
+        <!-- Лоадер -->
+        <div id="loader" class="loader">
+            <div class="spinner"></div>
         </div>
         
         <div id="toolsContainer" class="tools-container">
@@ -63,14 +116,14 @@
     <!-- Модальное окно -->
     <div id="modalOverlay" class="modal-overlay">
         <div class="modal">
-            <button id="modalClose" class="modal-close">&times;</button>
+            <button id="modalClose" class="modal-close" aria-label="Закрыть">&times;</button>
             <div id="modalContent"></div>
         </div>
     </div>
 
     <!-- Подвал сайта -->
     <footer>
-        <p>Free Tools Aggregator &copy; 2023 | Все права защищены</p>
+        <p>Бесплатные сервисы и AI &copy; 2025 | Все права защищены</p>
     </footer>
 
     <script src="scripts.js"></script>
