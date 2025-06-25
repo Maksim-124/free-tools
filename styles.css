@@ -164,6 +164,27 @@ body {
     transform: scale(1.1);
 }
 
+/* Кнопка предложить инструмент */
+.suggest-button {
+    background: linear-gradient(to bottom, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.suggest-button:hover {
+    background: linear-gradient(to bottom, #45a049, #3d8b40);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
 /* Эффект при скролле */
 .header.scrolled {
     min-height: 60px;
@@ -206,10 +227,11 @@ body {
         font-size: 0.9rem;
     }
     
-    .search-button {
+    .search-button, .suggest-button {
         width: 100%;
         max-width: 180px;
         justify-content: center;
+        margin-top: 5px;
     }
     
     .header.scrolled .logo-image {
@@ -290,7 +312,6 @@ body {
     justify-content: center;
     margin-bottom: 30px;
 }
-
 
 /* Лоадер */
 .loader {
@@ -415,14 +436,13 @@ body {
 .btn-more {
     background-color: #17a2b8;
     color: white;
-    margin-left: auto;
 }
 
 .btn-more:hover {
     background-color: #138496;
 }
 
-/* Бейдж "Популярное" */
+/* Бейджи */
 .popular-badge {
     position: absolute;
     top: 10px;
@@ -433,6 +453,20 @@ body {
     border-radius: 4px;
     font-size: 12px;
     font-weight: bold;
+    z-index: 1;
+}
+
+.suggested-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 1;
 }
 
 /* Детали инструмента (скрыты по умолчанию) */
@@ -538,6 +572,12 @@ footer {
         width: 16px;
         height: 16px;
     }
+    
+    .btn-primary, .btn-secondary, .btn-more {
+        min-width: 100px;
+        font-size: 13px;
+        padding: 6px 12px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -552,6 +592,12 @@ footer {
     
     .filter-buttons {
         gap: 8px;
+    }
+    
+    .btn-primary, .btn-secondary, .btn-more {
+        min-width: 90px;
+        font-size: 12px;
+        padding: 5px 10px;
     }
 }
 
@@ -589,20 +635,13 @@ footer {
     font-weight: 600;
 }
 
-.general-description {
+.suggested-notice {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 8px;
+    border-radius: 4px;
     margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.general-description p:first-child {
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-.general-description p:last-child {
-    color: var(--text-color);
-    line-height: 1.5;
+    font-size: 14px;
 }
 
 /* Основные стили иконок */
@@ -678,33 +717,46 @@ footer {
     font-size: 14px;
 }
 
-/* Адаптивность */
-@media (max-width: 768px) {
-    .filter-btn, .category-btn {
-        padding: 7px 12px;
-        font-size: 13px;
-        margin: 3px;
-    }
-    
-    .icon {
-        font-size: 1.1em;
-        margin-right: 6px;
-    }
+/* Стили для формы */
+.form-group {
+    margin-bottom: 15px;
 }
 
-@media (max-width: 480px) {
-    .filter-btn, .category-btn {
-        padding: 6px 10px;
-        font-size: 12px;
-        margin: 2px;
-    }
-    
-    .icon {
-        font-size: 1em;
-        margin-right: 4px;
-    }
-    
-    .category-btn[data-category="development"] .icon {
-        font-size: 0.95em;
-    }
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input, 
+.form-group textarea, 
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-group div {
+    display: flex;
+    gap: 15px;
+    margin-top: 5px;
+}
+
+.form-group div label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
 }

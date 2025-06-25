@@ -11,8 +11,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalContent = document.getElementById('modalContent');
     const header = document.querySelector('.header');
     const loader = document.getElementById('loader');
+    const top10Link = document.getElementById('top10-link');
+    const aboutLink = document.getElementById('about-link');
+    const searchButton = document.getElementById('search-button');
     
-
+    // Элементы формы
+    const suggestButton = document.getElementById('suggest-tool');
+    const suggestModal = document.getElementById('suggestModal');
+    const suggestModalClose = document.getElementById('suggestModalClose');
+    const toolForm = document.getElementById('toolForm');
+    const exportJsonButton = document.getElementById('exportJson');
     
     // Данные инструментов
     let toolsData = [];
@@ -31,6 +39,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // Открыть модальное окно предложения
+    suggestButton.addEventListener('click', () => {
+        suggestModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    });
+    
+    // Закрыть модальное окно предложения
+    suggestModalClose.addEventListener('click', () => {
+        suggestModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    });
+    
+    // Закрыть при клике на фон
+    suggestModal.addEventListener('click', (e) => {
+        if (e.target === suggestModal) {
+            suggestModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+    
+    // Обработчик отправки формы
+    toolForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        addSuggestedTool();
+    });
+    
+    // Обработчик кнопки экспорта
+    exportJsonButton.addEventListener('click', exportToolToJson);
+    
     /**
      * Загружает данные инструментов из JSON-файла
      */
@@ -43,7 +80,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch('./tools.json');
             if (!response.ok) throw new Error('Ошибка загрузки данных');
             
-            toolsData = await response.json();
+            const jsonData = await response.json();
+            
+            // Загружаем предложенные инструменты из localStorage
+            const suggestedTools = JSON.parse(localStorage.getItem('suggestedTools')) || [];
+            
+            // Объединяем инструменты, убирая дубликаты по ID
+            toolsData = [...suggestedTools, ...jsonData].filter((tool, index, self) =>
+                index === self.findIndex(t => t.id === tool.id)
+            );
+            
             console.log('Инструменты загружены:', toolsData.length);
             renderTools(toolsData);
         } catch (error) {
@@ -63,6 +109,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Очищаем контейнер перед добавлением новых элементов
         toolsContainer.innerHTML = '';
         
+        if (tools.length === 0) {
+            toolsContainer.innerHTML = '<p class="no-results">По вашему запросу ничего не найдено</p>';
+            return;
+        }
+        
         // Для каждого инструмента создаем карточку
         tools.forEach(tool => {
             const toolElement = document.createElement('div');
@@ -73,6 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Генерация HTML для карточки инструмента
             toolElement.innerHTML = `
+                ${tool.suggested ? '<span class="suggested-badge">Предложено</span>' : ''}
                 ${tool.popular ? '<span class="popular-badge">Популярное</span>' : ''}
                 <h2>${tool.title}</h2>
                 <p>${tool.description}</p>
@@ -93,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ${tool.features.map(feature => `<li>${feature}</li>`).join('')}
                     </ul>
                     <p><strong>Бесплатные функции:</strong> ${tool.freeFeatures}</p>
-                    <p><strong>Платные функции:</strong> ${tool.paidFeatures}</p>
+                    <p><strong>Платные функции:</strong> ${tool.paidFeatures || 'Нет'}</p>
                 </div>
             `;
             
@@ -143,9 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {string} text - Текст для копирования
      */
     function copyToClipboard(text) {
-        // Проверка поддержки API буфера обмена
         if (!navigator.clipboard) {
-            // Fallback для старых браузеров
             const textArea = document.createElement('textarea');
             textArea.value = text;
             document.body.appendChild(textArea);
@@ -176,32 +226,38 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {number} toolId - ID инструмента
      */
     function showToolDetails(toolId) {
-        const tool = toolsData.find(t => t.id === toolId);
-        if (!tool) return;
-        
-        modalContent.innerHTML = `
-            <h2>${tool.title}</h2>
-            <p class="modal-description">${tool.description}</p>
-            <div class="tool-meta">
-                <span class="availability ${tool.available === 'yes' ? 'available' : 'unavailable'}">
-                    ${tool.available === 'yes' ? 'Доступен в РФ' : 'Требуется VPN'}
-                </span>
-                <span class="rating">${generateRatingStars(tool.rating)}</span>
-            </div>
-            <ul>
-                ${tool.features.map(feature => `<li>${feature}</li>`).join('')}
-            </ul>
-            <p><strong>Бесплатные функции:</strong> ${tool.freeFeatures}</p>
-            <p><strong>Платные функции:</strong> ${tool.paidFeatures}</p>
-            <div class="tool-actions">
-                <a href="${tool.link}" target="_blank" class="btn-primary">Открыть инструмент</a>
-            </div>
-        `;
-        
-        modalOverlay.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
+    const tool = toolsData.find(t => t.id === toolId);
+    if (!tool) return;
     
+    modalContent.innerHTML = `
+        <h2>${tool.title}</h2>
+        ${tool.suggested ? '<p class="suggested-notice">Этот инструмент был предложен пользователем</p>' : ''}
+        <p class="modal-description">${tool.description}</p>
+        <div class="tool-meta">
+            <span class="availability ${tool.available === 'yes' ? 'available' : 'unavailable'}">
+                ${tool.available === 'yes' ? 'Доступен в РФ' : 'Требуется VPN'}
+            </span>
+            <span class="rating">${generateRatingStars(tool.rating)}</span>
+        </div>
+        <ul>
+            ${tool.features.map(feature => `<li>${feature}</li>`).join('')}
+        </ul>
+        <p><strong>Бесплатные функции:</strong> ${tool.freeFeatures}</p>
+        <p><strong>Платные функции:</strong> ${tool.paidFeatures || 'Нет'}</p>
+        <div class="tool-actions">
+            <a href="${tool.link}" target="_blank" class="btn-primary">Открыть инструмент</a>
+            <button class="btn-export" id="exportSingleTool">Экспорт в JSON</button>
+        </div>
+    `;
+    
+    modalOverlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    // Добавляем обработчик для экспорта
+    document.getElementById('exportSingleTool').addEventListener('click', () => {
+        exportSingleToolToJson(tool);
+    });
+}
     /**
      * Фильтрует инструменты по поисковому запросу, категории и доступности
      */
@@ -262,6 +318,83 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = 'auto';
     }
     
+    // Функция для добавления предложенного инструмента
+    function addSuggestedTool() {
+        const formData = new FormData(toolForm);
+        
+        const tool = {
+            id: Date.now(), // Уникальный ID на основе времени
+            popular: formData.get('popular') === 'on',
+            title: formData.get('title'),
+            description: formData.get('description'),
+            category: formData.get('category'),
+            available: formData.get('available'),
+            rating: parseFloat(formData.get('rating')),
+            link: formData.get('link'),
+            features: formData.get('features').split('\n').filter(line => line.trim() !== ''),
+            freeFeatures: formData.get('freeFeatures'),
+            paidFeatures: formData.get('paidFeatures') || '',
+            suggested: true // Помечаем как предложенный
+        };
+
+        // Сохраняем в localStorage
+        saveToLocalStorage(tool);
+        
+        // Добавляем в общий список
+        toolsData.unshift(tool);
+        
+        // Перерисовываем инструменты
+        renderTools(toolsData);
+        
+        // Закрываем модалку
+        suggestModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        
+        // Очищаем форму
+        toolForm.reset();
+        
+        // Показываем уведомление
+        showCopyFeedback('Инструмент добавлен!', '#4CAF50');
+    }
+
+    // Сохранение в localStorage
+    function saveToLocalStorage(tool) {
+        let suggestedTools = JSON.parse(localStorage.getItem('suggestedTools')) || [];
+        suggestedTools.push(tool);
+        localStorage.setItem('suggestedTools', JSON.stringify(suggestedTools));
+    }
+
+    // Экспорт в JSON
+    function exportToolToJson() {
+        const formData = new FormData(toolForm);
+        
+        const tool = {
+            id: Date.now(),
+            popular: formData.get('popular') === 'on',
+            title: formData.get('title'),
+            description: formData.get('description'),
+            category: formData.get('category'),
+            available: formData.get('available'),
+            rating: parseFloat(formData.get('rating')),
+            link: formData.get('link'),
+            features: formData.get('features').split('\n').filter(line => line.trim() !== ''),
+            freeFeatures: formData.get('freeFeatures'),
+            paidFeatures: formData.get('paidFeatures') || ''
+        };
+
+        const json = JSON.stringify(tool, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `tool_${tool.title.replace(/\s+/g, '_')}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+    
     // Инициализация обработчиков событий
     categoryButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -284,31 +417,54 @@ document.addEventListener('DOMContentLoaded', function() {
     modalOverlay.addEventListener('click', function(e) {
         if (e.target === modalOverlay) closeModal();
     });
+
+    /**
+ * Экспортирует один инструмент в JSON
+ * @param {Object} tool - Объект инструмента
+ */
+function exportSingleToolToJson(tool) {
+    // Клонируем объект, чтобы не изменять оригинал
+    const toolCopy = JSON.parse(JSON.stringify(tool));
     
-    // Загрузка инструментов при старте
-    loadTools();
-});
-
-const top10Link = document.getElementById(`top10-link`);
-    const aboutLink = document.getElementById(`about-link`);
-    const searchButton = document.getElementById(`search-button`);
-
+    // Удаляем служебные поля
+    delete toolCopy.suggested;
+    
+    const json = JSON.stringify(toolCopy, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `tool_${tool.title.replace(/\s+/g, '_')}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showCopyFeedback('Инструмент экспортирован!', '#4CAF50');
+}
+    
     // Функция для показа сообщения "В разработке"
     function showDevelopmentMessage() {
         alert("В разработке! Эта функция появится в следующих обновлениях");
     }
+    
     // Обработчик кликов
     top10Link.addEventListener('click', function(e) {
-        e.preventDefault(); //Отменяем переход по ссылке
+        e.preventDefault();
         showDevelopmentMessage();
     });
 
-     aboutLink.addEventListener('click', function(e) {
-        e.preventDefault(); //Отменяем переход по ссылке
+    aboutLink.addEventListener('click', function(e) {
+        e.preventDefault();
         showDevelopmentMessage();
     });
 
-     searchButton.addEventListener('click', function(e) {
-        e.preventDefault(); //Отменяем переход по ссылке
+    searchButton.addEventListener('click', function(e) {
+        e.preventDefault();
         showDevelopmentMessage();
     });
+    
+    // Загрузка инструментов при старте
+    loadTools();
+});
