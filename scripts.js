@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const header = document.querySelector('.header');
     const loader = document.getElementById('loader');
     
+
+    
     // Данные инструментов
     let toolsData = [];
     
@@ -38,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loader.style.display = 'flex';
             toolsContainer.innerHTML = '';
             
-            const response = await fetch('tools.json');
+            const response = await fetch('./tools.json');
             if (!response.ok) throw new Error('Ошибка загрузки данных');
             
             toolsData = await response.json();
@@ -286,3 +288,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // Загрузка инструментов при старте
     loadTools();
 });
+
+const top10Link = document.getElementById(`top10-link`);
+    const aboutLink = document.getElementById(`about-link`);
+    const searchButton = document.getElementById(`search-button`);
+
+    // Функция для показа сообщения "В разработке"
+    function showDevelopmentMessage() {
+        alert("В разработке! Эта функция появится в следующих обновлениях");
+    }
+    // Обработчик кликов
+    top10Link.addEventListener('click', function(e) {
+        e.preventDefault(); //Отменяем переход по ссылке
+        showDevelopmentMessage();
+    });
+
+     aboutLink.addEventListener('click', function(e) {
+        e.preventDefault(); //Отменяем переход по ссылке
+        showDevelopmentMessage();
+    });
+
+     searchButton.addEventListener('click', function(e) {
+        e.preventDefault(); //Отменяем переход по ссылке
+        showDevelopmentMessage();
+    });
