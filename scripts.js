@@ -15,12 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const aboutLink = document.getElementById('about-link');
     const searchButton = document.getElementById('search-button');
     
-    // Элементы формы
-    const suggestButton = document.getElementById('suggest-tool');
-    const suggestModal = document.getElementById('suggestModal');
-    const suggestModalClose = document.getElementById('suggestModalClose');
-    const toolForm = document.getElementById('toolForm');
-    const exportJsonButton = document.getElementById('exportJson');
+
     
     // Данные инструментов
     let toolsData = [];
@@ -39,34 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Открыть модальное окно предложения
-    suggestButton.addEventListener('click', () => {
-        suggestModal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    });
     
-    // Закрыть модальное окно предложения
-    suggestModalClose.addEventListener('click', () => {
-        suggestModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    });
-    
-    // Закрыть при клике на фон
-    suggestModal.addEventListener('click', (e) => {
-        if (e.target === suggestModal) {
-            suggestModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-    });
-    
-    // Обработчик отправки формы
-    toolForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        addSuggestedTool();
-    });
-    
-    // Обработчик кнопки экспорта
-    exportJsonButton.addEventListener('click', exportToolToJson);
     
     /**
      * Загружает данные инструментов из JSON-файла
@@ -246,7 +214,6 @@ document.addEventListener('DOMContentLoaded', function() {
         <p><strong>Платные функции:</strong> ${tool.paidFeatures || 'Нет'}</p>
         <div class="tool-actions">
             <a href="${tool.link}" target="_blank" class="btn-primary">Открыть инструмент</a>
-            <button class="btn-export" id="exportSingleTool">Экспорт в JSON</button>
         </div>
     `;
     
@@ -318,82 +285,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = 'auto';
     }
     
-    // Функция для добавления предложенного инструмента
-    function addSuggestedTool() {
-        const formData = new FormData(toolForm);
-        
-        const tool = {
-            id: Date.now(), // Уникальный ID на основе времени
-            popular: formData.get('popular') === 'on',
-            title: formData.get('title'),
-            description: formData.get('description'),
-            category: formData.get('category'),
-            available: formData.get('available'),
-            rating: parseFloat(formData.get('rating')),
-            link: formData.get('link'),
-            features: formData.get('features').split('\n').filter(line => line.trim() !== ''),
-            freeFeatures: formData.get('freeFeatures'),
-            paidFeatures: formData.get('paidFeatures') || '',
-            suggested: true // Помечаем как предложенный
-        };
+   
 
-        // Сохраняем в localStorage
-        saveToLocalStorage(tool);
-        
-        // Добавляем в общий список
-        toolsData.unshift(tool);
-        
-        // Перерисовываем инструменты
-        renderTools(toolsData);
-        
-        // Закрываем модалку
-        suggestModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        
-        // Очищаем форму
-        toolForm.reset();
-        
-        // Показываем уведомление
-        showCopyFeedback('Инструмент добавлен!', '#4CAF50');
-    }
-
-    // Сохранение в localStorage
-    function saveToLocalStorage(tool) {
-        let suggestedTools = JSON.parse(localStorage.getItem('suggestedTools')) || [];
-        suggestedTools.push(tool);
-        localStorage.setItem('suggestedTools', JSON.stringify(suggestedTools));
-    }
-
-    // Экспорт в JSON
-    function exportToolToJson() {
-        const formData = new FormData(toolForm);
-        
-        const tool = {
-            id: Date.now(),
-            popular: formData.get('popular') === 'on',
-            title: formData.get('title'),
-            description: formData.get('description'),
-            category: formData.get('category'),
-            available: formData.get('available'),
-            rating: parseFloat(formData.get('rating')),
-            link: formData.get('link'),
-            features: formData.get('features').split('\n').filter(line => line.trim() !== ''),
-            freeFeatures: formData.get('freeFeatures'),
-            paidFeatures: formData.get('paidFeatures') || ''
-        };
-
-        const json = JSON.stringify(tool, null, 2);
-        const blob = new Blob([json], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `tool_${tool.title.replace(/\s+/g, '_')}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
+    
     
     // Инициализация обработчиков событий
     categoryButtons.forEach(button => {
@@ -418,31 +312,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target === modalOverlay) closeModal();
     });
 
-    /**
- * Экспортирует один инструмент в JSON
- * @param {Object} tool - Объект инструмента
- */
-function exportSingleToolToJson(tool) {
-    // Клонируем объект, чтобы не изменять оригинал
-    const toolCopy = JSON.parse(JSON.stringify(tool));
-    
-    // Удаляем служебные поля
-    delete toolCopy.suggested;
-    
-    const json = JSON.stringify(toolCopy, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `tool_${tool.title.replace(/\s+/g, '_')}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    showCopyFeedback('Инструмент экспортирован!', '#4CAF50');
-}
+   
+
     
     // Функция для показа сообщения "В разработке"
     function showDevelopmentMessage() {

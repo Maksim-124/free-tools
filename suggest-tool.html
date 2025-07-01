@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <!-- Фавиконы -->
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <title>Бесплатные сервисы и AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Фавиконы -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Предложить инструмент</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Основные стили контейнера */
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .form-container {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 40px;
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .form-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+            background: var(--bg-color);
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(51, 102, 255, 0.2);
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 8px;
+        }
+        
+        .form-radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+        
+        /* Стили для кнопок */
+        .btn {
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to bottom, var(--primary-color), var(--primary-hover));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to bottom, var(--primary-hover), #1a3cb7);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        
+        .btn-secondary {
+            background: var(--search-bg);
+            color: var(--text-color);
+        }
+        
+        .btn-secondary:hover {
+            background: #dee2e6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .required-star {
+            color: var(--unavailable-color);
+            margin-left: 4px;
+        }
+        
+        .password-protect {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 30px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 12px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+        }
+        
+        /* Стили для добавленных инструментов */
+        .added-tools-container {
+            margin-bottom: 40px;
+        }
+        
+        .added-tools-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .tools-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        /* Модальное окно */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--secondary-color);
+        }
+        
+        .modal-description {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .suggested-notice {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .form-footer {
+                flex-direction: column;
+            }
+            
+            .form-container, .password-protect {
+                margin: 20px 0;
+                padding: 20px;
+            }
+            
+            .tools-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header__container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Бесплатные сервисы и AI" class="logo-image">
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">На главную</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <div id="passwordSection" class="password-protect">
+            <h2>Доступ ограничен</h2>
+            <p>Для доступа к форме добавления инструмента введите пароль:</p>
+            <input type="password" id="accessPassword" class="password-input" placeholder="Введите пароль">
+            <button id="submitPassword" class="btn btn-primary">Продолжить</button>
+        </div>
+        
+        <div id="contentSection" style="display: none;">
+            <!-- Модальное окно для деталей -->
+            <div id="modalOverlay" class="modal-overlay">
+                <div class="modal">
+                    <button id="modalClose" class="modal-close">&times;</button>
+                    <div id="modalContent"></div>
+                </div>
+            </div>
+            
+            <div class="added-tools-container">
+                <div class="added-tools-header">
+                    <h2>Добавленные инструменты</h2>
+                    <button id="clearAllTools" class="btn btn-secondary">Очистить все</button>
+                </div>
+                
+                <div id="addedTools" class="tools-container">
+                    <!-- Добавленные инструменты будут здесь -->
+                </div>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-header">
+                    <h1>Предложить новый инструмент</h1>
+                    <p>Добавьте бесплатный сервис в нашу базу данных</p>
+                </div>
+                
+                <form id="toolForm">
+                    <div class="form-group">
+                        <label for="title">Название инструмента<span class="required-star">*</span></label>
+                        <input type="text" id="title" name="title" required placeholder="Название сервиса или инструмента">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Описание<span class="required-star">*</span></label>
+                        <textarea id="description" name="description" required placeholder="Краткое описание функционала и назначения"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Категория<span class="required-star">*</span></label>
+                        <select id="category" name="category" required>
+                            <option value="">Выберите категорию</option>
+                            <option value="office">Офис</option>
+                            <option value="design">Дизайн</option>
+                            <option value="ai">AI</option>
+                            <option value="development">Разработка</option>
+                            <option value="marketing">Маркетинг</option>
+                            <option value="storage">Хранилища</option>
+                            <option value="other">Другое</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Доступен в РФ<span class="required-star">*</span></label>
+                        <div class="form-radio-group">
+                            <label>
+                                <input type="radio" name="available" value="yes" required> 
+                                Да
+                            </label>
+                            <label>
+                                <input type="radio" name="available" value="no"> 
+                                Нет (требуется VPN)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="link">Ссылка<span class="required-star">*</span></label>
+                        <input type="url" id="link" name="link" required placeholder="https://example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="features">Ключевые особенности (каждая с новой строки)<span class="required-star">*</span></label>
+                        <textarea id="features" name="features" required placeholder="Особенность 1&#10;Особенность 2&#10;Особенность 3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="freeFeatures">Бесплатные функции<span class="required-star">*</span></label>
+                        <input type="text" id="freeFeatures" name="freeFeatures" required placeholder="Что доступно бесплатно">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="paidFeatures">Платные функции</label>
+                        <input type="text" id="paidFeatures" name="paidFeatures" placeholder="Что доступно в платных версиях">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="popular" name="popular"> 
+                            Отметить как популярный инструмент
+                        </label>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <button type="button" id="exportCurrentJson" class="btn btn-secondary">Экспорт формы в JSON</button>
+                        <button type="submit" class="btn btn-primary">Добавить инструмент</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Бесплатные сервисы и AI &copy; 2025 | Форма для администраторов</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Основные элементы
+            const passwordSection = document.getElementById('passwordSection');
+            const contentSection = document.getElementById('contentSection');
+            const passwordInput = document.getElementById('accessPassword');
+            const submitPassword = document.getElementById('submitPassword');
+            const toolForm = document.getElementById('toolForm');
+            const exportCurrentJson = document.getElementById('exportCurrentJson');
+            const addedToolsContainer = document.getElementById('addedTools');
+            const clearAllTools = document.getElementById('clearAllTools');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalClose = document.getElementById('modalClose');
+            const modalContent = document.getElementById('modalContent');
+            
+            // Проверка пароля
+            const ACCESS_PASSWORD = 'admin123';
+            let addedTools = [];
+            
+            submitPassword.addEventListener('click', function() {
+                if (passwordInput.value === ACCESS_PASSWORD) {
+                    passwordSection.style.display = 'none';
+                    contentSection.style.display = 'block';
+                } else {
+                    alert('Неверный пароль! Попробуйте снова.');
+                    passwordInput.value = '';
+                }
+            });
+            
+            // Функция экспорта одного инструмента в JSON
+            function exportToolToJson(tool) {
+                // Создаем копию без временных свойств
+                const exportTool = {...tool};
+                delete exportTool.elementId;
+                
+                const json = JSON.stringify(exportTool, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `tool_${tool.title.replace(/\s+/g, '_')}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+            
+            // Функция отображения добавленных инструментов
+            function renderAddedTools() {
+                addedToolsContainer.innerHTML = '';
+                
+                if (addedTools.length === 0) {
+                    addedToolsContainer.innerHTML = `
+                        <div class="no-tools">
+                            <p>Пока не добавлено ни одного инструмента</p>
+                            <p>Добавленные инструменты будут отображаться здесь</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                addedTools.forEach(tool => {
+                    const toolElement = document.createElement('div');
+                    toolElement.className = 'tool';
+                    toolElement.dataset.id = tool.id;
+                    
+                    toolElement.innerHTML = `
+                        ${tool.popular ? '<span class="popular-badge">Популярное</span>' : ''}
+                        <span class="suggested-badge">Предложено</span>
+                        <h2>${tool.title}</h2>
+                        <p>${tool.description}</p>
+                        <div class="tool-meta">
+                            <span class="availability ${tool.available === 'yes' ? 'available' : 'unavailable'}">
+                                ${tool.available === 'yes' ? 'Доступен в РФ' : 'Требуется VPN'}
+                            </span>
+                        </div>
+                        <div class="tool-actions">
+                            <a href="${tool.link}" target="_blank" class="btn-primary">Открыть</a>
+                            <button class="btn-secondary export-tool">Экспорт в JSON</button>
+                            <button class="btn-more">Подробнее</button>
+                            <button class="btn-remove remove-tool">Удалить</button>
+                        </div>
+                    `;
+                    
+                    addedToolsContainer.appendChild(toolElement);
+                    
+                    // Сохраняем ссылку на элемент
+                    tool.element = toolElement;
+                    
+                    // Добавляем обработчики
+                    toolElement.querySelector('.export-tool').addEventListener('click', () => {
+                        exportToolToJson(tool);
+                    });
+                    
+                    toolElement.querySelector('.remove-tool').addEventListener('click', () => {
+                        removeTool(tool.id);
+                    });
+                    
+                    // Обработчик для кнопки "Подробнее"
+                    toolElement.querySelector('.btn-more').addEventListener('click', () => {
+                        showToolDetails(tool);
+                    });
+                });
+            }
+            
+            // Показать детали инструмента в модальном окне
+            function showToolDetails(tool) {
+                modalContent.innerHTML = `
+                    <h2>${tool.title}</h2>
+                    <p class="modal-description">${tool.description}</p>
+                    <div class="tool-meta">
+                        <span class="availability ${tool.available === 'yes' ? 'available' : 'unavailable'}">
+                            ${tool.available === 'yes' ? 'Доступен в РФ' : 'Требуется VPN'}
+                        </span>
+                        <span>Категория: ${getCategoryName(tool.category)}</span>
+                    </div>
+                    <ul>
+                        ${tool.features.map(feature => `<li>${feature}</li>`).join('')}
+                    </ul>
+                    <p><strong>Бесплатные функции:</strong> ${tool.freeFeatures}</p>
+                    ${tool.paidFeatures ? `<p><strong>Платные функции:</strong> ${tool.paidFeatures}</p>` : ''}
+                    <div class="tool-actions" style="margin-top:20px;">
+                        <a href="${tool.link}" target="_blank" class="btn-primary">Открыть инструмент</a>
+                        <button class="btn-secondary" id="exportFromModal">Экспорт в JSON</button>
+                    </div>
+                `;
+                
+                modalOverlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                
+                // Обработчик для экспорта из модального окна
+                document.getElementById('exportFromModal').addEventListener('click', () => {
+                    exportToolToJson(tool);
+                });
+            }
+            
+            // Закрыть модальное окно
+            function closeModal() {
+                modalOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            // Функция получения имени категории
+            function getCategoryName(category) {
+                const categories = {
+                    'office': 'Офис',
+                    'design': 'Дизайн',
+                    'ai': 'AI',
+                    'development': 'Разработка',
+                    'marketing': 'Маркетинг',
+                    'storage': 'Хранилища',
+                    'other': 'Другое'
+                };
+                return categories[category] || category;
+            }
+            
+            // Функция добавления инструмента
+            function addSuggestedTool() {
+                const formData = new FormData(toolForm);
+                
+                const tool = {
+                    id: 'tool_' + Date.now(), // Уникальный ID
+                    popular: formData.get('popular') === 'on',
+                    title: formData.get('title'),
+                    description: formData.get('description'),
+                    category: formData.get('category'),
+                    available: formData.get('available'),
+                    link: formData.get('link'),
+                    features: formData.get('features').split('\n')
+                        .map(line => line.trim())
+                        .filter(line => line !== ''),
+                    freeFeatures: formData.get('freeFeatures'),
+                    paidFeatures: formData.get('paidFeatures') || '',
+                    suggested: true
+                };
+                
+                addedTools.unshift(tool);
+                renderAddedTools();
+                toolForm.reset();
+            }
+            
+            // Удаление инструмента
+            function removeTool(toolId) {
+                addedTools = addedTools.filter(tool => tool.id !== toolId);
+                renderAddedTools();
+            }
+            
+            // Очистка всех инструментов
+            clearAllTools.addEventListener('click', function() {
+                if (addedTools.length === 0) return;
+                if (confirm('Вы уверены, что хотите удалить все добавленные инструменты?')) {
+                    addedTools = [];
+                    renderAddedTools();
+                }
+            });
+            
+            // Экспорт текущей формы в JSON
+            exportCurrentJson.addEventListener('click', function() {
+                const formData = new FormData(toolForm);
+                
+                const tool = {
+                    id: 'tool_' + Date.now(),
+                    popular: formData.get('popular') === 'on',
+                    title: formData.get('title'),
+                    description: formData.get('description'),
+                    category: formData.get('category'),
+                    available: formData.get('available'),
+                    link: formData.get('link'),
+                    features: formData.get('features').split('\n')
+                        .map(line => line.trim())
+                        .filter(line => line !== ''),
+                    freeFeatures: formData.get('freeFeatures'),
+                    paidFeatures: formData.get('paidFeatures') || ''
+                };
+                
+                exportToolToJson(tool);
+            });
+            
+            // Обработчики модального окна
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) closeModal();
+            });
+            
+            // Обработчик отправки формы
+            toolForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Простая валидация
+                if (!toolForm.checkValidity()) {
+                    alert('Пожалуйста, заполните все обязательные поля (помечены *)');
+                    return;
+                }
+                
+                addSuggestedTool();
+            });
+            
+            // Инициализация
+            renderAddedTools();
+        });
+    </script>
+</body>
+</html>
