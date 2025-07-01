@@ -1,3 +1,11 @@
+// Дополнительная защита от ботов
+const fakeEmails = document.querySelectorAll('a[href^="mailto:"]');
+fakeEmails.forEach(email => {
+  if(email.textContent.includes('remove-me')) {
+    email.parentNode.removeChild(email);
+  }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM полностью загружен");
     
@@ -15,8 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const aboutLink = document.getElementById('about-link');
     const searchButton = document.getElementById('search-button');
     
-
-    
     // Данные инструментов
     let toolsData = [];
     
@@ -33,8 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
             header.classList.remove('scrolled');
         }
     });
-    
-    
     
     /**
      * Загружает данные инструментов из JSON-файла
@@ -107,14 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="btn-secondary copy-link" data-link="${tool.link}">Копировать ссылку</button>
                     <button class="btn-more" data-id="${tool.id}">Подробнее</button>
                 </div>
-                <div class="tool-details">
-                    <h3>${tool.title}</h3>
-                    <ul>
-                        ${tool.features.map(feature => `<li>${feature}</li>`).join('')}
-                    </ul>
-                    <p><strong>Бесплатные функции:</strong> ${tool.freeFeatures}</p>
-                    <p><strong>Платные функции:</strong> ${tool.paidFeatures || 'Нет'}</p>
-                </div>
             `;
             
             toolsContainer.appendChild(toolElement);
@@ -149,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Обработчики для кнопок "Подробнее"
+        // Обратчики для кнопок "Подробнее"
         document.querySelectorAll('.btn-more').forEach(button => {
             button.addEventListener('click', function() {
                 const toolId = parseInt(this.dataset.id);
@@ -194,37 +190,33 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {number} toolId - ID инструмента
      */
     function showToolDetails(toolId) {
-    const tool = toolsData.find(t => t.id === toolId);
-    if (!tool) return;
+        const tool = toolsData.find(t => t.id === toolId);
+        if (!tool) return;
+        
+        modalContent.innerHTML = `
+            <h2>${tool.title}</h2>
+            ${tool.suggested ? '<p class="suggested-notice">Этот инструмент был предложен пользователем</p>' : ''}
+            <p class="modal-description">${tool.description}</p>
+            <div class="tool-meta">
+                <span class="availability ${tool.available === 'yes' ? 'available' : 'unavailable'}">
+                    ${tool.available === 'yes' ? 'Доступен в РФ' : 'Требуется VPN'}
+                </span>
+                <span class="rating">${generateRatingStars(tool.rating)}</span>
+            </div>
+            <ul>
+                ${tool.features.map(feature => `<li>${feature}</li>`).join('')}
+            </ul>
+            <p><strong>Бесплатные функции:</strong> ${tool.freeFeatures}</p>
+            <p><strong>Платные функции:</strong> ${tool.paidFeatures || 'Нет'}</p>
+            <div class="tool-actions">
+                <a href="${tool.link}" target="_blank" class="btn-primary">Открыть инструмент</a>
+            </div>
+        `;
+        
+        modalOverlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
     
-    modalContent.innerHTML = `
-        <h2>${tool.title}</h2>
-        ${tool.suggested ? '<p class="suggested-notice">Этот инструмент был предложен пользователем</p>' : ''}
-        <p class="modal-description">${tool.description}</p>
-        <div class="tool-meta">
-            <span class="availability ${tool.available === 'yes' ? 'available' : 'unavailable'}">
-                ${tool.available === 'yes' ? 'Доступен в РФ' : 'Требуется VPN'}
-            </span>
-            <span class="rating">${generateRatingStars(tool.rating)}</span>
-        </div>
-        <ul>
-            ${tool.features.map(feature => `<li>${feature}</li>`).join('')}
-        </ul>
-        <p><strong>Бесплатные функции:</strong> ${tool.freeFeatures}</p>
-        <p><strong>Платные функции:</strong> ${tool.paidFeatures || 'Нет'}</p>
-        <div class="tool-actions">
-            <a href="${tool.link}" target="_blank" class="btn-primary">Открыть инструмент</a>
-        </div>
-    `;
-    
-    modalOverlay.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    
-    // Добавляем обработчик для экспорта
-    document.getElementById('exportSingleTool').addEventListener('click', () => {
-        exportSingleToolToJson(tool);
-    });
-}
     /**
      * Фильтрует инструменты по поисковому запросу, категории и доступности
      */
@@ -285,10 +277,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = 'auto';
     }
     
-   
-
-    
-    
     // Инициализация обработчиков событий
     categoryButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -312,9 +300,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target === modalOverlay) closeModal();
     });
 
-   
-
-    
     // Функция для показа сообщения "В разработке"
     function showDevelopmentMessage() {
         alert("В разработке! Эта функция появится в следующих обновлениях");
@@ -339,3 +324,53 @@ document.addEventListener('DOMContentLoaded', function() {
     // Загрузка инструментов при старте
     loadTools();
 });
+
+// Защита и преобразование email
+function initEmailInteraction() {
+  const emailContainer = document.getElementById('email-container');
+  if (!emailContainer) return;
+  
+  // Сохраняем оригинальный email
+  const originalEmail = emailContainer.textContent;
+  
+  // Удаляем email из текста (защита от простых ботов)
+  emailContainer.textContent = "";
+  
+  // Создаем защищенный элемент
+  const protectedSpan = document.createElement('span');
+  protectedSpan.className = 'protected-email';
+  
+  // Разбиваем email на части
+  const [user, domain] = originalEmail.split('@');
+  const [domainName, tld] = domain.split('.');
+  
+  // Собираем email с лишними символами
+  protectedSpan.innerHTML = `
+    ${user}<span style="display:none">${Math.random().toString(36).substring(2,5)}</span>@<!--
+    -->${domainName}<span style="font-size:0">no-spam</span>.<!--
+    -->${tld}
+  `;
+  
+  emailContainer.appendChild(protectedSpan);
+  
+  // Делаем кликабельным при наведении
+  protectedSpan.addEventListener('mouseenter', function() {
+    this.style.cursor = 'pointer';
+    this.style.textDecoration = 'underline';
+  });
+  
+  protectedSpan.addEventListener('mouseleave', function() {
+    this.style.textDecoration = 'none';
+  });
+  
+  protectedSpan.addEventListener('click', function() {
+    window.location.href = `mailto:${originalEmail}`;
+  });
+}
+
+// Инициализация при загрузке
+if (document.readyState === 'complete') {
+  initEmailInteraction();
+} else {
+  window.addEventListener('load', initEmailInteraction);
+}

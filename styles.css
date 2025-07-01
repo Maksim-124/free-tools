@@ -331,6 +331,9 @@ body {
     box-shadow: var(--box-shadow);
     transition: var(--transition);
     position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .tool:hover {
@@ -382,6 +385,8 @@ body {
 .tool-actions {
     display: flex;
     gap: 10px;
+    margin-top: auto; 
+    padding-top: 15px;
 }
 
 .btn-primary, .btn-secondary, .btn-more {
@@ -719,4 +724,21 @@ footer {
     display: flex;
     gap: 10px;
     margin-top: 20px;
+}
+
+/* Стиль для защищенного email */
+.protected-email {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* Подчеркивание при наведении */
+.protected-email:hover {
+  color: #3366ff;
+}
+
+/* Индикатор кликабельности */
+.protected-email:hover::after {
+  content: " ✉️";
+  font-size: 0.9em;
 }
