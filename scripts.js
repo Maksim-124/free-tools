@@ -1,11 +1,3 @@
-// Дополнительная защита от ботов
-const fakeEmails = document.querySelectorAll('a[href^="mailto:"]');
-fakeEmails.forEach(email => {
-  if(email.textContent.includes('remove-me')) {
-    email.parentNode.removeChild(email);
-  }
-});
-
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM полностью загружен");
     
@@ -94,24 +86,52 @@ document.addEventListener('DOMContentLoaded', function() {
             toolElement.dataset.available = tool.available;
             toolElement.dataset.rating = tool.rating;
             
-            // Генерация HTML для карточки инструмента
-            toolElement.innerHTML = `
-                ${tool.suggested ? '<span class="suggested-badge">Предложено</span>' : ''}
-                ${tool.popular ? '<span class="popular-badge">Популярное</span>' : ''}
-                <h2>${tool.title}</h2>
-                <p>${tool.description}</p>
-                <div class="tool-meta">
-                    <span class="availability ${tool.available === 'yes' ? 'available' : 'unavailable'}">
-                        ${tool.available === 'yes' ? 'Доступен в РФ' : 'Требуется VPN'}
-                    </span>
-                    <span class="rating">${generateRatingStars(tool.rating)}</span>
-                </div>
-                <div class="tool-actions">
-                    <a href="${tool.link}" target="_blank" class="btn-primary">Открыть</a>
-                    <button class="btn-secondary copy-link" data-link="${tool.link}">Копировать ссылку</button>
-                    <button class="btn-more" data-id="${tool.id}">Подробнее</button>
-                </div>
-            `;
+            // Для инструментов со статьей создаем специальную карточку
+            if (tool.hasArticle) {
+                toolElement.innerHTML = `
+                    ${tool.popular ? '<span class="popular-badge">Популярное</span>' : ''}
+                    <h2>${tool.title}</h2>
+                    <p>${tool.description}</p>
+                    <div class="tool-meta">
+                        <span class="availability ${tool.available === 'yes' ? 'available' : 'unavailable'}">
+                            ${tool.available === 'yes' ? 'Доступен в РФ' : 'Требуется VPN'}
+                        </span>
+                        <span class="rating">${generateRatingStars(tool.rating)}</span>
+                    </div>
+                    <div class="tool-actions">
+                        <a href="${tool.link}" target="_blank" class="btn-primary">Открыть инструмент</a>
+                        <a href="${tool.articleLink}" class="btn-more">Подробнее</a>
+                    </div>
+                `;
+                
+                // Вешаем обработчик на всю карточку для перехода к статье
+                toolElement.addEventListener('click', (e) => {
+                    // Проверяем, что клик был не по кнопке
+                    if (!e.target.closest('.tool-actions a')) {
+                        window.location.href = tool.articleLink;
+                    }
+                });
+            } 
+            // Стандартная карточка для инструментов без статьи
+            else {
+                toolElement.innerHTML = `
+                    ${tool.popular ? '<span class="popular-badge">Популярное</span>' : ''}
+                    ${tool.suggested ? '<span class="suggested-badge">Предложено</span>' : ''}
+                    <h2>${tool.title}</h2>
+                    <p>${tool.description}</p>
+                    <div class="tool-meta">
+                        <span class="availability ${tool.available === 'yes' ? 'available' : 'unavailable'}">
+                            ${tool.available === 'yes' ? 'Доступен в РФ' : 'Требуется VPN'}
+                        </span>
+                        <span class="rating">${generateRatingStars(tool.rating)}</span>
+                    </div>
+                    <div class="tool-actions">
+                        <a href="${tool.link}" target="_blank" class="btn-primary">Открыть</a>
+                        <button class="btn-secondary copy-link" data-link="${tool.link}">Копировать ссылку</button>
+                        <button class="btn-more" data-id="${tool.id}">Подробнее</button>
+                    </div>
+                `;
+            }
             
             toolsContainer.appendChild(toolElement);
         });
@@ -145,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Обратчики для кнопок "Подробнее"
+        // Обработчики для кнопок "Подробнее"
         document.querySelectorAll('.btn-more').forEach(button => {
             button.addEventListener('click', function() {
                 const toolId = parseInt(this.dataset.id);
@@ -193,6 +213,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const tool = toolsData.find(t => t.id === toolId);
         if (!tool) return;
         
+        // Если у инструмента есть статья - перенаправляем на нее
+        if (tool.hasArticle && tool.articleLink) {
+            window.location.href = tool.articleLink;
+            return;
+        }
+        
+        // Иначе показываем модальное окно
         modalContent.innerHTML = `
             <h2>${tool.title}</h2>
             ${tool.suggested ? '<p class="suggested-notice">Этот инструмент был предложен пользователем</p>' : ''}
