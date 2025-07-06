@@ -1,0 +1,22 @@
+User-agent: Yandex
+Allow: /
+Disallow: /search
+Disallow: /?*
+Disallow: /*?*
+Disallow: /private/
+Disallow: /drafts/
+Clean-param: ref / 
+Clean-param: utm_source /
+Clean-param: utm_medium /
+Clean-param: utm_campaign /
+Host: free-tools.ru
+Sitemap: https://free-tools.ru/sitemap.xml
+
+User-agent: *
+Allow: /
+Disallow: /search
+Disallow: /?*
+Disallow: /*?*
+Disallow: /private/
+Disallow: /drafts/
+Sitemap: https://free-tools.ru/sitemap.xml
