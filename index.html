@@ -44,6 +44,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="/manifest.webmanifest">
+
+    <!-- Для iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png">
 </head>
 <body>
     <!-- Шапка сайта -->
@@ -61,12 +67,15 @@
                 </ul>
             </nav>
             
-            <button id="search-button" class="search-button" aria-label="Поиск по сайту">
+            
+           <button id="search-button" class="search-button" aria-label="Поиск по сайту">
                 <svg class="search-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M15.5 15H14.71L14.43 14.73C15.41 13.59 16 12.11 16 10.5C16 6.91 13.09 4 9.5 4C5.91 4 3 6.91 3 10.5C3 14.09 5.91 17 9.5 17C11.11 17 12.59 16.41 13.73 15.43L14 15.71V16.5L19 21.49L20.49 20L15.5 15Z" fill="currentColor"/>
                 </svg>
                 <span class="search-text">AI Поиск</span>
             </button>
+        </div>
+
                 </header>
 
     <!-- Основной контент -->
@@ -103,7 +112,7 @@
                     <!-- <span class="icon">&lt;/&gt;</span>  --> Разработка
                 </button>
                 <button class="category-btn" data-category="conversion">
-                    <span class="icon"></span> Конвертеры
+<!--                    <span class="icon"></span> --> Конвертеры
                 </button>
                 <button class="category-btn" data-category="marketing">
                     <!-- <span class="icon">📈</span>  -->Маркетинг
@@ -142,5 +151,19 @@
     </footer>
 
     <script src="scripts.js"></script>
+    <script>
+        // Регистрация Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                    console.log('ServiceWorker зарегистрирован');
+                })
+                    .catch(error => {
+                    console.log('Ошибка регистрации: ', error);
+                });
+            });
+        }
+    </script>
 </body>
 </html>
