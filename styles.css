@@ -382,12 +382,26 @@ body {
 }
 
 /* Кнопки в карточке */
+.tool-actions-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: auto;
+    padding: 15px;
+}
+
 .tool-actions {
     display: flex;
     gap: 10px;
-    margin-top: auto; 
-    padding-top: 15px;
+    flex: 1;
 }
+
+.tool-actions-shared {
+    margin-left: 10px;
+}
+
+
 
 .btn-primary, .btn-secondary, .btn-more {
     padding: 8px 16px;
@@ -401,12 +415,14 @@ body {
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%);
     color: white;
 }
 
 .btn-primary:hover {
-    background-color: var(--primary-hover);
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 70%, #2af598 100%);
+    box-shadow: 0 6px 20px rgba(37, 117, 252, 0.5);
+    transform: translateY(-2px);
 }
 
 .btn-secondary {
@@ -424,7 +440,9 @@ body {
 }
 
 .btn-more:hover {
-    background-color: #138496;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 70%, #2af598 100%);
+    box-shadow: 0 6px 20px rgba(37, 117, 252, 0.5);
+    transform: translateY(-2px);
 }
 
 /* Бейджи */
@@ -743,3 +761,58 @@ footer {
   font-size: 0.9em;
 }
 
+.btn-icon {
+    background: linear-gradient(135deg, rgba(106, 17, 203, 0.8) 0%, rgba(37, 117, 252, 0.8) 100%);
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px; /* Увеличим скругление */
+    color: white; /* Белый цвет для иконки */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 117, 252, 0.3); /* Тень для глубины */
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-icon:hover {
+    background: linear-gradient(135deg, #11c5cb 0%, #2575fc 70%, #2af598 100%);
+    box-shadow: 0 6px 20px rgba(37, 117, 252, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: white; /* Гарантирует, что иконка будет белой */
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2)); /* Легкая тень для глубины */
+    transition: transform 0.3s ease;
+}
+
+.btn-icon:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(37, 117, 252, 0.3);
+}
+
+/* Эффект блеска при наведении */
+.btn-icon::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(30deg);
+    transition: all 0.6s ease;
+}
+
+.btn-icon:hover::before {
+    transform: rotate(30deg) translate(20%, 20%);
+}
+
+.btn-icon:hover svg {
+    transform: scale(1.1);
+}

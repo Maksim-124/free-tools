@@ -98,16 +98,25 @@ document.addEventListener('DOMContentLoaded', function() {
                         </span>
                         <span class="rating">${generateRatingStars(tool.rating)}</span>
                     </div>
-                    <div class="tool-actions">
-                        <a href="${tool.link}" target="_blank" class="btn-primary">Открыть инструмент</a>
-                        <a href="${tool.articleLink}" class="btn-more">Подробнее</a>
-                    </div>
+                <div class="tool-actions-container">
+                        <div class="tool-actions">
+                            <a href="${tool.link}" target="_blank" class="btn-primary">Открыть</a>
+                            <a href="${tool.articleLink}" class="btn-more">Подробнее</a>
+                        </div>
+                        <div class="tool-actions-shared">
+                            <button class="btn-icon share-btn" data-link="${tool.articleLink}" data-title="${tool.title}" title="Поделиться">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 5.12548 15.0077 5.24917 15.0227 5.37061L7.0824 9.84057C6.54303 9.32015 5.80879 9 5 9C3.34315 9 2 10.3431 2 12C2 13.6569 3.34315 15 5 15C5.80879 15 6.54303 14.6798 7.0824 14.1594L15.0227 18.6294C15.0077 18.7508 15 18.8745 15 19C15 20.6569 16.3431 22 18 22C19.6569 22 21 20.6569 21 19C21 17.3431 19.6569 16 18 16C17.1912 16 16.457 16.3202 15.9176 16.8406L7.97733 12.3706C7.99229 12.2492 8 12.1255 8 12C8 11.8745 7.99229 11.7508 7.97733 11.6294L15.9176 7.15938C16.457 7.67985 17.1912 8 18 8Z" fill="currentColor"/><path d="M18 8H16V4C16 2.89543 15.1046 2 14 2H10C8.89543 2 8 2.89543
+                                </svg>
+                            </button>
+                        </div>
+                </div>
                 `;
                 
                 // Вешаем обработчик на всю карточку для перехода к статье
                 toolElement.addEventListener('click', (e) => {
                     // Проверяем, что клик был не по кнопке
-                    if (!e.target.closest('.tool-actions a')) {
+                    if (!e.target.closest('.tool-actions')) {
                         window.location.href = tool.articleLink;
                     }
                 });
@@ -125,11 +134,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         </span>
                         <span class="rating">${generateRatingStars(tool.rating)}</span>
                     </div>
+                <div class="tool-actions-container">
                     <div class="tool-actions">
                         <a href="${tool.link}" target="_blank" class="btn-primary">Открыть</a>
-                        <button class="btn-secondary copy-link" data-link="${tool.link}">Копировать ссылку</button>
                         <button class="btn-more" data-id="${tool.id}">Подробнее</button>
                     </div>
+                        <div class="tool-actions-shared">
+                            <button class="btn-icon share-btn" data-link="${tool.articleLink}" data-title="${tool.title}" title="Поделиться">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 5.12548 15.0077 5.24917 15.0227 5.37061L7.0824 9.84057C6.54303 9.32015 5.80879 9 5 9C3.34315 9 2 10.3431 2 12C2 13.6569 3.34315 15 5 15C5.80879 15 6.54303 14.6798 7.0824 14.1594L15.0227 18.6294C15.0077 18.7508 15 18.8745 15 19C15 20.6569 16.3431 22 18 22C19.6569 22 21 20.6569 21 19C21 17.3431 19.6569 16 18 16C17.1912 16 16.457 16.3202 15.9176 16.8406L7.97733 12.3706C7.99229 12.2492 8 12.1255 8 12C8 11.8745 7.99229 11.7508 7.97733 11.6294L15.9176 7.15938C16.457 7.67985 17.1912 8 18 8Z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                        </div>
+                </div>
                 `;
             }
             
@@ -172,6 +189,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 showToolDetails(toolId);
             });
         });
+        // Обработчик для кнопк "Поделиться"
+        document.querySelectorAll('.share-btn').forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const link = this.dataset.link;
+            const title = this.dataset.title;
+
+            // Проверка поддержки Web Share API
+            if (navigator.share) {
+                navigator.share({
+                  title: title,
+                  url: link
+                }).catch(err => {
+                    console.log('Ошибка при использовании Web Share API:', err);
+
+                    // Копируем ссылку при ошибке
+                    copyToClipboard(link);
+                });
+            } else {
+                //Копируем ссылку, если Web Share API не поддерживается
+                copyToClipboard(link);
+            }
+        });
+    });
     }
     
     /**
@@ -203,6 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showCopyFeedback('Ошибка копирования', '#dc3545');
             console.error('Ошибка при копировании: ', err);
         });
+        showCopyFeedback('Ссылка скопирована!', '#28a745');
     }
     
     /**
@@ -236,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <p><strong>Бесплатные функции:</strong> ${tool.freeFeatures}</p>
             <p><strong>Платные функции:</strong> ${tool.paidFeatures || 'Нет'}</p>
             <div class="tool-actions">
-                <a href="${tool.link}" target="_blank" class="btn-primary">Открыть инструмент</a>
+                <a href="${tool.link}" target="_blank" class="btn-primary">Открыть</a>
             </div>
         `;
         
