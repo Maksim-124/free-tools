@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+        ym(102614891, "init", {
+                clickmap:true,
+                trackLinks:true,
+                accurateTrackBounce:true
+        });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/102614891" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+    
+    <!-- SEO мета-теги -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek AI: мощный помощник для программирования и написания текстов | Бесплатные инструменты</title>
+    <meta name="description" content="Полное руководство по DeepSeek AI - нейросети для генерации кода, написания текстов и решения сложных задач. Бесплатные функции, инструкции, примеры использования.">
+    <meta name="keywords" content="deepseek ai, нейросеть для программирования, генерация кода, ai помощник, написание текстов, искусственный интеллект">
+    
+    <!-- Open Graph теги -->
+    <meta property="og:title" content="DeepSeek AI: мощный помощник для программирования и написания текстов">
+    <meta property="og:description" content="Полное руководство по использованию DeepSeek AI для решения сложных задач">
+    <meta property="og:image" content="images/deepseek-og.jpg">
+    <meta property="og:url" content="https://free-tools.ru/deepseek.html">
+    <meta property="og:type" content="article">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DeepSeek AI: мощный помощник для программирования и написания текстов">
+    <meta name="twitter:description" content="Полное руководство по использованию DeepSeek AI для решения сложных задач">
+    <meta name="twitter:image" content="https://free-tools.ru/images/deepseek-og.jpg">
+    
+    <!-- Каноническая ссылка -->
+    <link rel="canonical" href="https://free-tools.ru/deepseek.html">
+    
+    <!-- Фавиконы -->
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    
+    <!-- Стили -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* Специфичные стили для страницы статьи */
+        .article-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .article-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #3366ff, #6a11cb, #2575fc);
+            z-index: 1;
+        }
+        
+        .article-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #f0f4ff;
+            position: relative;
+        }
+        
+        .article-title {
+            color: #254eda;
+            font-size: 2.4rem;
+            margin-bottom: 15px;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(90deg, #3366ff, #6a11cb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .article-subtitle {
+            font-size: 1.3rem;
+            color: #555;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .article-content {
+            line-height: 1.8;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        
+        .article-section {
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .article-section h2 {
+            color: #254eda;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f4ff;
+            font-family: 'Exo 2', sans-serif;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .article-section h2::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 70px;
+            height: 3px;
+            background: #6a11cb;
+            border-radius: 3px;
+        }
+        
+        .article-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 35px 0;
+        }
+        
+        .feature-card {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e6eeff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(37, 117, 252, 0.1);
+            border-color: #c2d5ff;
+        }
+        
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #3366ff, #6a11cb);
+        }
+        
+        .feature-card h3 {
+            margin-top: 0;
+            color: #254eda;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card .feature-icon {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #3366ff;
+        }
+        
+        .example-block {
+            background: #f0f8ff;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border-left: 4px solid #4da6ff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .example-block::before {
+            content: "Пример";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #4da6ff;
+            color: white;
+            padding: 5px 15px;
+            font-size: 0.9rem;
+            border-bottom-left-radius: 12px;
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .code-block::before {
+            content: "Код";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #3366ff;
+            color: white;
+            padding: 3px 10px;
+            font-size: 0.8rem;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .cta-box {
+            text-align: center;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, #254eda, #3366ff);
+            color: white;
+            border-radius: 15px;
+            margin: 50px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(37, 117, 252, 0.3);
+        }
+        
+        .cta-box::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+        
+        .cta-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-family: 'Exo 2', sans-serif;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-text {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #3366ff;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            border: 2px solid transparent;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: #f0f8ff;
+            border-color: #3366ff;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 30px;
+            color: #3366ff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: #f0f8ff;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: #e0eeff;
+            transform: translateX(-5px);
+        }
+        
+        .back-link svg {
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .back-link:hover svg {
+            transform: translateX(-5px);
+        }
+        
+        .article-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid #f0f0f0;
+        }
+        
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .tech-table th {
+            background: linear-gradient(135deg, #3366ff, #254eda);
+            color: white;
+            text-align: left;
+            padding: 15px;
+            font-family: 'Exo 2', sans-serif;
+        }
+        
+        .tech-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f4ff;
+        }
+        
+        .tech-table tr:nth-child(even) {
+            background: #f8f9ff;
+        }
+        
+        .tech-table tr:hover {
+            background: #eef5ff;
+        }
+        
+        .comparison-chart {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+            gap: 20px;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            background: #f0f4ff;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-bar::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--height);
+            background: linear-gradient(to top, #3366ff, #6a11cb);
+            border-radius: 0 0 8px 8px;
+            z-index: 0;
+        }
+        
+        .chart-bar-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chart-bar h3 {
+            margin-top: 0;
+            color: #254eda;
+            font-family: 'Exo 2', sans-serif;
+        }
+        
+        .chart-bar .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #254eda;
+            margin: 15px 0;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 900px) {
+            .article-container {
+                padding: 30px 20px;
+                margin: 20px 15px;
+            }
+            
+            .article-title {
+                font-size: 2rem;
+            }
+            
+            .article-features {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-chart {
+                flex-direction: column;
+            }
+            
+            .tech-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .article-title {
+                font-size: 1.8rem;
+            }
+            
+            .article-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .cta-title {
+                font-size: 1.5rem;
+            }
+            
+            .cta-text {
+                font-size: 1rem;
+            }
+            
+            .cta-button {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+    
+    <!-- JSON-LD разметка для SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "DeepSeek AI: мощный помощник для программирования и написания текстов",
+      "description": "Полное руководство по использованию DeepSeek AI для решения сложных задач",
+      "image": "https://free-tools.ru/images/deepseek-og.jpg",
+      "author": {
+        "@type": "Organization",
+        "name": "Бесплатные инструменты"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Бесплатные инструменты",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://free-tools.ru/images/logo.png"
+        }
+      },
+      "datePublished": "2025-07-10",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://free-tools.ru/deepseek.html"
+      }
+    }
+    </script>
+</head>
+<body>
+    <!-- Шапка сайта -->
+    <header class="header">
+        <div class="header__container">
+            <!-- Логотип -->
+            <div class="logo">
+                <a href="index.html"><img src="images/logo.png" alt="Бесплатные сервисы и AI" class="logo-image" loading="lazy"></a>
+            </div>
+            
+            <nav class="nav" aria-label="Основное меню">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">На главную</a></li>
+                    <li><a href="index.html#ai" class="nav-link">Все инструменты</a></li>
+                </ul>
+            </nav>
+            
+            <button id="search-button" class="search-button" aria-label="Поиск по сайту">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.5 15H14.71L14.43 14.73C15.41 13.59 16 12.11 16 10.5C16 6.91 13.09 4 9.5 4C5.91 4 3 6.91 3 10.5C3 14.09 5.91 17 9.5 17C11.11 17 12.59 16.41 13.73 15.43L14 15.71V16.5L19 21.49L20.49 20L15.5 15Z" fill="currentColor"/>
+                </svg>
+                <span class="search-text">AI Поиск</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <a href="index.html#ai" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            К списку инструментов
+        </a>
+        
+        <div class="article-container">
+            <div class="article-header">
+                <h1 class="article-title">DeepSeek AI: ваш интеллектуальный компаньон</h1>
+                <p class="article-subtitle">Мощная нейросеть для программирования, написания текстов и решения сложных задач</p>
+            </div>
+            
+            <div class="article-content">
+                <div class="article-section">
+                    <p>DeepSeek AI — это передовая нейросеть от китайских разработчиков, которая произвела революцию в области искусственного интеллекта в 2025 году. В отличие от многих конкурентов, DeepSeek работает без VPN в России и предлагает бесплатный доступ ко всем основным функциям.</p>
+                    
+                    <img src="images/deepseek-og.jpg" alt="Интерфейс DeepSeek AI" class="article-image">
+                    
+                    <h2>🧠 Основной функционал</h2>
+                    <div class="article-features">
+                        <div class="feature-card">
+                            <div class="feature-icon">💻</div>
+                            <h3>Генерация и анализ кода</h3>
+                            <p>DeepSeek поддерживает 338 языков программирования. Может писать код с нуля, оптимизировать существующий код, находить ошибки и объяснять сложные концепции. Особенно силен в Python, JavaScript, C++ и Go.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">📝</div>
+                            <h3>Написание и редактирование текстов</h3>
+                            <p>Создает статьи, техническую документацию, письма и креативные тексты на русском, английском и других языках. Умеет адаптировать стиль под целевую аудиторию и формальные требования.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">🔍</div>
+                            <h3>Решение сложных задач</h3>
+                            <p>Особый режим DeepThink позволяет нейросети решать многошаговые задачи, показывая ход рассуждений. Идеально подходит для математических расчетов, анализа данных и логических задач.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="article-section">
+                    <h2>🚀 Как использовать DeepSeek AI</h2>
+                    
+                    <ol>
+                        <li><strong>Регистрация:</strong> Доступна через Google, почту или Discord. Бесплатный аккаунт дает полный доступ ко всем функциям без ограничений.</li>
+                        
+                        <li><strong>Основные режимы работы:</strong>
+                            <ul>
+                                <li><strong>Чат-помощник:</strong> Задавайте вопросы на естественном языке</li>
+                                <li><strong>Режим программирования:</strong> Генерация и анализ кода</li>
+                                <li><strong>DeepThink:</strong> Пошаговое решение сложных задач</li>
+                            </ul>
+                        </li>
+                        
+                        <li><strong>Загрузка файлов:</strong> Поддерживает PDF, DOCX, TXT, изображения (с распознаванием текста), Excel, PowerPoint и код на различных языках.</li>
+                    </ol>
+                    
+                    <div class="example-block">
+                        <h3>Пример использования:</h3>
+                        <p><strong>Запрос:</strong> "Напиши функцию на Python, которая принимает список чисел и возвращает словарь с количеством четных и нечетных чисел"</p>
+                        
+                        <div class="code-block">
+def count_even_odd(numbers):
+    """
+    Функция подсчитывает количество четных и нечетных чисел в списке.
+    Возвращает словарь с результатами.
+    """
+    result = {'even': 0, 'odd': 0}
+    for num in numbers:
+        if num % 2 == 0:
+            result['even'] += 1
+        else:
+            result['odd'] += 1
+    return result
+
+# Пример использования:
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+print(count_even_odd(numbers))  # Вывод: {'even': 4, 'odd': 5}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="article-section">
+                    <h2>💡 Уникальные возможности</h2>
+                    
+                    <div class="article-features">
+                        <div class="feature-card">
+                            <div class="feature-icon">🧩</div>
+                            <h3>Контекст 128K токенов</h3>
+                            <p>Огромное окно контекста позволяет работать с длинными документами, сохраняя понимание всего материала. Это в 4 раза больше, чем у ChatGPT-4.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">🌐</div>
+                            <h3>Поиск в интернете</h3>
+                            <p>В режиме Search нейросеть ищет актуальную информацию в интернете и ссылается на источники, что гарантирует достоверность данных.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">📚</div>
+                            <h3>Локальная установка</h3>
+                            <p>Для разработчиков доступна локальная версия модели, которую можно запустить на своем компьютере (требуется 16+ ГБ ОЗУ).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-chart">
+                        <div class="chart-bar" style="--height: 85%">
+                            <div class="chart-bar-content">
+                                <h3>Качество кода</h3>
+                                <div class="value">94%</div>
+                                <p>Точность решения задач</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-bar" style="--height: 90%">
+                            <div class="chart-bar-content">
+                                <h3>Скорость ответа</h3>
+                                <div class="value">0.8с</div>
+                                <p>Среднее время генерации</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-bar" style="--height: 75%">
+                            <div class="chart-bar-content">
+                                <h3>Многоязычность</h3>
+                                <div class="value">50+</div>
+                                <p>Поддерживаемых языков</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="article-section">
+                    <h2>⚙️ Технические характеристики</h2>
+                    
+                    <table class="tech-table">
+                        <tr>
+                            <th>Параметр</th>
+                            <th>DeepSeek R1</th>
+                            <th>DeepSeek Coder</th>
+                        </tr>
+                        <tr>
+                            <td>Архитектура</td>
+                            <td>Transformer-based</td>
+                            <td>Specialized Coder</td>
+                        </tr>
+                        <tr>
+                            <td>Количество параметров</td>
+                            <td>176 миллиардов</td>
+                            <td>33 миллиарда</td>
+                        </tr>
+                        <tr>
+                            <td>Окно контекста</td>
+                            <td>128K токенов</td>
+                            <td>16K токенов</td>
+                        </tr>
+                        <tr>
+                            <td>Поддержка языков</td>
+                            <td>50+</td>
+                            <td>338 языков программирования</td>
+                        </tr>
+                        <tr>
+                            <td>Обучение на данных до</td>
+                            <td>Июль 2024</td>
+                            <td>Июль 2024</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="article-section">
+                    <h2>⚠️ Ограничения и нюансы</h2>
+                    
+                    <ul>
+                        <li><strong>Актуальность данных:</strong> Знания нейросети ограничены июлем 2024 года. Для актуальной информации используйте режим Search.</li>
+                        
+                        <li><strong>Распознавание изображений:</strong> Не поддерживает анализ графиков и сложных схем, только текст на изображениях.</li>
+                        
+                        <li><strong>Голосовой ввод:</strong> Отсутствует в веб-версии, доступен только в мобильных приложениях.</li>
+                        
+                        <li><strong>Коммерческое использование:</strong> Бесплатная версия разрешает коммерческое использование с указанием авторства.</li>
+                    </ul>
+                </div>
+                
+                <div class="article-section">
+                    <h2>💼 Примеры применения</h2>
+                    
+                    <div class="article-features">
+                        <div class="feature-card">
+                            <h3>Для разработчиков</h3>
+                            <p>Автодополнение кода, рефакторинг, генерация тестов, объяснение сложных алгоритмов, перевод кода между языками.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h3>Для авторов и копирайтеров</h3>
+                            <p>Написание статей, генерация идей, корректура текстов, адаптация контента под разные платформы, создание технической документации.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h3>Для исследователей</h3>
+                            <p>Анализ научных статей, генерация гипотез, помощь в написании исследований, обработка больших объемов текста.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="cta-box">
+                        <h3 class="cta-title">Попробуйте DeepSeek прямо сейчас!</h3>
+                        <p class="cta-text">Создавайте код, пишите тексты и решайте сложные задачи с помощью передового ИИ</p>
+                        <a href="https://chat.deepseek.com/" target="_blank" class="cta-button">Начать использовать DeepSeek</a>
+                    </div>
+                </div>
+                
+                <div class="article-section">
+                    <h2>🔮 Заключение</h2>
+                    <p>DeepSeek AI устанавливает новый стандарт в мире искусственного интеллекта, предлагая бесплатный доступ к мощным инструментам для программирования, написания текстов и решения сложных задач. С поддержкой русского языка, огромным контекстным окном и специализированными режимами, DeepSeek станет незаменимым помощником для разработчиков, авторов, исследователей и всех, кто работает с информацией.</p>
+                    
+                    <p>Интересный факт: Эта статья была подготовлена с помощью DeepSeek AI, демонстрируя возможности нейросети на практике.</p>
+                </div>
+                
+                <a href="index.html#ai" class="back-link">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Вернуться к списку инструментов
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Подвал сайта -->
+    <footer>
+        <p>Бесплатные сервисы и AI &copy; 2025 | <a href="deepseek.html">DeepSeek AI: интеллектуальный помощник</a></p>
+        <p id="email-container">free-tools@internet.ru</p>
+    </footer>
+
+    <script src="scripts.js"></script>
+    <script>
+        // Добавляем обработчики для шапки
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.querySelector('.header');
+            const searchButton = document.getElementById('search-button');
+            
+            // Эффект при скролле для шапки
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+            
+            // Обработчик для кнопки поиска
+            searchButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert("Поиск по статьям появится в следующих обновлениях");
+            });
+            
+            // Анимация для графиков
+            const chartBars = document.querySelectorAll('.chart-bar');
+            chartBars.forEach(bar => {
+                bar.style.setProperty('--height', '0%');
+            });
+            
+            setTimeout(() => {
+                chartBars.forEach(bar => {
+                    const height = bar.style.getPropertyValue('--height');
+                    bar.style.setProperty('--height', height);
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>
