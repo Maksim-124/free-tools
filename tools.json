@@ -417,5 +417,27 @@
   "freeFeatures": "Весь функционал бесплатен",
   "paidFeatures": "Платный API для бизнеса",
   "suggested": false
+},
+{
+  "id": 24,
+  "title": "Carve.Photos",
+  "description": "Бесплатный онлайн-инструмент для мгновенного удаления фона с фото. Работает без регистрации через ИИ.",
+  "category": "design",
+  "link": "https://carve.photos/",
+  "articleLink": "carve-photos.html",
+  "available": "yes",
+  "rating": 4.7,
+  "popular": true,
+  "hasArticle": true,
+  "features": [
+    "Автоматическое удаление фона за 2-5 секунд",
+    "Поддержка JPG, PNG, WebP (до 5 МБ)",
+    "Скачивание в PNG с прозрачным фоном",
+    "Не требует регистрации",
+    "Четкие края для сложных объектов"
+  ],
+  "freeFeatures": "Весь функционал бесплатен",
+  "paidFeatures": "Нет платных функций",
+  "suggested": true
 }
 ]
