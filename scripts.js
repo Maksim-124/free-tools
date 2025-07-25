@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM полностью загружен");
     
-    // Основные элементы DOM
+    // Основные элементы DOM (только те, что не в компонентах)
     const searchInput = document.getElementById('search');
     const categoryButtons = document.querySelectorAll('.category-btn');
     const filterButtons = document.querySelectorAll('.filter-btn');
@@ -9,11 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalOverlay = document.getElementById('modalOverlay');
     const modalClose = document.getElementById('modalClose');
     const modalContent = document.getElementById('modalContent');
-    const header = document.querySelector('.header');
     const loader = document.getElementById('loader');
-    const top10Link = document.getElementById('top10-link');
-    const aboutLink = document.getElementById('about-link');
-    const searchButton = document.getElementById('search-button');
     
     // Данные инструментов
     let toolsData = [];
@@ -22,15 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const copyFeedback = document.createElement('div');
     copyFeedback.className = 'copy-feedback';
     document.body.appendChild(copyFeedback);
-    
-    // Эффект при скролле для шапки
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    });
     
     /**
      * Загружает данные инструментов из JSON-файла
@@ -100,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 <div class="tool-actions-container">
                         <div class="tool-actions">
-                            <a href="${tool.link}" target="_blank" class="btn-primary">Открыть</a>
+                            <a href="${tool.link}" target="_blank" class="btn-primary">Перейти на сайт</a>
                             <a href="${tool.articleLink}" class="btn-more">Подробнее</a>
                         </div>
                         <div class="tool-actions-shared">
@@ -136,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 <div class="tool-actions-container">
                     <div class="tool-actions">
-                        <a href="${tool.link}" target="_blank" class="btn-primary">Открыть</a>
+                        <a href="${tool.link}" target="_blank" class="btn-primary">Перейти на сайт</a>
                         <button class="btn-more" data-id="${tool.id}">Подробнее</button>
                     </div>
                         <div class="tool-actions-shared">
@@ -174,14 +161,6 @@ document.addEventListener('DOMContentLoaded', function() {
      * Привязывает обработчики событий к элементам интерфейса
      */
     function attachEventHandlers() {
-        // Обработчики для кнопок копирования ссылки
-        document.querySelectorAll('.copy-link').forEach(button => {
-            button.addEventListener('click', function() {
-                const link = this.dataset.link;
-                copyToClipboard(link);
-            });
-        });
-        
         // Обработчики для кнопок "Подробнее"
         document.querySelectorAll('.btn-more').forEach(button => {
             button.addEventListener('click', function() {
@@ -189,7 +168,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 showToolDetails(toolId);
             });
         });
-        // Обработчик для кнопк "Поделиться"
+        
+        // Обработчик для кнопки "Поделиться"
         document.querySelectorAll('.share-btn').forEach(button => {
           button.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -203,12 +183,9 @@ document.addEventListener('DOMContentLoaded', function() {
                   url: link
                 }).catch(err => {
                     console.log('Ошибка при использовании Web Share API:', err);
-
-                    // Копируем ссылку при ошибке
                     copyToClipboard(link);
                 });
             } else {
-                //Копируем ссылку, если Web Share API не поддерживается
                 copyToClipboard(link);
             }
         });
@@ -244,7 +221,6 @@ document.addEventListener('DOMContentLoaded', function() {
             showCopyFeedback('Ошибка копирования', '#dc3545');
             console.error('Ошибка при копировании: ', err);
         });
-        showCopyFeedback('Ссылка скопирована!', '#28a745');
     }
     
     /**
@@ -368,78 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
     modalOverlay.addEventListener('click', function(e) {
         if (e.target === modalOverlay) closeModal();
     });
-
-    // Функция для показа сообщения "В разработке"
-    function showDevelopmentMessage() {
-        alert("В разработке! Эта функция появится в следующих обновлениях");
-    }
-    
-    // Обработчик кликов
-    top10Link.addEventListener('click', function(e) {
-        e.preventDefault();
-        showDevelopmentMessage();
-    });
-
-    aboutLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        showDevelopmentMessage();
-    });
-
-    searchButton.addEventListener('click', function(e) {
-        e.preventDefault();
-        showDevelopmentMessage();
-    });
     
     // Загрузка инструментов при старте
     loadTools();
 });
-
-// Защита и преобразование email
-function initEmailInteraction() {
-  const emailContainer = document.getElementById('email-container');
-  if (!emailContainer) return;
-  
-  // Сохраняем оригинальный email
-  const originalEmail = emailContainer.textContent;
-  
-  // Удаляем email из текста (защита от простых ботов)
-  emailContainer.textContent = "";
-  
-  // Создаем защищенный элемент
-  const protectedSpan = document.createElement('span');
-  protectedSpan.className = 'protected-email';
-  
-  // Разбиваем email на части
-  const [user, domain] = originalEmail.split('@');
-  const [domainName, tld] = domain.split('.');
-  
-  // Собираем email с лишними символами
-  protectedSpan.innerHTML = `
-    ${user}<span style="display:none">${Math.random().toString(36).substring(2,5)}</span>@<!--
-    -->${domainName}<span style="font-size:0">no-spam</span>.<!--
-    -->${tld}
-  `;
-  
-  emailContainer.appendChild(protectedSpan);
-  
-  // Делаем кликабельным при наведении
-  protectedSpan.addEventListener('mouseenter', function() {
-    this.style.cursor = 'pointer';
-    this.style.textDecoration = 'underline';
-  });
-  
-  protectedSpan.addEventListener('mouseleave', function() {
-    this.style.textDecoration = 'none';
-  });
-  
-  protectedSpan.addEventListener('click', function() {
-    window.location.href = `mailto:${originalEmail}`;
-  });
-}
-
-// Инициализация при загрузке
-if (document.readyState === 'complete') {
-  initEmailInteraction();
-} else {
-  window.addEventListener('load', initEmailInteraction);
-}

@@ -1,89 +1,53 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <!-- Yandex.Metrika counter -->
-<script type="text/javascript" >
-   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-   m[i].l=1*new Date();
-   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-   ym(102614891, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true
-   });
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/102614891" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
-
+    <title>Бесплатные онлайн-инструменты для работы: Офис, Дизайн, AI • Free-Tools</title>
+    <meta name="description" content="00% бесплатные инструменты для офиса, дизайна, разработки и AI. Работают в РФ без VPN. Коллекция лучших сервисов для ваших задач">
+    
     <!-- Open Graph -->
-    <meta property="og:title" content="Бесплатные онлайн-инструменты: AI сервисы, разработка, дизайн, офисные приложения">
-    <meta property="og:description" content="Коллекция лучших бесплатных онлайн-инструментов для работы, дизайна, разработки и искусственного интеллекта. Все сервисы доступны без регистрации!">
+    <meta property="og:title" content="Бесплатные онлайн-инструменты">
+    <meta property="og:description" content="Коллекция лучших бесплатных онлайн-инструментов">
     <meta property="og:image" content="https://free-tools.ru/favicon/favicon-32x32.png">
     <meta property="og:url" content="https://free-tools.ru/">
     <meta property="og:type" content="website">
-
+    
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Бесплатные онлайн-инструменты: AI сервисы, разработка, дизайн, офисные приложения">
-    <meta name="twitter:description" content="Найдите идеальные инструменты для ваших задач: AI помощники, средства разработки, графические редакторы и офисные приложения. Все бесплатно и онлайн!">
+    <meta name="twitter:title" content="Бесплатные онлайн-инструменты">
+    <meta name="twitter:description" content="Найдите идеальные инструменты для ваших задач">
     <meta name="twitter:image" content="https://free-tools.ru/images/free-tools-og.jpg">
+    
     <!-- Фавиконы -->
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-    <link rel="icon" type="image/x-icon" sizes="120x120" href="favicon/android-120x120.SVG">
-    <link rel="shortcut icon" href="favicon/favicon.ico">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
-    <title>Бесплатные онлайн-инструменты: AI сервисы, разработка, дизайн, офисные приложения | Free-Tools</title>
-    <meta name="description" content="Лучшая коллекция бесплатных онлайн-инструментов: AI сервисы, инструменты для разработчиков, графические редакторы, офисные приложения, маркетинг и конвертеры. Работайте без регистрации!">
+    
+    
+    
+    <!-- Шрифты -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Стили -->
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="/manifest.webmanifest">
-
-    <!-- Для iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png">
+    
+    <!-- Компоненты -->
+    <script type="module" src="components/metrika.js"></script>
+    <script type="module" src="components/header.js"></script>
+    <script type="module" src="components/footer.js"></script>
 </head>
 <body>
     <!-- Шапка сайта -->
-    <header class="header">
-        <div class="header__container">
-            <!-- Логотип -->
-            <div class="logo">
-                <img src="images/logo.png" alt="Бесплатные сервисы и AI" class="logo-image" loading="lazy">
-            </div>
-
-            <nav class="nav" aria-label="Основное меню">
-                <ul class="nav-list">
-                    <li><a href="#" id="top10-link" class="nav-link">Топ-10</a></li>
-                    <li><a href="#" id="about-link" class="nav-link">О проекте</a></li>
-                </ul>
-            </nav>
-            
-            
-           <button id="search-button" class="search-button" aria-label="Поиск по сайту">
-                <svg class="search-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M15.5 15H14.71L14.43 14.73C15.41 13.59 16 12.11 16 10.5C16 6.91 13.09 4 9.5 4C5.91 4 3 6.91 3 10.5C3 14.09 5.91 17 9.5 17C11.11 17 12.59 16.41 13.73 15.43L14 15.71V16.5L19 21.49L20.49 20L15.5 15Z" fill="currentColor"/>
-                </svg>
-                <span class="search-text">AI Поиск</span>
-            </button>
-        </div>
-
-                </header>
-<div style="padding: 10px; text-align: center; font-family: 'Fira Code', monospace;">
-                🚧 Сайт находится в разработке. Приносим извинения за временные неудобства! 🚧 
-</div>
+    <free-header></free-header>
+    
+    <div style="padding: 10px; text-align: center; font-family: 'Fira Code', monospace;">
+        🚧 Сайт находится в разработке. Приносим извинения за временные неудобства! 🚧 
+    </div>
 
     <!-- Основной контент -->
     <main class="container">
@@ -95,10 +59,10 @@
                      <span class="icon">≡</span> Все
                 </button>
                 <button class="filter-btn" data-filter="available">
-                    <!-- <span class="icon">✓</span>  --> Доступны в РФ
+                    Доступны в РФ
                 </button>
                 <button class="filter-btn" data-filter="vpn">
-                    <!-- <span class="icon">🔒</span>  -->Требуют VPN
+                    Требуют VPN
                 </button>
             </div>
 
@@ -107,28 +71,28 @@
                     <span class="icon">*</span> Все
                 </button>
                 <button class="category-btn" data-category="office">
-                    <!-- <span class="icon">📊</span>  -->Офис
+                    Офис
                 </button>
                 <button class="category-btn" data-category="design">
-                    <!-- <span class="icon">✎</span>  -->Дизайн
+                    Дизайн
                 </button>
                 <button class="category-btn" data-category="ai">
-                    <!-- <span class="icon">ΑΙ</span>  -->AI
+                    AI
                 </button>
                 <button class="category-btn" data-category="development">
-                    <!-- <span class="icon">&lt;/&gt;</span>  --> Разработка
+                    Разработка
                 </button>
                 <button class="category-btn" data-category="conversion">
-                <!-- <span class="icon"></span> --> Конвертеры
+                    Конвертеры
                 </button>
                 <button class="category-btn" data-category="marketing">
-                    <!-- <span class="icon">📈</span>  -->Маркетинг
+                    Маркетинг
                 </button>
                 <button class="category-btn" data-category="storage">
-                    <!-- <span class="icon">💾</span>  -->Хранилища
+                    Хранилища
                 </button>
                 <button class="category-btn" data-category="other">
-                    <!-- <span class="icon">?</span>  -->Другое
+                    Другое
                 </button>
             </div>
         </div>
@@ -152,23 +116,22 @@
     </div>
     
     <!-- Подвал сайта -->
-    <footer>
-        <p>Бесплатные сервисы и AI &copy; 2025 | Сайт находится в разработке [🛠️]</p>
-        <p id="email-container">free-tools@internet.ru</p>
-    </footer>
+    <free-footer></free-footer>
 
+    <!-- Скрипты -->
     <script src="scripts.js"></script>
+    
+    <!-- Service Worker -->
     <script>
-        // Регистрация Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
-                    console.log('ServiceWorker зарегистрирован');
-                })
+                        console.log('ServiceWorker зарегистрирован');
+                    })
                     .catch(error => {
-                    console.log('Ошибка регистрации: ', error);
-                });
+                        console.log('Ошибка регистрации: ', error);
+                    });
             });
         }
     </script>
