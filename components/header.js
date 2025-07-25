@@ -186,10 +186,13 @@ class FreeHeader extends HTMLElement {
             <header class="header">
                 <div class="header__container">
                     <div class="logo">
-                        <img src="images/logo.png" alt="Бесплатные сервисы" class="logo-image" loading="lazy">
+                        <a href="/">
+                            <img src="images/logo.png" alt="Бесплатные сервисы" class="logo-image" loading="lazy">
+                        </a>
                     </div>
                     <nav class="nav">
                         <ul class="nav-list">
+                            <li><a href="/" class="nav-link">На главную</a></li>
                             <li><a href="#" class="nav-link">Топ-10</a></li>
                             <li><a href="#" class="nav-link">О проекте</a></li>
                         </ul>
@@ -207,7 +210,7 @@ class FreeHeader extends HTMLElement {
 
     connectedCallback() {
         // Обработчики кликов
-        this.shadowRoot.querySelectorAll('.nav-link, .search-button')
+        this.shadowRoot.querySelectorAll('.nav-link([href="/"]), .search-button')
             .forEach(el => el.addEventListener('click', e => {
                 e.preventDefault();
                 alert("Раздел в разработке");

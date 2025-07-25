@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 <div class="tool-actions-container">
                         <div class="tool-actions">
-                            <a href="${tool.link}" target="_blank" class="btn-primary">Открыть</a>
+                            <a href="${tool.link}" target="_blank" class="btn-primary">Перейти на сайт</a>
                             <a href="${tool.articleLink}" class="btn-more">Подробнее</a>
                         </div>
                         <div class="tool-actions-shared">
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 <div class="tool-actions-container">
                     <div class="tool-actions">
-                        <a href="${tool.link}" target="_blank" class="btn-primary">Открыть</a>
+                        <a href="${tool.link}" target="_blank" class="btn-primary">Перейти на сайт</a>
                         <button class="btn-more" data-id="${tool.id}">Подробнее</button>
                     </div>
                         <div class="tool-actions-shared">

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabula AI: Генерация карточек товаров для Wildberries, Ozon, Яндекс.Маркет | Бесплатные инструменты</title>
+    <meta name="description" content="Создавайте карточки товаров за 5 минут с Fabula AI: обработка фото, генерация описаний, инфографика для маркетплейсов. Российский ИИ-инструмент для e-commerce">
+    
+    <!-- Open Graph теги -->
+    <meta property="og:title" content="Fabula AI - создание карточек товаров с ИИ">
+    <meta property="og:description" content="Русскоязычный инструмент для автоматизации e-commerce">
+    <meta property="og:image" content="https://free-tools.ru/images/fabula-og.jpg">
+    <meta property="og:url" content="https://free-tools.ru/fabula-ai.html">
+    <meta property="og:type" content="article">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Fabula AI - создание карточек товаров с ИИ">
+    <meta name="twitter:description" content="Русскоязычный инструмент для автоматизации e-commerce">
+    <meta name="twitter:image" content="https://free-tools.ru/images/fabula-og.jpg">
+    
+    <!-- Каноническая ссылка -->
+    <link rel="canonical" href="https://free-tools.ru/fabula-ai.html">
+    
+    <!-- Фавиконы -->
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon/favicon.ico">
+    
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Стили -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Компоненты -->
+    <script type="module" src="components/metrika.js"></script>
+    <script type="module" src="components/header.js"></script>
+    <script type="module" src="components/footer.js"></script>
+    
+    <style>
+        .article-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .article-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #00a651, #000000);
+            z-index: 1;
+        }
+        
+        .article-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #f0f4ff;
+            position: relative;
+        }
+        
+        .article-title {
+            font-size: 2.4rem;
+            margin-bottom: 15px;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(90deg, #00a651, #000000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .article-subtitle {
+            font-size: 1.3rem;
+            color: #555;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .article-content {
+            line-height: 1.8;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        
+        .article-section {
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .article-section h2 {
+            color: #00a651;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f4ff;
+            font-family: 'Exo 2', sans-serif;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .article-section h2::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 70px;
+            height: 3px;
+            background: #000000;
+            border-radius: 3px;
+        }
+        
+        .article-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 35px 0;
+        }
+        
+        .feature-card {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e6eeff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 166, 81, 0.1);
+            border-color: #c2f0d9;
+        }
+        
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #00a651, #000000);
+        }
+        
+        .feature-card h3 {
+            margin-top: 0;
+            color: #00a651;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card .feature-icon {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #00a651;
+        }
+        
+        .example-block {
+            background: #f0faf5;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border-left: 4px solid #00a651;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .example-block::before {
+            content: "Пример";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #00a651;
+            color: white;
+            padding: 5px 15px;
+            font-size: 0.9rem;
+            border-bottom-left-radius: 12px;
+        }
+        
+        .cta-box {
+            text-align: center;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, #00a651, #000000);
+            color: white;
+            border-radius: 15px;
+            margin: 50px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 166, 81, 0.3);
+        }
+        
+        .cta-box::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+        
+        .cta-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-family: 'Exo 2', sans-serif;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-text {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #00a651;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            border: 2px solid transparent;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: #f0f8ff;
+            border-color: #00a651;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 30px;
+            color: #00a651;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: #f0f8ff;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: #e0f5eb;
+            transform: translateX(-5px);
+        }
+        
+        .back-link svg {
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .back-link:hover svg {
+            transform: translateX(-5px);
+        }
+        
+        .article-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid #f0f0f0;
+        }
+        
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .tech-table th {
+            background: linear-gradient(135deg, #00a651, #000000);
+            color: white;
+            text-align: left;
+            padding: 15px;
+            font-family: 'Exo 2', sans-serif;
+        }
+        
+        .tech-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f4ff;
+        }
+        
+        .tech-table tr:nth-child(even) {
+            background: #f8f9ff;
+        }
+        
+        .tech-table tr:hover {
+            background: #eef5ff;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 40px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .comparison-table th {
+            background: #00a651;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 600;
+        }
+        
+        .comparison-table td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #f0f4ff;
+        }
+        
+        .comparison-table tr:nth-child(odd) {
+            background: #f8f9ff;
+        }
+        
+        .comparison-table tr:hover {
+            background: #eef5ff;
+        }
+        
+        .comparison-table .feature-name {
+            text-align: left;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .comparison-table .fabula-check {
+            color: #00a651;
+            font-weight: bold;
+        }
+        
+        .comparison-table .fabula-cross {
+            color: #777;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 900px) {
+            .article-container {
+                padding: 30px 20px;
+                margin: 20px 15px;
+            }
+            
+            .article-title {
+                font-size: 2rem;
+            }
+            
+            .article-features {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .article-title {
+                font-size: 1.8rem;
+            }
+            
+            .article-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .cta-title {
+                font-size: 1.5rem;
+            }
+            
+            .cta-text {
+                font-size: 1rem;
+            }
+            
+            .cta-button {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+    
+    <!-- JSON-LD разметка для SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Fabula AI - инструмент для создания карточек товаров",
+      "description": "Обзор возможностей Fabula AI для e-commerce",
+      "image": "https://free-tools.ru/images/fabula-og.jpg",
+      "author": {
+        "@type": "Organization",
+        "name": "Бесплатные инструменты"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Бесплатные инструменты",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://free-tools.ru/images/logo.png"
+        }
+      },
+      "datePublished": "2025-07-28",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://free-tools.ru/fabula-ai.html"
+      }
+    }
+    </script>
+</head>
+<body>
+    <!-- Шапка сайта через компонент -->
+    <free-header></free-header>
+
+    <main class="container">
+        <a href="index.html#ai" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            К списку инструментов
+        </a>
+        
+        <div class="article-container">
+            <div class="article-header">
+                <h1 class="article-title">Fabula AI: Создание карточек товаров</h1>
+                <p class="article-subtitle">Российский инструмент для автоматизации e-commerce</p>
+            </div>
+            
+            <div class="article-content">
+                <div class="article-section">
+                    <p>Fabula AI - российский сервис, использующий искусственный интеллект для создания карточек товаров. Платформа разработана специально для русскоязычных маркетплейсов и учитывает требования Wildberries, Ozon и Яндекс.Маркет.</p>
+                    
+                    <img src="images/fabula-ecommerce.jpg" alt="Интерфейс Fabula AI" class="article-image">
+                    
+                    <h2>🔍 Основные возможности</h2>
+                    <div class="article-features">
+                        <div class="feature-card">
+                            <div class="feature-icon">🖼️</div>
+                            <h3>Обработка изображений</h3>
+                            <p>Удаление фона, улучшение качества фото, создание профессиональных снимков товаров</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">📝</div>
+                            <h3>Генерация описаний</h3>
+                            <p>Автоматическое создание текстов для карточек товаров с SEO-оптимизацией</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">🎨</div>
+                            <h3>Создание инфографики</h3>
+                            <p>Профессиональное оформление карточек товаров с визуальными элементами</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="article-section">
+                    <h2>⚖️ Сравнение с другими сервисами</h2>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th style="width: 30%;">Характеристики</th>
+                            <th>Fabula AI</th>
+                            <th>24ai.tech</th>
+                            <th>Canva</th>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Безлимитное создание карточек</td>
+                            <td class="fabula-check">Да</td>
+                            <td class="fabula-cross">24 карточки</td>
+                            <td class="fabula-cross">10 карточек</td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Единое пространство для команды</td>
+                            <td class="fabula-check">Да</td>
+                            <td class="fabula-cross">Нет</td>
+                            <td class="fabula-cross">Нет</td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Автоматическая инфографика</td>
+                            <td class="fabula-check">Да</td>
+                            <td class="fabula-cross">Нет</td>
+                            <td class="fabula-cross">Нет</td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Фотообработка для товаров</td>
+                            <td class="fabula-check">Да</td>
+                            <td class="fabula-cross">Нет</td>
+                            <td class="fabula-cross">Ограничено</td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Доступно в России</td>
+                            <td class="fabula-check">Да</td>
+                            <td class="fabula-check">Да</td>
+                            <td class="fabula-cross">Нет</td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Оплата российской картой</td>
+                            <td class="fabula-check">Да</td>
+                            <td class="fabula-check">Да</td>
+                            <td class="fabula-cross">Нет</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="example-block">
+                        <p>Fabula AI открывает доступ к мощным нейросетям бесплатно и без ограничений. Наша миссия — сделать вашу работу легче и быстрее, превращая сложные задачи, такие как удаление и замена фона, создание изображений, видео и текстов, в простой и мгновенный процесс.</p>
+                    </div>
+                </div>
+                
+                <div class="article-section">
+                    <h2>🚀 Как начать работать</h2>
+                    
+                    <ol>
+                        <li><strong>Регистрация:</strong> Создайте аккаунт на сайте Fabula AI</li>
+                        <li><strong>Выбор инструмента:</strong> Перейдите в раздел "Создание карточек товаров"</li>
+                        <li><strong>Загрузка данных:</strong> Добавьте фото товара и основные характеристики</li>
+                        <li><strong>Генерация:</strong> Нажмите "Создать карточку" и дождитесь обработки</li>
+                        <li><strong>Редактирование:</strong> При необходимости внесите правки в полученный результат</li>
+                        <li><strong>Экспорт:</strong> Скачайте готовую карточку в нужном формате</li>
+                    </ol>
+                    
+                    <div class="article-features">
+                        <div class="feature-card">
+                            <h3>Для одиночных товаров</h3>
+                            <p>Быстрое создание карточек с индивидуальным дизайном</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h3>Для серий товаров</h3>
+                            <p>Использование шаблонов для однотипных товаров</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="article-section">
+                    <h2>💡 Практическое применение</h2>
+                    
+                    <div class="article-features">
+                        <div class="feature-card">
+                            <div class="feature-icon">🛍️</div>
+                            <h3>Для продавцов на маркетплейсах</h3>
+                            <p>Создание профессиональных карточек для Wildberries, Ozon и других площадок</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">🏭</div>
+                            <h3>Для производителей</h3>
+                            <p>Быстрый вывод новых товаров на рынок с качественными карточками</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">🌐</div>
+                            <h3>Для интернет-магазинов</h3>
+                            <p>Оформление товарных страниц с уникальными описаниями и изображениями</p>
+                        </div>
+                    </div>
+                    
+                    <div class="cta-box">
+                        <h3 class="cta-title">Попробуйте Fabula AI бесплатно</h3>
+                        <p class="cta-text">Создавайте профессиональные карточки товаров за минуты</p>
+                        <a href="https://fabula-ai.com" target="_blank" class="cta-button">Перейти на Fabula AI</a>
+                    </div>
+                </div>
+                
+                <div class="article-section">
+                    <h2>🔎 Заключение</h2>
+                    <p>Fabula AI - специализированный инструмент для создания карточек товаров, который предлагает:</p>
+                    
+                    <ul>
+                        <li>Удобный интерфейс на русском языке</li>
+                        <li>Интеграцию с популярными маркетплейсами</li>
+                        <li>Автоматическую обработку изображений</li>
+                        <li>Генерацию SEO-оптимизированных описаний</li>
+                        <li>Безлимитное создание карточек</li>
+                    </ul>
+                    
+                    <p>Сервис будет особенно полезен продавцам на маркетплейсах, производителям товаров и владельцам интернет-магазинов, которые хотят автоматизировать процесс создания качественных карточек товаров.</p>
+                </div>
+                
+                <a href="index.html#ai" class="back-link">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Вернуться к списку инструментов
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Подвал сайта через компонент -->
+    <free-footer></free-footer>
+</body>
+</html>
