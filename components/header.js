@@ -209,12 +209,25 @@ class FreeHeader extends HTMLElement {
     }
 
     connectedCallback() {
+        
         // Обработчики кликов
-        this.shadowRoot.querySelectorAll('.nav-link([href="/"]), .search-button')
+        this.shadowRoot.querySelectorAll('.search-button')
             .forEach(el => el.addEventListener('click', e => {
                 e.preventDefault();
                 alert("Раздел в разработке");
             }));
+        this.shadowRoot.querySelectorAll('.nav-link')
+            .forEach(link => {
+                link.addEventListener('click', e => {
+                    //Для ссылки на главную - разрешаем обычное поведение
+                    if (link.getAttribute('href') === '/') {
+                        return;
+                    } else {
+                        e.preventDefault();
+                        alert("Раздел в разработке");
+                    }
+                })
+            })
         
         // Обработчик скролла
         window.addEventListener('scroll', () => {

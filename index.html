@@ -34,7 +34,6 @@
     
     <!-- Стили -->
     <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="/manifest.webmanifest">
     
     <!-- Компоненты -->
     <script type="module" src="components/metrika.js"></script>
@@ -120,20 +119,5 @@
 
     <!-- Скрипты -->
     <script src="scripts.js"></script>
-    
-    <!-- Service Worker -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker зарегистрирован');
-                    })
-                    .catch(error => {
-                        console.log('Ошибка регистрации: ', error);
-                    });
-            });
-        }
-    </script>
 </body>
 </html>
