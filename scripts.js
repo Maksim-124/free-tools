@@ -1,3 +1,30 @@
+// Удаление всех Service Workers и кешей
+if ('serviceWorker' in navigator) {
+    // 1. Отменить все регистрации
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (let registration of registrations) {
+            registration.unregister();
+            console.log('Service Worker unregistered');
+        }
+    });
+    
+    // 2. Очистить все кеши
+    caches.keys().then(cacheNames => {
+        cacheNames.forEach(cacheName => {
+            caches.delete(cacheName);
+        });
+    });
+    
+    // 3. Отключить SW немедленно
+    navigator.serviceWorker.ready.then(registration => {
+        registration.unregister();
+    });
+}
+
+// Дополнительно: очистить sessionStorage и localStorage если нужно
+sessionStorage.clear();
+localStorage.removeItem('workbox-expiration');
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM полностью загружен");
     
