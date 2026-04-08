@@ -2,138 +2,79 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бесплатные онлайн-инструменты для работы: Офис, Дизайн, AI • Free-Tools</title>
-    <meta name="description" content="00% бесплатные инструменты для офиса, дизайна, разработки и AI. Работают в РФ без VPN. Коллекция лучших сервисов для ваших задач">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Free Tools — коллекция бесплатных онлайн-инструментов</title>
+    <meta name="description" content="Бесплатные инструменты для офиса, дизайна, AI и разработки. Работают в РФ без VPN.">
+    <meta name="author" content="Maksim-124">
     
-    <!-- Open Graph -->
-    <meta property="og:title" content="Бесплатные онлайн-инструменты">
-    <meta property="og:description" content="Коллекция лучших бесплатных онлайн-инструментов">
-    <meta property="og:image" content="https://free-tools.ru/favicon/favicon-32x32.png">
-    <meta property="og:url" content="https://free-tools.ru/">
+    <meta property="og:title" content="Free Tools — бесплатные онлайн-инструменты">
+    <meta property="og:description" content="Коллекция лучших бесплатных сервисов">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://free-tools.ru">
     
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Бесплатные онлайн-инструменты">
-    <meta name="twitter:description" content="Найдите идеальные инструменты для ваших задач">
-    <meta name="twitter:image" content="https://free-tools.ru/images/free-tools-og.jpg">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>">
     
-    <!-- Фавиконы -->
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     
-    
-    
-    <!-- Шрифты -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    
-    <!-- Стили -->
     <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="/manifest.webmanifest">
-    
-    <!-- Компоненты -->
-    <script type="module" src="components/metrika.js"></script>
-    <script type="module" src="components/header.js"></script>
-    <script type="module" src="components/footer.js"></script>
 </head>
 <body>
-    <!-- Шапка сайта -->
-    <free-header></free-header>
-    
-    <div style="padding: 10px; text-align: center; font-family: 'Fira Code', monospace;">
-        🚧 Сайт находится в разработке. Приносим извинения за временные неудобства! 🚧 
-    </div>
+<div class="app">
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo-area">
+                <h1 class="logo">🛠️ free<span class="logo-light">-tools</span></h1>
+                <p class="tagline">Бесплатные инструменты для работы и творчества</p>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+                <div class="theme-toggle-slider">
+                    <span class="theme-icon-light">☀️</span>
+                    <span class="theme-icon-dark">🌙</span>
+                    <div class="theme-toggle-thumb"></div>
+                </div>
+            </button>
+        </div>
+    </header>
 
-    <!-- Основной контент -->
-    <main class="container">
-        <div class="search-container">
-            <input type="text" id="search" class="search-input" placeholder="Поиск по названию или описанию...">
-            
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="all">
-                     <span class="icon">≡</span> Все
-                </button>
-                <button class="filter-btn" data-filter="available">
-                    Доступны в РФ
-                </button>
-                <button class="filter-btn" data-filter="vpn">
-                    Требуют VPN
-                </button>
+    <main class="main">
+        <div class="container">
+            <div class="controls">
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Поиск по названию или описанию...">
+                    <span class="search-icon">🔍</span>
+                </div>
+
+                <!-- Только категории, без надписи -->
+                <div class="categories-scroll" id="categoryFilters">
+                    <!-- Категории будут добавлены через JS -->
+                </div>
             </div>
 
-            <div class="categories">
-                <button class="category-btn active" data-category="all">
-                    <span class="icon">*</span> Все
-                </button>
-                <button class="category-btn" data-category="office">
-                    Офис
-                </button>
-                <button class="category-btn" data-category="design">
-                    Дизайн
-                </button>
-                <button class="category-btn" data-category="ai">
-                    AI
-                </button>
-                <button class="category-btn" data-category="development">
-                    Разработка
-                </button>
-                <button class="category-btn" data-category="conversion">
-                    Конвертеры
-                </button>
-                <button class="category-btn" data-category="marketing">
-                    Маркетинг
-                </button>
-                <button class="category-btn" data-category="storage">
-                    Хранилища
-                </button>
-                <button class="category-btn" data-category="other">
-                    Другое
-                </button>
+            <div class="stats" id="stats">📊 Загрузка...</div>
+
+            <div class="loader" id="loader" style="display: none;">
+                <div class="spinner"></div>
             </div>
-        </div>
-        
-        <!-- Лоадер -->
-        <div id="loader" class="loader">
-            <div class="spinner"></div>
-        </div>
-        
-        <div id="toolsContainer" class="tools-container">
-            <!-- Инструменты будут загружены через JavaScript -->
+
+            <div class="tools-grid" id="toolsGrid"></div>
         </div>
     </main>
 
-    <!-- Модальное окно деталей -->
-    <div id="modalOverlay" class="modal-overlay">
-        <div class="modal">
-            <button id="modalClose" class="modal-close" aria-label="Закрыть">&times;</button>
-            <div id="modalContent"></div>
+    <div class="modal" id="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <button class="modal-close" aria-label="Закрыть">✕</button>
+            <div class="modal-content" id="modalContent"></div>
         </div>
     </div>
-    
-    <!-- Подвал сайта -->
-    <free-footer></free-footer>
 
-    <!-- Скрипты -->
-    <script src="scripts.js"></script>
-    
-    <!-- Service Worker -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker зарегистрирован');
-                    })
-                    .catch(error => {
-                        console.log('Ошибка регистрации: ', error);
-                    });
-            });
-        }
-    </script>
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 free-tools.ru — коллекция бесплатных онлайн-инструментов</p>
+        </div>
+    </footer>
+</div>
+
+<script src="scripts.js"></script>
 </body>
 </html>

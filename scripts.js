@@ -1,350 +1,250 @@
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM полностью загружен");
-    
-    // Основные элементы DOM (только те, что не в компонентах)
-    const searchInput = document.getElementById('search');
-    const categoryButtons = document.querySelectorAll('.category-btn');
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const toolsContainer = document.getElementById('toolsContainer');
-    const modalOverlay = document.getElementById('modalOverlay');
-    const modalClose = document.getElementById('modalClose');
-    const modalContent = document.getElementById('modalContent');
-    const loader = document.getElementById('loader');
-    
-    // Данные инструментов
-    let toolsData = [];
-    
-    // Создание элемента для уведомлений о копировании
-    const copyFeedback = document.createElement('div');
-    copyFeedback.className = 'copy-feedback';
-    document.body.appendChild(copyFeedback);
-    
-    /**
-     * Загружает данные инструментов из JSON-файла
-     */
-    async function loadTools() {
-        try {
-            // Показать лоадер
-            loader.style.display = 'flex';
-            toolsContainer.innerHTML = '';
-            
-            const response = await fetch('./tools.json');
-            if (!response.ok) throw new Error('Ошибка загрузки данных');
-            
-            const jsonData = await response.json();
-            
-            // Загружаем предложенные инструменты из localStorage
-            const suggestedTools = JSON.parse(localStorage.getItem('suggestedTools')) || [];
-            
-            // Объединяем инструменты, убирая дубликаты по ID
-            toolsData = [...suggestedTools, ...jsonData].filter((tool, index, self) =>
-                index === self.findIndex(t => t.id === tool.id)
-            );
-            
-            console.log('Инструменты загружены:', toolsData.length);
-            renderTools(toolsData);
-        } catch (error) {
-            console.error('Ошибка при загрузке инструментов:', error);
-            toolsContainer.innerHTML = '<p class="error">Не удалось загрузить инструменты. Пожалуйста, попробуйте позже.</p>';
-        } finally {
-            // Скрыть лоадер
-            loader.style.display = 'none';
-        }
-    }
-    
-    /**
-     * Отображает инструменты в контейнере
-     * @param {Array} tools - Массив инструментов для отображения
-     */
-    function renderTools(tools) {
-        // Очищаем контейнер перед добавлением новых элементов
-        toolsContainer.innerHTML = '';
-        
-        if (tools.length === 0) {
-            toolsContainer.innerHTML = '<p class="no-results">По вашему запросу ничего не найдено</p>';
-            return;
-        }
-        
-        // Для каждого инструмента создаем карточку
-        tools.forEach(tool => {
-            const toolElement = document.createElement('div');
-            toolElement.className = 'tool';
-            toolElement.dataset.category = tool.category;
-            toolElement.dataset.available = tool.available;
-            toolElement.dataset.rating = tool.rating;
-            
-            // Для инструментов со статьей создаем специальную карточку
-            if (tool.hasArticle) {
-                toolElement.innerHTML = `
-                    ${tool.popular ? '<span class="popular-badge">Популярное</span>' : ''}
-                    <h2>${tool.title}</h2>
-                    <p>${tool.description}</p>
-                    <div class="tool-meta">
-                        <span class="availability ${tool.available === 'yes' ? 'available' : 'unavailable'}">
-                            ${tool.available === 'yes' ? 'Доступен в РФ' : 'Требуется VPN'}
-                        </span>
-                        <span class="rating">${generateRatingStars(tool.rating)}</span>
-                    </div>
-                <div class="tool-actions-container">
-                        <div class="tool-actions">
-                            <a href="${tool.link}" target="_blank" class="btn-primary">Перейти на сайт</a>
-                            <a href="${tool.articleLink}" class="btn-more">Подробнее</a>
-                        </div>
-                        <div class="tool-actions-shared">
-                            <button class="btn-icon share-btn" data-link="${tool.articleLink}" data-title="${tool.title}" title="Поделиться">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 5.12548 15.0077 5.24917 15.0227 5.37061L7.0824 9.84057C6.54303 9.32015 5.80879 9 5 9C3.34315 9 2 10.3431 2 12C2 13.6569 3.34315 15 5 15C5.80879 15 6.54303 14.6798 7.0824 14.1594L15.0227 18.6294C15.0077 18.7508 15 18.8745 15 19C15 20.6569 16.3431 22 18 22C19.6569 22 21 20.6569 21 19C21 17.3431 19.6569 16 18 16C17.1912 16 16.457 16.3202 15.9176 16.8406L7.97733 12.3706C7.99229 12.2492 8 12.1255 8 12C8 11.8745 7.99229 11.7508 7.97733 11.6294L15.9176 7.15938C16.457 7.67985 17.1912 8 18 8Z" fill="currentColor"/><path d="M18 8H16V4C16 2.89543 15.1046 2 14 2H10C8.89543 2 8 2.89543
-                                </svg>
-                            </button>
-                        </div>
-                </div>
-                `;
-                
-                // Вешаем обработчик на всю карточку для перехода к статье
-                toolElement.addEventListener('click', (e) => {
-                    // Проверяем, что клик был не по кнопке
-                    if (!e.target.closest('.tool-actions')) {
-                        window.location.href = tool.articleLink;
-                    }
-                });
-            } 
-            // Стандартная карточка для инструментов без статьи
-            else {
-                toolElement.innerHTML = `
-                    ${tool.popular ? '<span class="popular-badge">Популярное</span>' : ''}
-                    ${tool.suggested ? '<span class="suggested-badge">Предложено</span>' : ''}
-                    <h2>${tool.title}</h2>
-                    <p>${tool.description}</p>
-                    <div class="tool-meta">
-                        <span class="availability ${tool.available === 'yes' ? 'available' : 'unavailable'}">
-                            ${tool.available === 'yes' ? 'Доступен в РФ' : 'Требуется VPN'}
-                        </span>
-                        <span class="rating">${generateRatingStars(tool.rating)}</span>
-                    </div>
-                <div class="tool-actions-container">
-                    <div class="tool-actions">
-                        <a href="${tool.link}" target="_blank" class="btn-primary">Перейти на сайт</a>
-                        <button class="btn-more" data-id="${tool.id}">Подробнее</button>
-                    </div>
-                        <div class="tool-actions-shared">
-                            <button class="btn-icon share-btn" data-link="${tool.articleLink}" data-title="${tool.title}" title="Поделиться">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 5.12548 15.0077 5.24917 15.0227 5.37061L7.0824 9.84057C6.54303 9.32015 5.80879 9 5 9C3.34315 9 2 10.3431 2 12C2 13.6569 3.34315 15 5 15C5.80879 15 6.54303 14.6798 7.0824 14.1594L15.0227 18.6294C15.0077 18.7508 15 18.8745 15 19C15 20.6569 16.3431 22 18 22C19.6569 22 21 20.6569 21 19C21 17.3431 19.6569 16 18 16C17.1912 16 16.457 16.3202 15.9176 16.8406L7.97733 12.3706C7.99229 12.2492 8 12.1255 8 12C8 11.8745 7.99229 11.7508 7.97733 11.6294L15.9176 7.15938C16.457 7.67985 17.1912 8 18 8Z" fill="currentColor"/>
-                                </svg>
-                            </button>
-                        </div>
-                </div>
-                `;
-            }
-            
-            toolsContainer.appendChild(toolElement);
-        });
-        
-        // Привязываем обработчики событий после рендеринга
-        attachEventHandlers();
-    }
-    
-    /**
-     * Генерирует HTML для отображения рейтинга звездочками
-     * @param {number} rating - Рейтинг от 0 до 5
-     * @returns {string} HTML-строка с звездочками
-     */
-    function generateRatingStars(rating) {
-        const fullStars = Math.floor(rating);
-        const halfStar = rating % 1 >= 0.5 ? 1 : 0;
-        const emptyStars = 5 - fullStars - halfStar;
-        
-        return '★'.repeat(fullStars) + '½'.repeat(halfStar) + '☆'.repeat(emptyStars);
-    }
-    
-    /**
-     * Привязывает обработчики событий к элементам интерфейса
-     */
-    function attachEventHandlers() {
-        // Обработчики для кнопок "Подробнее"
-        document.querySelectorAll('.btn-more').forEach(button => {
-            button.addEventListener('click', function() {
-                const toolId = parseInt(this.dataset.id);
-                showToolDetails(toolId);
-            });
-        });
-        
-        // Обработчик для кнопки "Поделиться"
-        document.querySelectorAll('.share-btn').forEach(button => {
-          button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const link = this.dataset.link;
-            const title = this.dataset.title;
+// State
+let toolsData = [];
+let currentCategory = 'all';
+let currentSearch = '';
 
-            // Проверка поддержки Web Share API
-            if (navigator.share) {
-                navigator.share({
-                  title: title,
-                  url: link
-                }).catch(err => {
-                    console.log('Ошибка при использовании Web Share API:', err);
-                    copyToClipboard(link);
-                });
-            } else {
-                copyToClipboard(link);
-            }
+// Маппинг категорий (англ -> русский)
+const categoryMap = {
+    'office': 'Офис',
+    'design': 'Дизайн',
+    'ai': 'AI',
+    'development': 'Разработка',
+    'conversion': 'Конвертеры',
+    'marketing': 'Маркетинг',
+    'storage': 'Хранилища',
+    'vpn': 'VPN',
+    'other': 'Другое'
+};
+
+const categoryEmoji = {
+    'office': '📄',
+    'design': '🎨',
+    'ai': '🤖',
+    'development': '💻',
+    'conversion': '🔄',
+    'marketing': '📢',
+    'storage': '☁️',
+    'vpn': '🔒',
+    'other': '📦'
+};
+
+// DOM elements
+const toolsGrid = document.getElementById('toolsGrid');
+const searchInput = document.getElementById('searchInput');
+const categoryFilters = document.getElementById('categoryFilters');
+const loader = document.getElementById('loader');
+const stats = document.getElementById('stats');
+const modal = document.getElementById('modal');
+const themeToggle = document.getElementById('themeToggle');
+
+// Load tools from JSON
+async function loadTools() {
+    showLoader(true);
+    try {
+        const response = await fetch('./tools.json');
+        if (!response.ok) throw new Error('Network error');
+        toolsData = await response.json();
+        
+        renderCategories();
+        filterAndRender();
+    } catch (error) {
+        console.error('Load error:', error);
+        toolsGrid.innerHTML = '<div class="empty-state">⚠️ Ошибка загрузки данных. Попробуйте позже.</div>';
+        stats.textContent = '❌ Ошибка загрузки';
+    } finally {
+        showLoader(false);
+    }
+}
+
+// Get unique categories
+function getUniqueCategories() {
+    const categories = new Set(toolsData.map(t => t.category));
+    return Array.from(categories).sort();
+}
+
+// Render categories (горизонтальный скролл)
+function renderCategories() {
+    const categories = getUniqueCategories();
+    const buttonsHtml = `
+        <button class="category-chip ${currentCategory === 'all' ? 'active' : ''}" data-category="all">📋 Все</button>
+        ${categories.map(cat => `
+            <button class="category-chip ${currentCategory === cat ? 'active' : ''}" data-category="${cat}">
+                ${categoryEmoji[cat] || '📌'} ${categoryMap[cat] || cat}
+            </button>
+        `).join('')}
+    `;
+    categoryFilters.innerHTML = buttonsHtml;
+    
+    // Attach event listeners
+    document.querySelectorAll('.category-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentCategory = btn.dataset.category;
+            filterAndRender();
+            
+            // Update active state
+            document.querySelectorAll('.category-chip').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
         });
     });
+}
+
+// Filter tools
+function getFilteredTools() {
+    return toolsData.filter(tool => {
+        const matchesSearch = tool.title.toLowerCase().includes(currentSearch) ||
+                             tool.description.toLowerCase().includes(currentSearch);
+        const matchesCategory = currentCategory === 'all' || tool.category === currentCategory;
+        return matchesSearch && matchesCategory;
+    });
+}
+
+// Render tools grid
+function renderTools(tools) {
+    if (tools.length === 0) {
+        toolsGrid.innerHTML = '<div class="empty-state">😕 Ничего не найдено. Попробуйте изменить поиск.</div>';
+        stats.textContent = `📭 Найдено: 0 инструментов`;
+        return;
     }
     
-    /**
-     * Копирует текст в буфер обмена
-     * @param {string} text - Текст для копирования
-     */
-    function copyToClipboard(text) {
-        if (!navigator.clipboard) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
-            
-            try {
-                document.execCommand('copy');
-                showCopyFeedback('Ссылка скопирована!', '#28a745');
-            } catch (err) {
-                showCopyFeedback('Ошибка копирования', '#dc3545');
-                console.error('Fallback: Ошибка при копировании: ', err);
-            }
-            
-            document.body.removeChild(textArea);
-            return;
-        }
+    const toolsHtml = tools.map(tool => {
+        const popularBadge = tool.popular ? '<span class="badge-popular">🔥 Популярное</span>' : '';
         
-        navigator.clipboard.writeText(text).then(() => {
-            showCopyFeedback('Ссылка скопирована!', '#28a745');
-        }).catch(err => {
-            showCopyFeedback('Ошибка копирования', '#dc3545');
-            console.error('Ошибка при копировании: ', err);
-        });
-    }
-    
-    /**
-     * Показывает детальную информацию об инструменте в модальном окне
-     * @param {number} toolId - ID инструмента
-     */
-    function showToolDetails(toolId) {
-        const tool = toolsData.find(t => t.id === toolId);
-        if (!tool) return;
-        
-        // Если у инструмента есть статья - перенаправляем на нее
-        if (tool.hasArticle && tool.articleLink) {
-            window.location.href = tool.articleLink;
-            return;
-        }
-        
-        // Иначе показываем модальное окно
-        modalContent.innerHTML = `
-            <h2>${tool.title}</h2>
-            ${tool.suggested ? '<p class="suggested-notice">Этот инструмент был предложен пользователем</p>' : ''}
-            <p class="modal-description">${tool.description}</p>
+        return `
+        <div class="tool-card" data-tool-id="${tool.id}">
+            ${popularBadge}
+            <h3 class="tool-title">${escapeHtml(tool.title)}</h3>
+            <p class="tool-description">${escapeHtml(tool.description)}</p>
             <div class="tool-meta">
-                <span class="availability ${tool.available === 'yes' ? 'available' : 'unavailable'}">
-                    ${tool.available === 'yes' ? 'Доступен в РФ' : 'Требуется VPN'}
-                </span>
-                <span class="rating">${generateRatingStars(tool.rating)}</span>
+                ${tool.available === 'yes' ? '<span class="availability">🇷🇺 Доступно в РФ</span>' : ''}
+                <span class="rating">${generateStars(tool.rating)}</span>
             </div>
-            <ul>
-                ${tool.features.map(feature => `<li>${feature}</li>`).join('')}
-            </ul>
-            <p><strong>Бесплатные функции:</strong> ${tool.freeFeatures}</p>
-            <p><strong>Платные функции:</strong> ${tool.paidFeatures || 'Нет'}</p>
             <div class="tool-actions">
-                <a href="${tool.link}" target="_blank" class="btn-primary">Открыть</a>
+                <a href="${tool.link}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Открыть</a>
+                <button class="btn btn-secondary details-btn" data-id="${tool.id}">Подробнее</button>
             </div>
-        `;
-        
-        modalOverlay.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
+        </div>
+    `}).join('');
     
-    /**
-     * Фильтрует инструменты по поисковому запросу, категории и доступности
-     */
-    function filterTools() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const activeCategory = document.querySelector('.category-btn.active')?.dataset.category || 'all';
-        const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
-        
-        const filteredTools = toolsData.filter(tool => {
-            // Проверка соответствия поисковому запросу
-            const matchesSearch = 
-                tool.title.toLowerCase().includes(searchTerm) || 
-                tool.description.toLowerCase().includes(searchTerm);
-            
-            // Проверка соответствия категории
-            const matchesCategory = 
-                activeCategory === 'all' || 
-                tool.category === activeCategory;
-            
-            // Проверка соответствия фильтру доступности
-            let matchesFilter = true;
-            if (activeFilter === 'available') {
-                matchesFilter = tool.available === 'yes';
-            } else if (activeFilter === 'vpn') {
-                matchesFilter = tool.available === 'no';
+    toolsGrid.innerHTML = toolsHtml;
+    stats.textContent = `📊 Найдено: ${tools.length} из ${toolsData.length} инструментов`;
+    
+    document.querySelectorAll('.details-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const toolId = parseInt(btn.dataset.id);
+            showToolDetails(toolId);
+        });
+    });
+}
+
+// Show tool details
+function showToolDetails(toolId) {
+    const tool = toolsData.find(t => t.id === toolId);
+    if (!tool) return;
+    
+    const modalContent = document.getElementById('modalContent');
+    modalContent.innerHTML = `
+        <h2>${escapeHtml(tool.title)}</h2>
+        <p style="margin-bottom: 16px;">${escapeHtml(tool.description)}</p>
+        <div style="margin-bottom: 16px;">
+            <span class="rating">${generateStars(tool.rating)}</span>
+        </div>
+        ${tool.features ? `<h3>✨ Возможности:</h3><ul>${tool.features.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>` : ''}
+        <p><strong>🎁 Бесплатно:</strong> ${escapeHtml(tool.freeFeatures || 'Полный функционал')}</p>
+        ${tool.paidFeatures ? `<p><strong>💎 Платно:</strong> ${escapeHtml(tool.paidFeatures)}</p>` : ''}
+        <div style="margin-top: 24px;">
+            <a href="${tool.link}" target="_blank" class="btn btn-primary" style="display: inline-block;">Перейти к сервису →</a>
+        </div>
+    `;
+    
+    modal.classList.add('active');
+}
+
+// Generate stars
+function generateStars(rating) {
+    const full = Math.floor(rating);
+    const half = rating % 1 >= 0.5 ? 1 : 0;
+    const empty = 5 - full - half;
+    return '★'.repeat(full) + '½'.repeat(half) + '☆'.repeat(empty);
+}
+
+// Escape HTML
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+// Filter and render
+function filterAndRender() {
+    const filtered = getFilteredTools();
+    renderTools(filtered);
+}
+
+// Show/hide loader
+function showLoader(show) {
+    loader.style.display = show ? 'flex' : 'none';
+}
+
+// Close modal
+function closeModal() {
+    modal.classList.remove('active');
+}
+
+// Debounce
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+// Theme handling
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.classList.add(savedTheme);
+    
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark');
+            if (isDark) {
+                document.body.classList.remove('dark');
+                document.body.classList.add('light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.body.classList.remove('light');
+                document.body.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
             }
-            
-            return matchesSearch && matchesCategory && matchesFilter;
         });
-        
-        renderTools(filteredTools);
     }
+}
+
+// Event listeners
+function initEventListeners() {
+    searchInput.addEventListener('input', debounce((e) => {
+        currentSearch = e.target.value.toLowerCase();
+        filterAndRender();
+    }, 300));
     
-    /**
-     * Показывает уведомление о копировании
-     * @param {string} message - Текст сообщения
-     * @param {string} color - Цвет фона
-     */
-    function showCopyFeedback(message, color) {
-        copyFeedback.textContent = message;
-        copyFeedback.style.backgroundColor = color;
-        copyFeedback.style.display = 'block';
-        
-        setTimeout(() => {
-            copyFeedback.style.opacity = '0';
-            setTimeout(() => {
-                copyFeedback.style.display = 'none';
-                copyFeedback.style.opacity = '1';
-            }, 300);
-        }, 2000);
-    }
-    
-    /**
-     * Закрывает модальное окно
-     */
-    function closeModal() {
-        modalOverlay.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-    
-    // Инициализация обработчиков событий
-    categoryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            filterTools();
-        });
+    document.querySelector('.modal-close')?.addEventListener('click', closeModal);
+    document.querySelector('.modal-overlay')?.addEventListener('click', closeModal);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
     });
-    
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            filterTools();
-        });
-    });
-    
-    searchInput.addEventListener('input', filterTools);
-    modalClose.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', function(e) {
-        if (e.target === modalOverlay) closeModal();
-    });
-    
-    // Загрузка инструментов при старте
+}
+
+// Initialize
+function init() {
+    initTheme();
+    initEventListeners();
     loadTools();
-});
+}
+
+// Start
+init();
