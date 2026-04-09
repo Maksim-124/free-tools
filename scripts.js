@@ -148,7 +148,7 @@ function renderTools(tools) {
         return `
         <div class="tool-card" data-tool-id="${tool.id}" style="animation-delay: ${index * 0.03}s">
             ${popularBadge}
-            <h3 class="tool-title">${escapeHtml(tool.title)}</h3>
+            <h3 class="tool-title"><a href="${tool.link}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit;">${escapeHtml(tool.title)}</a></h3>
             <p class="tool-description">${escapeHtml(tool.shortDescription || tool.description)}</p>
             ${hashtagsHtml}
             <div class="tool-meta">

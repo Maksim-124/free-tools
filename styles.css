@@ -411,6 +411,14 @@ body.dark .tool-card {
     margin-bottom: 8px;
     padding-right: 100px;
 }
+.tool-title a {
+    cursor: pointer;
+}
+
+.tool-title a:hover {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
 
 body.light .tool-title {
     color: #0f172a;
