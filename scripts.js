@@ -77,6 +77,8 @@ function renderCategories() {
     document.querySelectorAll('.category-chip').forEach(btn => {
         btn.addEventListener('click', () => {
             currentCategory = btn.dataset.category;
+            currentSearch = '';
+            searchInput.value = '';
             filterAndRender();
             
             // Update active state
