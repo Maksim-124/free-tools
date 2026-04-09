@@ -62,7 +62,7 @@ body.dark .header {
     background: linear-gradient(135deg, #2563eb, #7c3aed);
     -webkit-background-clip: text;
     background-clip: text;
-    color: transparent;
+    color: #2563eb;;
 }
 
 .logo-light {
