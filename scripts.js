@@ -12,7 +12,6 @@ const categoryMap = {
     'conversion': 'Конвертеры',
     'marketing': 'Маркетинг',
     'storage': 'Хранилища',
-    'vpn': 'VPN',
     'other': 'Другое'
 };
 
@@ -24,7 +23,6 @@ const categoryEmoji = {
     'conversion': '🔄',
     'marketing': '📢',
     'storage': '☁️',
-    'vpn': '🔒',
     'other': '📦'
 };
 
@@ -62,7 +60,7 @@ function getUniqueCategories() {
     return Array.from(categories).sort();
 }
 
-// Render categories (горизонтальный скролл)
+// Render categories
 function renderCategories() {
     const categories = getUniqueCategories();
     const buttonsHtml = `
@@ -88,17 +86,41 @@ function renderCategories() {
     });
 }
 
-// Filter tools
+// Filter tools (улучшенный поиск по заголовку, описанию, хештегам и useCases)
 function getFilteredTools() {
+    if (!currentSearch.trim()) {
+        return toolsData.filter(tool => {
+            const matchesCategory = currentCategory === 'all' || tool.category === currentCategory;
+            return matchesCategory;
+        });
+    }
+    
+    const searchLower = currentSearch.toLowerCase();
+    
     return toolsData.filter(tool => {
-        const matchesSearch = tool.title.toLowerCase().includes(currentSearch) ||
-                             tool.description.toLowerCase().includes(currentSearch);
         const matchesCategory = currentCategory === 'all' || tool.category === currentCategory;
-        return matchesSearch && matchesCategory;
+        
+        // Поиск по названию
+        const titleMatch = tool.title.toLowerCase().includes(searchLower);
+        
+        // Поиск по описанию
+        const descMatch = tool.shortDescription && tool.shortDescription.toLowerCase().includes(searchLower);
+        
+        // Поиск по хештегам
+        const hashtagsMatch = tool.hashtags && tool.hashtags.some(tag => 
+            tag.toLowerCase().includes(searchLower)
+        );
+        
+        // Поиск по useCases (проблемы/задачи пользователя)
+        const useCasesMatch = tool.useCases && tool.useCases.some(useCase => 
+            useCase.toLowerCase().includes(searchLower)
+        );
+        
+        return matchesCategory && (titleMatch || descMatch || hashtagsMatch || useCasesMatch);
     });
 }
 
-// Render tools grid
+// Render tools grid (с хештегами вместо рейтинга)
 function renderTools(tools) {
     if (tools.length === 0) {
         toolsGrid.innerHTML = '<div class="empty-state">😕 Ничего не найдено. Попробуйте изменить поиск.</div>';
@@ -106,20 +128,32 @@ function renderTools(tools) {
         return;
     }
     
-    const toolsHtml = tools.map(tool => {
+    const toolsHtml = tools.map((tool, index) => {
         const popularBadge = tool.popular ? '<span class="badge-popular">🔥 Популярное</span>' : '';
         
+        // Генерируем хештеги, если они есть
+        let hashtagsHtml = '';
+        if (tool.hashtags && tool.hashtags.length > 0) {
+            // Показываем не больше 3 хештегов в карточке
+            const displayHashtags = tool.hashtags.slice(0, 3);
+            hashtagsHtml = `
+                <div class="hashtags">
+                    ${displayHashtags.map(tag => `<span class="hashtag" data-hashtag="${tag}">${tag}</span>`).join('')}
+                </div>
+            `;
+        }
+        
         return `
-        <div class="tool-card" data-tool-id="${tool.id}">
+        <div class="tool-card" data-tool-id="${tool.id}" style="animation-delay: ${index * 0.03}s">
             ${popularBadge}
             <h3 class="tool-title">${escapeHtml(tool.title)}</h3>
-            <p class="tool-description">${escapeHtml(tool.description)}</p>
+            <p class="tool-description">${escapeHtml(tool.shortDescription || tool.description)}</p>
+            ${hashtagsHtml}
             <div class="tool-meta">
                 ${tool.available === 'yes' ? '<span class="availability">🇷🇺 Доступно в РФ</span>' : ''}
-                <span class="rating">${generateStars(tool.rating)}</span>
             </div>
             <div class="tool-actions">
-                <a href="${tool.link}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Открыть</a>
+                <a href="${tool.link}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Открыть →</a>
                 <button class="btn btn-secondary details-btn" data-id="${tool.id}">Подробнее</button>
             </div>
         </div>
@@ -128,6 +162,7 @@ function renderTools(tools) {
     toolsGrid.innerHTML = toolsHtml;
     stats.textContent = `📊 Найдено: ${tools.length} из ${toolsData.length} инструментов`;
     
+    // Обработчики для кнопок "Подробнее"
     document.querySelectorAll('.details-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -135,20 +170,59 @@ function renderTools(tools) {
             showToolDetails(toolId);
         });
     });
+    
+    // Обработчики для кликабельных хештегов
+    document.querySelectorAll('.hashtag').forEach(tag => {
+        tag.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const hashtag = tag.dataset.hashtag;
+            if (hashtag) {
+                searchInput.value = hashtag;
+                currentSearch = hashtag.toLowerCase();
+                filterAndRender();
+            }
+        });
+    });
 }
 
-// Show tool details
+// Show tool details (обновлённая модалка с хештегами и useCases)
 function showToolDetails(toolId) {
     const tool = toolsData.find(t => t.id === toolId);
     if (!tool) return;
     
     const modalContent = document.getElementById('modalContent');
+    
+    // Генерируем все хештеги для модалки
+    let hashtagsModalHtml = '';
+    if (tool.hashtags && tool.hashtags.length > 0) {
+        hashtagsModalHtml = `
+            <div style="margin: 16px 0;">
+                <strong>🏷️ Хештеги:</strong>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+                    ${tool.hashtags.map(tag => `<span style="background: #e2e8f0; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; cursor: pointer;" class="modal-hashtag" data-hashtag="${tag}">${tag}</span>`).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Генерируем useCases, если есть
+    let useCasesHtml = '';
+    if (tool.useCases && tool.useCases.length > 0) {
+        useCasesHtml = `
+            <div style="margin: 16px 0;">
+                <strong>💡 Для каких задач:</strong>
+                <ul style="margin-top: 8px;">
+                    ${tool.useCases.map(useCase => `<li>${escapeHtml(useCase)}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+    
     modalContent.innerHTML = `
         <h2>${escapeHtml(tool.title)}</h2>
-        <p style="margin-bottom: 16px;">${escapeHtml(tool.description)}</p>
-        <div style="margin-bottom: 16px;">
-            <span class="rating">${generateStars(tool.rating)}</span>
-        </div>
+        <p style="margin-bottom: 16px;">${escapeHtml(tool.shortDescription || tool.description)}</p>
+        ${hashtagsModalHtml}
+        ${useCasesHtml}
         ${tool.features ? `<h3>✨ Возможности:</h3><ul>${tool.features.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>` : ''}
         <p><strong>🎁 Бесплатно:</strong> ${escapeHtml(tool.freeFeatures || 'Полный функционал')}</p>
         ${tool.paidFeatures ? `<p><strong>💎 Платно:</strong> ${escapeHtml(tool.paidFeatures)}</p>` : ''}
@@ -158,14 +232,19 @@ function showToolDetails(toolId) {
     `;
     
     modal.classList.add('active');
-}
-
-// Generate stars
-function generateStars(rating) {
-    const full = Math.floor(rating);
-    const half = rating % 1 >= 0.5 ? 1 : 0;
-    const empty = 5 - full - half;
-    return '★'.repeat(full) + '½'.repeat(half) + '☆'.repeat(empty);
+    
+    // Обработчики для кликабельных хештегов в модалке
+    document.querySelectorAll('.modal-hashtag').forEach(tag => {
+        tag.addEventListener('click', () => {
+            const hashtag = tag.dataset.hashtag;
+            if (hashtag) {
+                closeModal();
+                searchInput.value = hashtag;
+                currentSearch = hashtag.toLowerCase();
+                filterAndRender();
+            }
+        });
+    });
 }
 
 // Escape HTML
@@ -193,6 +272,11 @@ function showLoader(show) {
 // Close modal
 function closeModal() {
     modal.classList.remove('active');
+    setTimeout(() => {
+        if (!modal.classList.contains('active')) {
+            document.getElementById('modalContent').innerHTML = '';
+        }
+    }, 300);
 }
 
 // Debounce
@@ -204,13 +288,24 @@ function debounce(func, delay) {
     };
 }
 
-// Theme handling
+// Theme handling (исправленная версия)
 function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.body.classList.add(savedTheme);
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    let theme = savedTheme;
+    if (!theme) {
+        theme = systemPrefersDark ? 'dark' : 'light';
+    }
+    
+    document.body.classList.add(theme);
     
     if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
+        // Удаляем старые обработчики, клонируя элемент
+        const newToggle = themeToggle.cloneNode(true);
+        themeToggle.parentNode.replaceChild(newToggle, themeToggle);
+        
+        newToggle.addEventListener('click', () => {
             const isDark = document.body.classList.contains('dark');
             if (isDark) {
                 document.body.classList.remove('dark');
@@ -232,8 +327,12 @@ function initEventListeners() {
         filterAndRender();
     }, 300));
     
-    document.querySelector('.modal-close')?.addEventListener('click', closeModal);
-    document.querySelector('.modal-overlay')?.addEventListener('click', closeModal);
+    const modalCloseBtn = document.querySelector('.modal-close');
+    const modalOverlay = document.querySelector('.modal-overlay');
+    
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+    if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
+    
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
     });
