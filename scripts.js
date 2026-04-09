@@ -199,7 +199,7 @@ function showToolDetails(toolId) {
             <div style="margin: 16px 0;">
                 <strong>🏷️ Хештеги:</strong>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
-                    ${tool.hashtags.map(tag => `<span style="background: #e2e8f0; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; cursor: pointer;" class="modal-hashtag" data-hashtag="${tag}">${tag}</span>`).join('')}
+                    ${tool.hashtags.map(tag => `<span class="modal-hashtag" data-hashtag="${tag}">${tag}</span>`).join('')}
                 </div>
             </div>
         `;

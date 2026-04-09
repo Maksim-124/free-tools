@@ -828,3 +828,34 @@ body.dark .empty-state {
         display: none;
     }
 }
+
+/* Добавить в конец styles.css */
+
+/* Хештеги в модалке - светлая тема */
+.modal-hashtag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #f1f5f9;
+    color: #2563eb;
+}
+
+.modal-hashtag:hover {
+    transform: scale(1.05);
+    background: #e2e8f0;
+}
+
+/* Хештеги в модалке - тёмная тема */
+body.dark .modal-hashtag {
+    background: #334155;
+    color: #2dd4bf;
+}
+
+body.dark .modal-hashtag:hover {
+    background: #475569;
+    color: #ffffff;
+}
