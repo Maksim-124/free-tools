@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -14,61 +14,384 @@
     
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>">
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="styles.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        accent: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        /* Glassmorphism effects */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .dark .glass {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .dark .glass-card {
+            background: rgba(51, 65, 85, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .glass-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Gradient background */
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        
+        /* Hashtag styles */
+        .hashtag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .hashtag-blue {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+        
+        .hashtag-blue:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+        
+        .dark .hashtag-blue {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+        
+        .hashtag-purple {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+        }
+        
+        .hashtag-purple:hover {
+            background: rgba(139, 92, 246, 0.2);
+        }
+        
+        .dark .hashtag-purple {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+        }
+        
+        .hashtag-green {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+        
+        .hashtag-green:hover {
+            background: rgba(34, 197, 94, 0.2);
+        }
+        
+        .dark .hashtag-green {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+        
+        /* Category chip */
+        .category-chip {
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .category-chip:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+        
+        .category-chip.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .dark .category-chip:hover {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+        
+        /* Modal animation */
+        .modal-enter {
+            animation: modalEnter 0.3s ease-out forwards;
+        }
+        
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        /* Loader */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .dark .spinner {
+            border-color: #334155;
+            border-top-color: #60a5fa;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Smooth transitions */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+    </style>
 </head>
-<body>
-<div class="app">
-    <header class="header">
-        <div class="container header-container">
-            <div class="logo-area">
-                <h1 class="logo">🛠️ free<span class="logo-light">-tools</span></h1>
-                <p class="tagline">Бесплатные инструменты для работы и творчества</p>
-            </div>
-            <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
-                <div class="theme-toggle-slider">
-                    <span class="theme-icon-light">☀️</span>
-                    <span class="theme-icon-dark">🌙</span>
-                    <div class="theme-toggle-thumb"></div>
+<body class="bg-gray-50 text-gray-900 dark:bg-slate-900 dark:text-gray-100 min-h-screen">
+<div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                <div class="flex items-center space-x-3">
+                    <div class="text-3xl sm:text-4xl animate-float">🛠️</div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold gradient-text">free-tools</h1>
+                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">Бесплатные инструменты для работы</p>
+                    </div>
                 </div>
-            </button>
+                
+                <!-- Theme Toggle -->
+                <button id="themeToggle" class="relative w-16 h-8 rounded-full bg-gray-200 dark:bg-slate-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900" aria-label="Переключить тему">
+                    <div class="absolute inset-0 flex items-center justify-between px-2">
+                        <span class="text-lg">☀️</span>
+                        <span class="text-lg">🌙</span>
+                    </div>
+                    <div class="absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 dark:translate-x-8 dark:bg-slate-300"></div>
+                </button>
+            </div>
         </div>
     </header>
 
-    <main class="main">
-        <div class="container">
-            <div class="controls">
-                <div class="search-wrapper">
-                    <input type="text" id="searchInput" class="search-input" placeholder="Поиск по названию или описанию...">
-                    <span class="search-icon">🔍</span>
-                </div>
-                <div class="categories-scroll" id="categoryFilters">
-                    <!-- Категории будут добавлены через JS -->
+    <!-- Main Content -->
+    <main class="flex-1">
+        <!-- Hero Section -->
+        <section class="relative overflow-hidden py-12 sm:py-16 lg:py-20">
+            <div class="absolute inset-0 gradient-bg opacity-10 dark:opacity-20"></div>
+            <div class="absolute top-20 left-10 w-72 h-72 bg-primary-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
+            <div class="absolute bottom-20 right-10 w-72 h-72 bg-accent-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style="animation-delay: 1s;"></div>
+            
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 animate-slide-up">
+                    <span class="gradient-text">Лучшие бесплатные</span> инструменты
+                </h2>
+                <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 animate-slide-up" style="animation-delay: 0.1s;">
+                    Коллекция проверенных сервисов для дизайна, AI, офиса и разработки. Работают в РФ без VPN.
+                </p>
+                
+                <!-- Search -->
+                <div class="max-w-2xl mx-auto animate-slide-up" style="animation-delay: 0.2s;">
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            class="w-full px-6 py-4 pl-14 text-lg rounded-2xl glass-card shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-all"
+                            placeholder="🔍 Поиск по названию, описанию, хештегам..."
+                        >
+                        <div class="absolute left-5 top-1/2 transform -translate-y-1/2 text-2xl">🔍</div>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <div class="stats" id="stats">📊 Загрузка...</div>
+        <!-- Categories & Tools -->
+        <section class="pb-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Category Filters -->
+                <div class="mb-8 overflow-x-auto pb-2">
+                    <div class="flex space-x-2 sm:space-x-3 min-w-max" id="categoryFilters">
+                        <!-- Categories will be inserted by JS -->
+                    </div>
+                </div>
 
-            <div class="loader" id="loader" style="display: none;">
-                <div class="spinner"></div>
+                <!-- Stats -->
+                <div class="flex items-center justify-between mb-6">
+                    <p class="text-sm sm:text-base text-gray-500 dark:text-gray-400" id="stats">📊 Загрузка...</p>
+                </div>
+
+                <!-- Loader -->
+                <div class="flex justify-center py-12" id="loader" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+
+                <!-- Tools Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" id="toolsGrid">
+                    <!-- Tools will be inserted by JS -->
+                </div>
             </div>
-
-            <div class="tools-grid" id="toolsGrid"></div>
-        </div>
+        </section>
     </main>
 
-    <div class="modal" id="modal">
-        <div class="modal-overlay"></div>
-        <div class="modal-container">
-            <button class="modal-close" aria-label="Закрыть">✕</button>
-            <div class="modal-content" id="modalContent"></div>
+    <!-- Modal -->
+    <div class="modal fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300" id="modal">
+        <div class="modal-overlay absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div class="modal-container relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300 modal-enter">
+            <button class="modal-close absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors" aria-label="Закрыть">
+                <span class="text-xl">✕</span>
+            </button>
+            <div class="p-6 sm:p-8" id="modalContent">
+                <!-- Modal content will be inserted by JS -->
+            </div>
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p>© 2025 free-tools.ru — коллекция бесплатных онлайн-инструментов</p>
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 dark:border-slate-700 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    © 2025 <span class="gradient-text font-semibold">free-tools.ru</span> — коллекция бесплатных онлайн-инструментов
+                </p>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">GitHub</a>
+                    <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">Telegram</a>
+                </div>
+            </div>
         </div>
     </footer>
 </div>
