@@ -508,6 +508,7 @@ body.dark .availability {
 .tool-actions {
     display: flex;
     gap: 12px;
+    flex-wrap: wrap;
     margin-top: auto;
 }
 

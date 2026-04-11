@@ -156,7 +156,10 @@ function renderTools(tools) {
             </div>
             <div class="tool-actions">
                 <a href="${tool.link}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Открыть →</a>
-                <button class="btn btn-secondary details-btn" data-id="${tool.id}">Подробнее</button>
+             ${tool.hasArticle && tool.articleLink 
+               ? `<a href="/reviews/${tool.articleLink}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary article-btn" data-tool-id="${tool.id}" onclick="if(typeof ym==='function'){ym(102614891,'reachGoal','article_click',{tool_id:'${tool.id}'});}return true;">📖 Читать обзор</a>`
+               : `<button class="btn btn-secondary details-btn" data-id="${tool.id}">Подробнее</button>`
+             }
             </div>
         </div>
     `}).join('');
