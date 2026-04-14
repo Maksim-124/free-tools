@@ -1,351 +1,312 @@
-// State
+// State & Config
 let toolsData = [];
-let currentCategory = 'all';
 let currentSearch = '';
+let fuseInstance = null;
 
-// Маппинг категорий (англ -> русский)
-const categoryMap = {
-    'office': 'Офис',
-    'design': 'Дизайн',
-    'ai': 'AI',
-    'development': 'Разработка',
-    'conversion': 'Конвертеры',
-    'marketing': 'Маркетинг',
-    'storage': 'Хранилища',
-    'other': 'Другое'
-};
-
-const categoryEmoji = {
-    'office': '📄',
-    'design': '🎨',
-    'ai': '🤖',
-    'development': '💻',
-    'conversion': '🔄',
-    'marketing': '📢',
-    'storage': '☁️',
-    'other': '📦'
-};
-
-// DOM elements
-const toolsGrid = document.getElementById('toolsGrid');
-const searchInput = document.getElementById('searchInput');
-const categoryFilters = document.getElementById('categoryFilters');
-const loader = document.getElementById('loader');
-const stats = document.getElementById('stats');
-const modal = document.getElementById('modal');
-const themeToggle = document.getElementById('themeToggle');
-
-// Load tools from JSON
-async function loadTools() {
-    showLoader(true);
-    try {
-        const response = await fetch('./tools.json');
-        if (!response.ok) throw new Error('Network error');
-        toolsData = await response.json();
-        
-        renderCategories();
-        filterAndRender();
-    } catch (error) {
-        console.error('Load error:', error);
-        toolsGrid.innerHTML = '<div class="empty-state">⚠️ Ошибка загрузки данных. Попробуйте позже.</div>';
-        stats.textContent = '❌ Ошибка загрузки';
-    } finally {
-        showLoader(false);
-    }
-}
-
-// Get unique categories
-function getUniqueCategories() {
-    const categories = new Set(toolsData.map(t => t.category));
-    return Array.from(categories).sort();
-}
-
-// Render categories
-function renderCategories() {
-    const categories = getUniqueCategories();
-    const buttonsHtml = `
-        <button class="category-chip ${currentCategory === 'all' ? 'active' : ''}" data-category="all">📋 Все</button>
-        ${categories.map(cat => `
-            <button class="category-chip ${currentCategory === cat ? 'active' : ''}" data-category="${cat}">
-                ${categoryEmoji[cat] || '📌'} ${categoryMap[cat] || cat}
-            </button>
-        `).join('')}
-    `;
-    categoryFilters.innerHTML = buttonsHtml;
-    
-    // Attach event listeners
-    document.querySelectorAll('.category-chip').forEach(btn => {
-        btn.addEventListener('click', () => {
-            currentCategory = btn.dataset.category;
-            currentSearch = '';
-            searchInput.value = '';
-            filterAndRender();
-            
-            // Update active state
-            document.querySelectorAll('.category-chip').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        });
-    });
-}
-
-// Filter tools (улучшенный поиск по заголовку, описанию, хештегам и useCases)
-function getFilteredTools() {
-    if (!currentSearch.trim()) {
-        return toolsData.filter(tool => {
-            const matchesCategory = currentCategory === 'all' || tool.category === currentCategory;
-            return matchesCategory;
-        });
-    }
-    
-    const searchLower = currentSearch.toLowerCase();
-    
-    return toolsData.filter(tool => {
-        const matchesCategory = currentCategory === 'all' || tool.category === currentCategory;
-        
-        // Поиск по названию
-        const titleMatch = tool.title.toLowerCase().includes(searchLower);
-        
-        // Поиск по описанию
-        const descMatch = tool.shortDescription && tool.shortDescription.toLowerCase().includes(searchLower);
-        
-        // Поиск по хештегам
-        const hashtagsMatch = tool.hashtags && tool.hashtags.some(tag => 
-            tag.toLowerCase().includes(searchLower)
-        );
-        
-        // Поиск по useCases (проблемы/задачи пользователя)
-        const useCasesMatch = tool.useCases && tool.useCases.some(useCase => 
-            useCase.toLowerCase().includes(searchLower)
-        );
-        
-        return matchesCategory && (titleMatch || descMatch || hashtagsMatch || useCasesMatch);
-    });
-}
-
-// Render tools grid (с хештегами вместо рейтинга)
-function renderTools(tools) {
-    if (tools.length === 0) {
-        toolsGrid.innerHTML = '<div class="empty-state">😕 Ничего не найдено. Попробуйте изменить поиск.</div>';
-        stats.textContent = `📭 Найдено: 0 инструментов`;
-        return;
-    }
-    
-    const toolsHtml = tools.map((tool, index) => {
-        const popularBadge = tool.popular ? '<span class="badge-popular">🔥 Популярное</span>' : '';
-        
-        // Генерируем хештеги, если они есть
-        let hashtagsHtml = '';
-        if (tool.hashtags && tool.hashtags.length > 0) {
-            // Показываем не больше 3 хештегов в карточке
-            const displayHashtags = tool.hashtags.slice(0, 3);
-            hashtagsHtml = `
-                <div class="hashtags">
-                    ${displayHashtags.map(tag => `<span class="hashtag" data-hashtag="${tag}">${tag}</span>`).join('')}
-                </div>
-            `;
-        }
-        
-        return `
-        <div class="tool-card" data-tool-id="${tool.id}" style="animation-delay: ${index * 0.03}s">
-            ${popularBadge}
-            <h3 class="tool-title"><a href="${tool.link}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit;">${escapeHtml(tool.title)}</a></h3>
-            <p class="tool-description">${escapeHtml(tool.shortDescription || tool.description)}</p>
-            ${hashtagsHtml}
-            <div class="tool-meta">
-                ${tool.available === 'yes' ? '<span class="availability">🇷🇺 Доступно в РФ</span>' : ''}
-            </div>
-            <div class="tool-actions">
-                <a href="${tool.link}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Открыть →</a>
-                <button class="btn btn-secondary details-btn" data-id="${tool.id}">Подробнее</button>
-            </div>
-        </div>
-    `}).join('');
-    
-    toolsGrid.innerHTML = toolsHtml;
-    stats.textContent = `📊 Найдено: ${tools.length} из ${toolsData.length} инструментов`;
-    
-    // Обработчики для кнопок "Подробнее"
-    document.querySelectorAll('.details-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const toolId = parseInt(btn.dataset.id);
-            showToolDetails(toolId);
-        });
-    });
-    
-    // Обработчики для кликабельных хештегов
-    document.querySelectorAll('.hashtag').forEach(tag => {
-        tag.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const hashtag = tag.dataset.hashtag;
-            if (hashtag) {
-                searchInput.value = hashtag;
-                currentSearch = hashtag.toLowerCase();
-                filterAndRender();
-            }
-        });
-    });
-}
-
-// Show tool details (обновлённая модалка с хештегами и useCases)
-function showToolDetails(toolId) {
-    const tool = toolsData.find(t => t.id === toolId);
-    if (!tool) return;
-    
-    const modalContent = document.getElementById('modalContent');
-    
-    // Генерируем все хештеги для модалки
-    let hashtagsModalHtml = '';
-    if (tool.hashtags && tool.hashtags.length > 0) {
-        hashtagsModalHtml = `
-            <div style="margin: 16px 0;">
-                <strong>🏷️ Хештеги:</strong>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
-                    ${tool.hashtags.map(tag => `<span class="modal-hashtag" data-hashtag="${tag}">${tag}</span>`).join('')}
-                </div>
-            </div>
-        `;
-    }
-    
-    // Генерируем useCases, если есть
-    let useCasesHtml = '';
-    if (tool.useCases && tool.useCases.length > 0) {
-        useCasesHtml = `
-            <div style="margin: 16px 0;">
-                <strong>💡 Для каких задач:</strong>
-                <ul style="margin-top: 8px;">
-                    ${tool.useCases.map(useCase => `<li>${escapeHtml(useCase)}</li>`).join('')}
-                </ul>
-            </div>
-        `;
-    }
-    
-    modalContent.innerHTML = `
-        <h2>${escapeHtml(tool.title)}</h2>
-        <p style="margin-bottom: 16px;">${escapeHtml(tool.shortDescription || tool.description)}</p>
-        ${hashtagsModalHtml}
-        ${useCasesHtml}
-        ${tool.features ? `<h3>✨ Возможности:</h3><ul>${tool.features.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>` : ''}
-        <p><strong>🎁 Бесплатно:</strong> ${escapeHtml(tool.freeFeatures || 'Полный функционал')}</p>
-        ${tool.paidFeatures ? `<p><strong>💎 Платно:</strong> ${escapeHtml(tool.paidFeatures)}</p>` : ''}
-        <div style="margin-top: 24px;">
-            <a href="${tool.link}" target="_blank" class="btn btn-primary" style="display: inline-block;">Перейти к сервису →</a>
-        </div>
-    `;
-    
-    modal.classList.add('active');
-    
-    // Обработчики для кликабельных хештегов в модалке
-    document.querySelectorAll('.modal-hashtag').forEach(tag => {
-        tag.addEventListener('click', () => {
-            const hashtag = tag.dataset.hashtag;
-            if (hashtag) {
-                closeModal();
-                searchInput.value = hashtag;
-                currentSearch = hashtag.toLowerCase();
-                filterAndRender();
-            }
-        });
-    });
-}
-
-// Escape HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
-
-// Filter and render
-function filterAndRender() {
-    const filtered = getFilteredTools();
-    renderTools(filtered);
-}
-
-// Show/hide loader
-function showLoader(show) {
-    loader.style.display = show ? 'flex' : 'none';
-}
-
-// Close modal
-function closeModal() {
-    modal.classList.remove('active');
-    setTimeout(() => {
-        if (!modal.classList.contains('active')) {
-            document.getElementById('modalContent').innerHTML = '';
-        }
-    }, 300);
-}
-
-// Debounce
-function debounce(func, delay) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), delay);
-    };
-}
-
-// Theme handling (исправленная версия)
+// 1. Тема
 function initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    let theme = savedTheme;
-    if (!theme) {
-        theme = systemPrefersDark ? 'dark' : 'light';
+  const html = document.documentElement;
+  const themeBtn = document.getElementById('themeToggle');
+  if (!themeBtn) return;
+  
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = saved === 'dark' || (!saved && prefersDark);
+  
+  html.classList.toggle('dark', isDark);
+  themeBtn.textContent = isDark ? '☀️' : '🌙';
+  
+  themeBtn.addEventListener('click', () => {
+    const newDark = !html.classList.contains('dark');
+    html.classList.toggle('dark', newDark);
+    localStorage.setItem('theme', newDark ? 'dark' : 'light');
+    themeBtn.textContent = newDark ? '☀️' : '🌙';
+  });
+}
+
+// 2. Нормализация данных (убирает пробелы в ключах JSON)
+function normalizeData(rawData) {
+  return rawData.map(obj => {
+    const clean = {};
+    for (const [k, v] of Object.entries(obj)) {
+      clean[k.trim()] = v;
     }
-    
-    document.body.classList.add(theme);
-    
-    if (themeToggle) {
-        // Удаляем старые обработчики, клонируя элемент
-        const newToggle = themeToggle.cloneNode(true);
-        themeToggle.parentNode.replaceChild(newToggle, themeToggle);
-        
-        newToggle.addEventListener('click', () => {
-            const isDark = document.body.classList.contains('dark');
-            if (isDark) {
-                document.body.classList.remove('dark');
-                document.body.classList.add('light');
-                localStorage.setItem('theme', 'light');
-            } else {
-                document.body.classList.remove('light');
-                document.body.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            }
-        });
+    return clean;
+  });
+}
+
+// 3. Инициализация Fuse.js
+function initFuse() {
+  fuseInstance = new Fuse(toolsData, {
+    keys: [
+      { name: 'title', weight: 0.35 },
+      { name: 'shortDescription', weight: 0.25 },
+      { name: 'description', weight: 0.15 },
+      { name: 'useCases', weight: 0.1 },
+      { name: 'hashtags', weight: 0.1 },
+      { name: 'searchTags', weight: 0.05 }
+    ],
+    threshold: 0.35,
+    ignoreLocation: true
+  });
+}
+
+// 4. Получение URL логотипа (гибридный подход)
+function getLogoUrl(tool) {
+  if (tool.logo && tool.logo.trim()) return `/tools/logos/${tool.logo.trim()}`;
+  try {
+    const url = new URL(tool.link);
+    return `https://www.google.com/s2/favicons?domain=${url.hostname}&sz=128`;
+  } catch {
+    return null;
+  }
+}
+
+// 5. Фильтрация хештегов: убираем "Доступно в РФ" и дубли
+function getFilteredHashtags(hashtags) {
+  return [...new Set(
+    (hashtags || [])
+      .map(h => h.trim())
+      .filter(Boolean)
+      .filter(h => !h.includes('Доступно_в_РФ') && !h.includes('🇷'))
+  )];
+}
+
+// 6. Рендер карточки
+function renderCard(tool, index, isGallery = false) {
+  const logoUrl = getLogoUrl(tool);
+  const delay = isGallery ? 0 : index * 0.05;
+  
+  // 🔥 Популярное
+  const popularHtml = tool.popular
+    ? `<div class="absolute -top-2 -right-2 w-7 h-7 flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-500 text-white rounded-full shadow-lg z-10 text-sm" title="Популярное">🔥</div>`
+    : '';
+
+  // 🛠️ Логотип: прямой рендер без обёртки
+  const sizeClass = isGallery ? 'w-14 h-14' : 'w-10 h-10';
+  const logoHtml = logoUrl
+    ? `<img src="${logoUrl}" alt="${escapeHtml(tool.title)}" class="${sizeClass} object-contain rounded-xl transition-transform duration-300 hover:scale-110" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+       <span class="tool-emoji text-2xl hidden">${sizeClass === 'w-14 h-14' ? 'text-3xl' : ''}🛠️</span>`
+    : `<span class="tool-emoji text-2xl ${sizeClass === 'w-14 h-14' ? 'text-3xl' : ''}">🛠️</span>`;
+
+  // 🏷️ Хештеги: фильтрация + единый стиль
+  const filteredTags = getFilteredHashtags(tool.hashtags);
+  const hashtagsHtml = filteredTags.length
+    ? `<div class="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-gray-200 dark:border-gray-800">
+        ${filteredTags.slice(0, 4).map(t => `<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition" data-tag="${t}">${t}</span>`).join('')}
+       </div>`
+    : '';
+
+  // Кнопка "Перейти"
+  const actionHtml = `<a href="${tool.link}" target="_blank" class="group flex items-center gap-2 w-fit px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-medium transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-0.5">
+  ${isGallery ? 'Перейти' : 'Перейти к инструменту'}
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"><line x1="7" y1="17" x2="19" y2="7"></line><polyline points="7 7 19 7 19 17"></polyline></svg>
+</a>`;
+
+  // --- ЛОГИКА РАЗНЫХ ВИДОВ ---
+  if (isGallery) {
+    return `
+      ${popularHtml}
+      <div class="flex justify-center mb-3 pt-2">
+        ${logoHtml}
+      </div>
+      <h3 class="font-display font-bold text-center text-lg leading-tight text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
+        <a href="${tool.link}" target="_blank" class="hover:text-blue-600 dark:hover:text-cyan-400 transition">${escapeHtml(tool.title)}</a>
+      </h3>
+      <p class="text-xs text-gray-500 dark:text-gray-400 text-center line-clamp-3 mb-3 flex-grow leading-snug">
+        ${escapeHtml(tool.shortDescription || tool.description)}
+      </p>
+      ${hashtagsHtml}
+      <div class="pt-3">${actionHtml}</div>
+    </div>`;
+  }
+
+  // Стандартная сетка
+  return `
+    <div class="tool-card card-enter bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 flex flex-col relative h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer" style="animation-delay:${delay}s" data-tool-id="${tool.id}">
+      ${popularHtml}
+      <div class="flex items-center gap-3 mb-3">
+        ${logoHtml}
+        <h3 class="font-display font-bold text-lg leading-tight text-gray-900 dark:text-gray-100 line-clamp-2 pr-2">
+          <a href="${tool.link}" target="_blank" class="hover:text-blue-600 dark:hover:text-cyan-400 transition">${escapeHtml(tool.title)}</a>
+        </h3>
+      </div>
+      <p class="text-base text-gray-600 dark:text-gray-400 line-clamp-3 leading-relaxed mb-2">${escapeHtml(tool.shortDescription || tool.description)}</p>
+      <button class="details-trigger self-start text-sm text-blue-600 dark:text-cyan-400 font-medium hover:underline mb-3 transition" data-id="${tool.id}">Подробнее →</button>
+      ${hashtagsHtml}
+      <div class="mt-auto pt-4">${actionHtml}</div>
+    </div>`;
+}
+
+// 7. Переключение видов и рендер
+function renderTools(tools) {
+  const isSearching = currentSearch.trim().length > 0;
+  const gridView = document.getElementById('gridView');
+  const galleryView = document.getElementById('galleryView');
+  const horizontalScroll = document.getElementById('horizontalScroll');
+
+  if (isSearching) {
+    gridView?.classList.add('hidden');
+    galleryView?.classList.remove('hidden');
+    if (tools.length === 0) {
+      horizontalScroll.innerHTML = `<div class="w-full text-center py-10 text-gray-500 text-lg">😕 Ничего не найдено. Попробуйте изменить запрос.</div>`;
+      return;
     }
+    horizontalScroll.innerHTML = tools.map((t, i) => `<div class="min-w-[220px] w-[220px] mr-4 snap-start bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 flex flex-col relative h-full">${renderCard(t, i, true)}</div>`).join('');
+  } else {
+    gridView?.classList.remove('hidden');
+    galleryView?.classList.add('hidden');
+    if (tools.length === 0) {
+      gridView.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500 text-lg">😕 Ничего не найдено. Попробуйте изменить запрос.</div>`;
+      return;
+    }
+    gridView.innerHTML = tools.map((t, i) => renderCard(t, i, false)).join('');
+  }
 }
 
-// Event listeners
-function initEventListeners() {
-    searchInput.addEventListener('input', debounce((e) => {
-        currentSearch = e.target.value.toLowerCase();
-        filterAndRender();
-    }, 300));
-    
-    const modalCloseBtn = document.querySelector('.modal-close');
-    const modalOverlay = document.querySelector('.modal-overlay');
-    
-    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
-    if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
-    
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
-    });
+// 8. Поиск
+function performSearch(query) {
+  currentSearch = query.toLowerCase().trim();
+  if (!currentSearch) { renderTools(toolsData); return; }
+  const result = fuseInstance.search(currentSearch);
+  renderTools(result.map(r => r.item));
 }
 
-// Initialize
-function init() {
-    initTheme();
-    initEventListeners();
-    loadTools();
+// 9. Загрузка данных
+async function loadTools() {
+  try {
+    const res = await fetch('./tools.json');
+    if (!res.ok) throw new Error('Network');
+    const rawData = await res.json();
+    toolsData = normalizeData(rawData);
+    initFuse();
+    renderTools(toolsData);
+  } catch (err) {
+    console.error('Ошибка загрузки:', err);
+    document.getElementById('gridView').innerHTML = `<div class="col-span-full text-center py-10 text-red-500 text-lg">⚠️ Ошибка загрузки данных. Проверьте файл tools.json и консоль браузера.</div>`;
+  }
 }
 
-// Start
-init();
+// 10. Модалка
+function showToolDetails(toolId) {
+  const tool = toolsData.find(t => t.id === toolId);
+  if (!tool) return;
+  const modal = document.getElementById('modal');
+  const content = document.getElementById('modalContent');
+  const logoUrl = getLogoUrl(tool);
+
+  const logoHtml = logoUrl
+    ? `<img src="${logoUrl}" alt="${escapeHtml(tool.title)}" class="w-14 h-14 object-contain rounded-xl transition-transform duration-300 hover:scale-110" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+       <span class="tool-emoji text-3xl hidden">🛠️</span>`
+    : `<span class="tool-emoji text-3xl">🛠️</span>`;
+
+  const filteredTags = getFilteredHashtags(tool.hashtags);
+  const hashtagsHtml = filteredTags.length
+    ? `<div class="mt-4"><strong class="text-sm">🏷️ Теги:</strong><div class="flex flex-wrap gap-2 mt-2">${filteredTags.map(t => `<span class="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition" data-tag="${t}">${t}</span>`).join('')}</div></div>`
+    : '';
+
+  const useCasesHtml = tool.useCases?.length
+    ? `<div class="mt-4"><strong class="text-sm">💡 Для каких задач:</strong><ul class="list-disc pl-5 mt-2 text-base space-y-1">${tool.useCases.map(u => `<li>${escapeHtml(u)}</li>`).join('')}</ul></div>`
+    : '';
+
+  content.innerHTML = `
+    <div class="flex items-start gap-4 mb-4">
+      ${logoHtml}
+      <h2 class="font-display text-2xl font-bold leading-tight pt-1">${escapeHtml(tool.title)}</h2>
+    </div>
+    <p class="text-base text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">${escapeHtml(tool.description || tool.shortDescription)}</p>
+    ${hashtagsHtml} ${useCasesHtml}
+    <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-800">
+      <a href="${tool.link}" target="_blank" class="block w-full text-center bg-blue-600 hover:bg-blue-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-gray-900 font-semibold py-3 px-4 rounded-xl text-base transition shadow-sm">Открыть сервис</a>
+    </div>`;
+  
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeModal() {
+  const modal = document.getElementById('modal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+  document.getElementById('modalContent').innerHTML = '';
+}
+
+// 11. Утилиты
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
+}
+function debounce(func, delay) {
+  let timeout;
+  return (...args) => { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), delay); };
+}
+
+// 12. Инициализация & События
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  loadTools();
+
+  // Поиск
+  document.getElementById('searchInput').addEventListener('input', debounce((e) => performSearch(e.target.value), 200));
+
+  // Галерея скролл (стрелки + колесико мыши)
+  const scrollContainer = document.getElementById('horizontalScroll');
+  const scrollLeftBtn = document.getElementById('scrollLeft');
+  const scrollRightBtn = document.getElementById('scrollRight');
+
+  if (scrollContainer && scrollLeftBtn && scrollRightBtn) {
+    // Клик по стрелкам
+    scrollLeftBtn.addEventListener('click', () => scrollContainer.scrollBy({ left: -220, behavior: 'smooth' }));
+    scrollRightBtn.addEventListener('click', () => scrollContainer.scrollBy({ left: 220, behavior: 'smooth' }));
+    
+    // 🖱️ Горизонтальный скролл колесиком
+    scrollContainer.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaY) > 0) {
+        e.preventDefault();
+        scrollContainer.scrollBy({ left: e.deltaY > 0 ? 220 : -220, behavior: 'smooth' });
+      }
+    }, { passive: false });
+
+    // 🎨 Стили для стрелок (круги с тенью) — добавляем динамически
+    const style = document.createElement('style');
+    style.textContent = `
+      #scrollLeft, #scrollRight {
+        width: 40px; height: 40px; border-radius: 50%;
+        border: 2px solid #e5e7eb; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease;
+        position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
+      }
+      .dark #scrollLeft, .dark #scrollRight { border-color: #374151; background: #1f2937; color: #e5e7eb; }
+      #scrollLeft:hover, #scrollRight:hover { transform: translateY(-50%) scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+      #scrollLeft { left: -10px; } #scrollRight { right: -10px; }
+      @media (max-width: 768px) { #scrollLeft, #scrollRight { display: none; } }
+      .tool-emoji.hidden { display: none !important; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Клик по карточке (делегирование)
+  document.getElementById('resultsArea').addEventListener('click', (e) => {
+    const card = e.target.closest('.tool-card');
+    if (!card) return;
+    if (e.target.closest('a') || e.target.closest('[data-tag]')) return;
+    const trigger = e.target.closest('.details-trigger') || card;
+    const toolId = parseInt(card.dataset.toolId);
+    if (toolId) showToolDetails(toolId);
+  });
+
+  // Модалка
+  document.querySelector('.modal-close')?.addEventListener('click', closeModal);
+  document.querySelector('.modal-overlay')?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  // Глобальный клик по хештегам
+  document.addEventListener('click', (e) => {
+    if (e.target.dataset.tag) {
+      const tag = e.target.dataset.tag;
+      document.getElementById('searchInput').value = tag;
+      performSearch(tag);
+      e.target.blur();
+    }
+  });
+});
