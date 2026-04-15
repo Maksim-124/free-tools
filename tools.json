@@ -482,7 +482,7 @@
     "paidFeatures": "Безлимитная обработка, коммерческое использование"
   },
   {
-    "id": 18,
+    "id": 19,
     "popular": false,
     "title": "I Love IMG",
     "shortDescription": "Инструменты для работы с изображениями онлайн",
@@ -510,7 +510,7 @@
     "paidFeatures": "Премиум-версия без ограничений"
   },
   {
-    "id": 19,
+    "id": 20,
     "popular": false,
     "title": "Convertio",
     "shortDescription": "Конвертер файлов — 300+ форматов",
@@ -538,7 +538,7 @@
     "paidFeatures": "Пакетная обработка, файлы до 1 ГБ"
   },
   {
-    "id": 20,
+    "id": 21,
     "popular": true,
     "title": "DeepSeek AI",
     "shortDescription": "Бесплатная нейросеть: тексты, код, аналитика",
@@ -567,7 +567,7 @@
     "paidFeatures": "Платный API для бизнеса"
   },
   {
-    "id": 21,
+    "id": 22,
     "popular": true,
     "title": "Carve.Photos",
     "shortDescription": "Удалить фон с фото — бесплатно, без регистрации",
@@ -594,7 +594,7 @@
     "paidFeatures": "Нет платных функций"
   },
   {
-    "id": 22,
+    "id": 23,
     "popular": false,
     "title": "Fabula AI",
     "shortDescription": "Русскоязычный ИИ: тексты и изображения",
@@ -622,7 +622,7 @@
     "paidFeatures": "Расширенные возможности"
   },
   {
-    "id": 23,
+    "id": 24,
     "popular": false,
     "title": "Retoucher Online",
     "shortDescription": "Удалить фон с фото — бесплатно, для маркетплейсов",
@@ -649,7 +649,7 @@
     "paidFeatures": "Отсутствуют"
   },
   {
-    "id": 24,
+    "id": 25,
     "popular": false,
     "title": "Калькулятор отпускных (Контур.Экстерн)",
     "shortDescription": "Расчёт отпускных дней и стажа по ТК РФ",
@@ -676,7 +676,7 @@
     "paidFeatures": "Полный сервис Контур.Экстерн"
   },
   {
-    "id": 25,
+    "id": 26,
     "popular": true,
     "title": "eCalc.ru",
     "shortDescription": "150+ онлайн-калькуляторов: математика, здоровье, строительство",
@@ -705,7 +705,7 @@
     "paidFeatures": "Отсутствуют"
   },
   {
-    "id": 26,
+    "id": 27,
     "popular": false,
     "title": "DeWatermark AI",
     "shortDescription": "Удалить водяной знак с фото — 3 в день бесплатно",
@@ -732,7 +732,7 @@
     "paidFeatures": "Безлимитная обработка, пакетный режим"
   },
   {
-    "id": 27,
+    "id": 28,
     "popular": false,
     "title": "PDFCandle",
     "shortDescription": "Работа с PDF: сжатие, объединение, конвертация",
@@ -761,7 +761,7 @@
     "paidFeatures": "Не указано"
   },
   {
-    "id": 28,
+    "id": 29,
     "popular": false,
     "title": "ToolSmart AI — YouTube to MP3",
     "shortDescription": "Конвертер YouTube в MP3 — бесплатно, без рекламы",
