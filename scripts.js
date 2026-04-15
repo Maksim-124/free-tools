@@ -1,6 +1,7 @@
 // State & Config
 let toolsData = [];
 let currentSearch = '';
+let currentCategory = 'all';
 let fuseInstance = null;
 
 // 1. Тема
@@ -72,24 +73,23 @@ function getFilteredHashtags(hashtags) {
   )];
 }
 
-// 6. Рендер карточки
-function renderCard(tool, index, isGallery = false) {
+// 6. Рендер карточки (только стандартный вид)
+function renderCard(tool, index) {
   const logoUrl = getLogoUrl(tool);
-  const delay = isGallery ? 0 : index * 0.05;
+  const delay = index * 0.05;
   
   // 🔥 Популярное
   const popularHtml = tool.popular
     ? `<div class="absolute -top-2 -right-2 w-7 h-7 flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-500 text-white rounded-full shadow-lg z-10 text-sm" title="Популярное">🔥</div>`
     : '';
 
-  // 🛠️ Логотип: прямой рендер без обёртки
-  const sizeClass = isGallery ? 'w-14 h-14' : 'w-10 h-10';
+  // 🛠️ Логотип
   const logoHtml = logoUrl
-    ? `<img src="${logoUrl}" alt="${escapeHtml(tool.title)}" class="${sizeClass} object-contain rounded-xl transition-transform duration-300 hover:scale-110" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
-       <span class="tool-emoji text-2xl hidden">${sizeClass === 'w-14 h-14' ? 'text-3xl' : ''}🛠️</span>`
-    : `<span class="tool-emoji text-2xl ${sizeClass === 'w-14 h-14' ? 'text-3xl' : ''}">🛠️</span>`;
+    ? `<img src="${logoUrl}" alt="${escapeHtml(tool.title)}" class="w-10 h-10 object-contain rounded-xl transition-transform duration-300 hover:scale-110" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+       <span class="tool-emoji text-2xl hidden">🛠️</span>`
+    : `<span class="tool-emoji text-2xl">🛠️</span>`;
 
-  // 🏷️ Хештеги: фильтрация + единый стиль
+  // 🏷️ Хештеги
   const filteredTags = getFilteredHashtags(tool.hashtags);
   const hashtagsHtml = filteredTags.length
     ? `<div class="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-gray-200 dark:border-gray-800">
@@ -99,29 +99,10 @@ function renderCard(tool, index, isGallery = false) {
 
   // Кнопка "Перейти"
   const actionHtml = `<a href="${tool.link}" target="_blank" class="group flex items-center gap-2 w-fit px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-medium transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-0.5">
-  ${isGallery ? 'Перейти' : 'Перейти к инструменту'}
+  Перейти к инструменту
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"><line x1="7" y1="17" x2="19" y2="7"></line><polyline points="7 7 19 7 19 17"></polyline></svg>
 </a>`;
 
-  // --- ЛОГИКА РАЗНЫХ ВИДОВ ---
-  if (isGallery) {
-    return `
-      ${popularHtml}
-      <div class="flex justify-center mb-3 pt-2">
-        ${logoHtml}
-      </div>
-      <h3 class="font-display font-bold text-center text-lg leading-tight text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
-        <a href="${tool.link}" target="_blank" class="hover:text-blue-600 dark:hover:text-cyan-400 transition">${escapeHtml(tool.title)}</a>
-      </h3>
-      <p class="text-xs text-gray-500 dark:text-gray-400 text-center line-clamp-3 mb-3 flex-grow leading-snug">
-        ${escapeHtml(tool.shortDescription || tool.description)}
-      </p>
-      ${hashtagsHtml}
-      <div class="pt-3">${actionHtml}</div>
-    </div>`;
-  }
-
-  // Стандартная сетка
   return `
     <div class="tool-card card-enter bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 flex flex-col relative h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer" style="animation-delay:${delay}s" data-tool-id="${tool.id}">
       ${popularHtml}
@@ -143,7 +124,6 @@ function renderTools(tools) {
   const gridView = document.getElementById('gridView');
   const loadingState = document.getElementById('loadingState');
   
-  // Скрываем лоадер
   if (loadingState) loadingState.classList.add('hidden');
   if (gridView) gridView.classList.remove('hidden');
   
@@ -152,19 +132,44 @@ function renderTools(tools) {
     return;
   }
   
-  gridView.innerHTML = tools.map((t, i) => renderCard(t, i, false)).join('');
+  gridView.innerHTML = tools.map((t, i) => renderCard(t, i)).join('');
 }
 
+// 8. Фильтрация и рендер с учётом категории и поиска
+function applyFilters() {
+  let filtered = toolsData;
 
-// 8. Поиск
+  // Фильтр по категории
+  if (currentCategory !== 'all') {
+    filtered = filtered.filter(tool => tool.category === currentCategory);
+  }
+
+  // Фильтр по поисковому запросу
+  if (currentSearch) {
+    filtered = fuseInstance.search(currentSearch).map(r => r.item);
+  }
+
+  renderTools(filtered);
+}
+
+// 9. Обновление активной категории
+function setActiveCategory(category) {
+  currentCategory = category;
+  
+  document.querySelectorAll('.cat-pill').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.cat === category);
+  });
+  
+  applyFilters();
+}
+
+// 10. Поиск (обновляет запрос и применяет фильтры)
 function performSearch(query) {
   currentSearch = query.toLowerCase().trim();
-  if (!currentSearch) { renderTools(toolsData); return; }
-  const result = fuseInstance.search(currentSearch);
-  renderTools(result.map(r => r.item));
+  applyFilters();
 }
 
-// 9. Загрузка данных
+// 11. Загрузка данных
 async function loadTools() {
   try {
     const res = await fetch('./tools.json');
@@ -172,14 +177,14 @@ async function loadTools() {
     const rawData = await res.json();
     toolsData = normalizeData(rawData);
     initFuse();
-    renderTools(toolsData);
+    setActiveCategory('all');
   } catch (err) {
     console.error('Ошибка загрузки:', err);
     document.getElementById('gridView').innerHTML = `<div class="col-span-full text-center py-10 text-red-500 text-lg">⚠️ Ошибка загрузки данных. Проверьте файл tools.json и консоль браузера.</div>`;
   }
 }
 
-// 10. Модалка
+// 12. Модалка
 function showToolDetails(toolId) {
   const tool = toolsData.find(t => t.id === toolId);
   if (!tool) return;
@@ -223,31 +228,37 @@ function closeModal() {
   document.getElementById('modalContent').innerHTML = '';
 }
 
-// 11. Утилиты
+// 13. Утилиты
 function escapeHtml(str) {
   if (!str) return '';
   return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
 }
+
 function debounce(func, delay) {
   let timeout;
   return (...args) => { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), delay); };
 }
 
-// 12. Инициализация & События
+// 14. Инициализация & События
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   loadTools();
 
-  // Поиск
-  document.getElementById('searchInput').addEventListener('input', debounce((e) => performSearch(e.target.value), 200));
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', debounce((e) => performSearch(e.target.value), 200));
 
+  // Обработчики категорий
+  document.querySelectorAll('.cat-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setActiveCategory(btn.dataset.cat);
+    });
+  });
 
   // Клик по карточке (делегирование)
   document.getElementById('resultsArea').addEventListener('click', (e) => {
     const card = e.target.closest('.tool-card');
     if (!card) return;
     if (e.target.closest('a') || e.target.closest('[data-tag]')) return;
-    const trigger = e.target.closest('.details-trigger') || card;
     const toolId = parseInt(card.dataset.toolId);
     if (toolId) showToolDetails(toolId);
   });
@@ -257,11 +268,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.modal-overlay')?.addEventListener('click', closeModal);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-  // Глобальный клик по хештегам
+  // Клик по хештегам
   document.addEventListener('click', (e) => {
     if (e.target.dataset.tag) {
       const tag = e.target.dataset.tag;
-      document.getElementById('searchInput').value = tag;
+      searchInput.value = tag;
       performSearch(tag);
       e.target.blur();
     }
