@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /tools/logos/
+
+Sitemap: https://free-tools.ru/sitemap.xml
