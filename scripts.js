@@ -138,31 +138,23 @@ function renderCard(tool, index, isGallery = false) {
     </div>`;
 }
 
-// 7. Переключение видов и рендер
+// 7. Рендер карточек инструментов
 function renderTools(tools) {
-  const isSearching = currentSearch.trim().length > 0;
   const gridView = document.getElementById('gridView');
-  const galleryView = document.getElementById('galleryView');
-  const horizontalScroll = document.getElementById('horizontalScroll');
-
-  if (isSearching) {
-    gridView?.classList.add('hidden');
-    galleryView?.classList.remove('hidden');
-    if (tools.length === 0) {
-      horizontalScroll.innerHTML = `<div class="w-full text-center py-10 text-gray-500 text-lg">😕 Ничего не найдено. Попробуйте изменить запрос.</div>`;
-      return;
-    }
-    horizontalScroll.innerHTML = tools.map((t, i) => `<div class="min-w-[220px] w-[220px] mr-4 snap-start bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 flex flex-col relative h-full">${renderCard(t, i, true)}</div>`).join('');
-  } else {
-    gridView?.classList.remove('hidden');
-    galleryView?.classList.add('hidden');
-    if (tools.length === 0) {
-      gridView.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500 text-lg">😕 Ничего не найдено. Попробуйте изменить запрос.</div>`;
-      return;
-    }
-    gridView.innerHTML = tools.map((t, i) => renderCard(t, i, false)).join('');
+  const loadingState = document.getElementById('loadingState');
+  
+  // Скрываем лоадер
+  if (loadingState) loadingState.classList.add('hidden');
+  if (gridView) gridView.classList.remove('hidden');
+  
+  if (tools.length === 0) {
+    gridView.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500 text-lg">😕 Ничего не найдено. Попробуйте изменить запрос.</div>`;
+    return;
   }
+  
+  gridView.innerHTML = tools.map((t, i) => renderCard(t, i, false)).join('');
 }
+
 
 // 8. Поиск
 function performSearch(query) {
@@ -249,41 +241,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Поиск
   document.getElementById('searchInput').addEventListener('input', debounce((e) => performSearch(e.target.value), 200));
 
-  // Галерея скролл (стрелки + колесико мыши)
-  const scrollContainer = document.getElementById('horizontalScroll');
-  const scrollLeftBtn = document.getElementById('scrollLeft');
-  const scrollRightBtn = document.getElementById('scrollRight');
-
-  if (scrollContainer && scrollLeftBtn && scrollRightBtn) {
-    // Клик по стрелкам
-    scrollLeftBtn.addEventListener('click', () => scrollContainer.scrollBy({ left: -220, behavior: 'smooth' }));
-    scrollRightBtn.addEventListener('click', () => scrollContainer.scrollBy({ left: 220, behavior: 'smooth' }));
-    
-    // 🖱️ Горизонтальный скролл колесиком
-    scrollContainer.addEventListener('wheel', (e) => {
-      if (Math.abs(e.deltaY) > 0) {
-        e.preventDefault();
-        scrollContainer.scrollBy({ left: e.deltaY > 0 ? 220 : -220, behavior: 'smooth' });
-      }
-    }, { passive: false });
-
-    // 🎨 Стили для стрелок (круги с тенью) — добавляем динамически
-    const style = document.createElement('style');
-    style.textContent = `
-      #scrollLeft, #scrollRight {
-        width: 40px; height: 40px; border-radius: 50%;
-        border: 2px solid #e5e7eb; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease;
-        position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
-      }
-      .dark #scrollLeft, .dark #scrollRight { border-color: #374151; background: #1f2937; color: #e5e7eb; }
-      #scrollLeft:hover, #scrollRight:hover { transform: translateY(-50%) scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-      #scrollLeft { left: -10px; } #scrollRight { right: -10px; }
-      @media (max-width: 768px) { #scrollLeft, #scrollRight { display: none; } }
-      .tool-emoji.hidden { display: none !important; }
-    `;
-    document.head.appendChild(style);
-  }
 
   // Клик по карточке (делегирование)
   document.getElementById('resultsArea').addEventListener('click', (e) => {
