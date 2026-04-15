@@ -1,94 +1,137 @@
 <!DOCTYPE html>
-<html lang="ru" class="dark scroll-smooth">
+<html lang="ru" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>free-tools.ru — Подберём инструмент под задачу</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Manrope', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
-          fontSize: { base: '17px', sm: '15px', lg: '19px', xl: '21px', '2xl': '26px', '3xl': '34px', '4xl': '42px', '5xl': '50px' }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <!-- SEO базовые -->
+    <title>free-tools.ru — Бесплатные онлайн-инструменты, поиск по задачам</title>
+    <meta name="description" content="Бесплатные онлайн-инструменты для офиса, дизайна, разработки, ИИ, конвертации и маркетинга. Умный нечёткий поиск, тёмная тема, каталог полезных сервисов.">
+    <meta name="keywords" content="бесплатные инструменты, онлайн сервисы, ИИ инструменты, конвертация файлов, дизайн онлайн, офисные приложения">
+    <meta name="author" content="free-tools.ru">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://free-tools.ru/">
+    
+    <!-- Open Graph / Facebook / VK / Telegram -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://free-tools.ru/">
+    <meta property="og:title" content="free-tools.ru — Подберём инструмент под задачу">
+    <meta property="og:description" content="Каталог бесплатных онлайн-инструментов с нечётким поиском, тёмной темой и аналитикой. Найди то, что нужно!">
+    <meta property="og:image" content="https://free-tools.ru/og-image.png">
+    <meta property="og:image:alt" content="Превью free-tools.ru — множество инструментов">
+    <meta property="og:site_name" content="free-tools.ru">
+    <meta property="og:locale" content="ru_RU">
+    
+    <!-- Twitter Card (для адекватного отображения в X) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://free-tools.ru/">
+    <meta name="twitter:title" content="free-tools.ru — Бесплатные инструменты онлайн">
+    <meta name="twitter:description" content="Умный поиск, тёмная тема, более 50 сервисов в каталоге.">
+    <meta name="twitter:image" content="https://free-tools.ru/og-image.png">
+    
+    <!-- Цвет темы для браузеров и мобильных устройств -->
+    <meta name="theme-color" content="#1e293b" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { display: ['Inter', 'system-ui', 'sans-serif'] }
+                }
+            }
         }
-      }
-    }
-  </script>
-  <style>
-    .hide-scrollbar::-webkit-scrollbar { display: none; }
-    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .snap-x-mandatory { scroll-snap-type: x mandatory; }
-    .gallery-nav-btn { @apply w-10 h-10 rounded-full bg-white dark:bg-gray-900 shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition z-20 cursor-pointer border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300; }
-    .card-enter { animation: fadeSlideUp 0.4s ease-out forwards; opacity: 0; }
-    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-  </style>
+    </script>
+    <style>
+        /* Стили для категорий (работают без сборки Tailwind) */
+        .cat-pill {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid #e5e7eb;
+            background-color: white;
+            color: #374151;
+            cursor: pointer;
+        }
+        .dark .cat-pill { background-color: #1f2937; color: #d1d5db; border-color: #374151; }
+        .cat-pill:hover { border-color: #60a5fa; color: #2563eb; background-color: #eff6ff; }
+        .dark .cat-pill:hover { color: #60a5fa; background-color: #374151; }
+        .cat-pill.active { background-color: #2563eb; color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); }
+        .dark .cat-pill.active { background-color: #3b82f6; }
+        .cat-pill.active:hover { background-color: #1d4ed8; color: white; }
+
+        /* Анимация появления карточек */
+        .card-enter { animation: cardFade 0.4s ease-out both; }
+        @keyframes cardFade {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-800 dark:bg-gray-950 dark:text-gray-200 antialiased selection:bg-blue-500 selection:text-white">
-  
-  <!-- Header -->
-  <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-      <div class="font-display font-bold text-xl bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">🛠️ free-tools</div>
-      <button id="themeToggle" class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition text-lg" aria-label="Переключить тему">🌓</button>
-    </div>
-  </header>
-
-  <main class="container mx-auto px-4 pt-24 pb-16 max-w-6xl">
-    <!-- Hero -->
-    <section class="text-center py-10 md:py-16">
-      <h1 class="font-display text-3xl md:text-5xl font-bold mb-4 leading-tight tracking-tight">Подберём инструмент под задачу</h1>
-      <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-xl mx-auto text-lg">Опишите, что нужно сделать, и мы мгновенно найдём сервис, программу или ИИ-помощника.</p>
-      
-      <div class="relative max-w-2xl mx-auto group">
-        <input type="text" id="searchInput" 
-          placeholder="Например: убрать фон с фото, сжать pdf, сделать таблицу бюджета..."
-          class="w-full px-5 py-4 rounded-2xl border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 text-lg transition shadow-xl shadow-blue-500/5 placeholder:text-gray-400"
-          autocomplete="off">
-        <div class="absolute right-4 top-1/2 -translate-y-1/2 text-xl opacity-50 group-focus-within:opacity-100 transition">🔍</div>
-      </div>
-    </section>
-
-    <!-- Results Area -->
-    <section id="resultsArea" class="mt-6">
-      <!-- Вертикальная сетка -->
-      <div id="gridView" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="col-span-full text-center py-12 text-gray-400 text-lg">⏳ Загрузка инструментов...</div>
-      </div>
-
-      <!-- Горизонтальная галерея (Mobile-first, vertical cards) -->
-      <div id="galleryView" class="hidden relative">
-        <h2 class="text-lg font-semibold mb-4 px-1 flex items-center gap-2">✨ Подобрано для вас:</h2>
-        <div class="relative group">
-          <button id="scrollLeft" class="gallery-nav-btn absolute -left-3 md:-left-5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition hidden md:flex">←</button>
-          <div id="horizontalScroll" class="flex gap-4 overflow-x-auto hide-scrollbar snap-x-mandatory pb-6 px-1 py-2">
-            <!-- Карточки -->
-          </div>
-          <button id="scrollRight" class="gallery-nav-btn absolute -right-3 md:-right-5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition hidden md:flex">→</button>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col">
+    <header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2 text-xl font-bold tracking-tight">🛠️ <span>free-tools</span></a>
+            <button id="themeToggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition" aria-label="Переключить тему">🌓</button>
         </div>
-      </div>
-    </section>
-  </main>
+    </header>
 
-  <!-- Footer -->
-  <footer class="text-center py-8 text-base text-gray-500 dark:text-gray-400 border-t border-gray-200/50 dark:border-gray-800">
-    © 2025 free-tools.ru — коллекция бесплатных онлайн-инструментов
-  </footer>
+    <main class="flex-1 max-w-6xl mx-auto px-4 py-8 w-full">
+        <section class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-display font-bold mb-3">Подберём инструмент под задачу</h1>
+            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Опишите, что нужно сделать, и мы мгновенно найдём сервис, программу или ИИ-помощника.</p>
+        </section>
 
-  <!-- Modal -->
-  <div id="modal" class="fixed inset-0 hidden items-center justify-center z-[1000] p-4">
-    <div class="modal-overlay absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-    <div class="modal-container relative bg-white dark:bg-gray-900 rounded-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl z-[1001]">
-      <button class="modal-close absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition flex items-center justify-center text-lg">✕</button>
-      <div id="modalContent" class="p-6 pt-8"></div>
+        <!-- Поиск + Фильтры -->
+        <div class="max-w-2xl mx-auto mb-8">
+            <div class="relative">
+                <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input id="searchInput" type="text" placeholder="Поиск инструментов, задач или тегов..." class="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition shadow-sm text-base">
+            </div>
+
+            <div id="categoryFilters" class="flex flex-wrap gap-2 justify-center mt-4 px-2">
+                <button class="cat-pill active" data-cat="all">Все</button>
+                <button class="cat-pill" data-cat="office">📄 Офис</button>
+                <button class="cat-pill" data-cat="design">🎨 Дизайн</button>
+                <button class="cat-pill" data-cat="ai">🤖 ИИ</button>
+                <button class="cat-pill" data-cat="development">💻 Код</button>
+                <button class="cat-pill" data-cat="storage">☁️ Хранение</button>
+                <button class="cat-pill" data-cat="conversion">🔄 Конвертация</button>
+                <button class="cat-pill" data-cat="marketing">📢 Маркетинг</button>
+                <button class="cat-pill" data-cat="other">🛠️ Утилиты</button>
+            </div>
+        </div>
+
+        <!-- Результаты -->
+        <div id="resultsArea">
+            <div id="loadingState" class="text-center py-12 text-gray-500 dark:text-gray-400">
+                <div class="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-3"></div>
+                <p>⏳ Загрузка инструментов...</p>
+            </div>
+            <div id="gridView" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 hidden"></div>
+        </div>
+    </main>
+
+    <!-- Модалка -->
+    <div id="modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 relative modal-overlay">
+            <button class="modal-close absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition" aria-label="Закрыть">✕</button>
+            <div id="modalContent"></div>
+        </div>
     </div>
-  </div>
 
-  <script src="scripts.js"></script>
+    <footer class="border-t border-gray-200 dark:border-gray-800 py-6 mt-auto">
+        <div class="max-w-6xl mx-auto px-4 text-center text-sm text-gray-500 dark:text-gray-400">
+            © 2025-2026 free-tools.ru — коллекция бесплатных онлайн-инструментов
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>
