@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ТекстПро — Универсальный текстовый комбайн</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#f4f6fb;
+    --surface:#ffffff;
+    --surface-hover:#f8f9fe;
+    --primary:#4f46e5;
+    --primary-hover:#4338ca;
+    --primary-light:#eef2ff;
+    --primary-glow:rgba(79,70,229,.18);
+    --accent:#06b6d4;
+    --accent-light:#ecfeff;
+    --success:#10b981;
+    --success-light:#ecfdf5;
+    --warning:#f59e0b;
+    --warning-light:#fffbeb;
+    --danger:#ef4444;
+    --text:#1e1b4b;
+    --text-secondary:#6b7280;
+    --text-muted:#9ca3af;
+    --border:#e2e5f1;
+    --border-focus:#a5b4fc;
+    --radius:14px;
+    --radius-sm:10px;
+    --radius-xs:8px;
+    --shadow:0 1px 3px rgba(30,27,75,.06),0 4px 16px rgba(30,27,75,.04);
+    --shadow-lg:0 4px 24px rgba(30,27,75,.08),0 12px 48px rgba(30,27,75,.05);
+    --shadow-focus:0 0 0 3px var(--primary-glow);
+    --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    --mono:'JetBrains Mono','Fira Code','SF Mono',Consolas,monospace;
+  }
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font);
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ── Header ── */
+  .header{
+    background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 50%,#06b6d4 100%);
+    padding:48px 24px 56px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .header::before{
+    content:'';
+    position:absolute;inset:0;
+    background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .header::after{
+    content:'';position:absolute;bottom:-2px;left:0;right:0;height:32px;
+    background:var(--bg);
+    border-radius:32px 32px 0 0;
+  }
+  .header-content{position:relative;z-index:1;max-width:700px;margin:0 auto}
+  .logo{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:14px;font-weight:700;color:rgba(255,255,255,.85);
+    text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;
+  }
+  .logo svg{width:20px;height:20px}
+  .header h1{
+    font-size:clamp(28px,5vw,42px);font-weight:800;color:#fff;
+    line-height:1.15;margin-bottom:12px;letter-spacing:-.5px;
+  }
+  .header p{
+    font-size:17px;color:rgba(255,255,255,.8);max-width:520px;margin:0 auto;
+    line-height:1.6;
+  }
+
+  /* ── Container ── */
+  .container{max-width:960px;margin:0 auto;padding:0 20px 60px}
+
+  /* ── Tool Tabs ── */
+  .tool-tabs{
+    display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+    margin:-20px 0 32px;position:relative;z-index:2;
+  }
+  .tool-tab{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:12px 22px;border-radius:50px;border:2px solid var(--border);
+    background:var(--surface);cursor:pointer;font-size:14px;font-weight:600;
+    color:var(--text-secondary);transition:all .25s ease;
+    box-shadow:var(--shadow);user-select:none;
+  }
+  .tool-tab:hover{border-color:var(--primary-light);color:var(--text);background:var(--primary-light)}
+  .tool-tab.active{
+    border-color:var(--primary);background:var(--primary);color:#fff;
+    box-shadow:0 4px 16px var(--primary-glow);
+  }
+  .tool-tab .tab-icon{font-size:18px;line-height:1}
+  .tool-tab .tab-badge{
+    font-size:11px;font-weight:700;background:rgba(255,255,255,.25);
+    padding:2px 8px;border-radius:20px;
+  }
+  .tool-tab.active .tab-badge{background:rgba(255,255,255,.25)}
+  .tool-tab:not(.active) .tab-badge{background:var(--primary-light);color:var(--primary)}
+
+  /* ── Sections ── */
+  .tool-section{display:none;animation:fadeUp .4s ease}
+  .tool-section.active{display:block}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+  /* ── Card ── */
+  .card{
+    background:var(--surface);border-radius:var(--radius);
+    box-shadow:var(--shadow);border:1px solid var(--border);
+    padding:28px;margin-bottom:24px;
+    transition:box-shadow .3s ease;
+  }
+  .card:hover{box-shadow:var(--shadow-lg)}
+  .card-title{
+    font-size:18px;font-weight:700;margin-bottom:6px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .card-title .icon{
+    width:36px;height:36px;border-radius:var(--radius-xs);
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;flex-shrink:0;
+  }
+  .card-title .icon.blue{background:var(--primary-light);color:var(--primary)}
+  .card-title .icon.cyan{background:var(--accent-light);color:var(--accent)}
+  .card-title .icon.green{background:var(--success-light);color:var(--success)}
+  .card-title .icon.amber{background:var(--warning-light);color:var(--warning)}
+  .card-desc{font-size:14px;color:var(--text-secondary);margin-bottom:20px}
+
+  /* ── Checkboxes Grid ── */
+  .options-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:10px;margin-bottom:20px;
+  }
+  .option-check{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 16px;border-radius:var(--radius-sm);
+    border:1.5px solid var(--border);cursor:pointer;
+    transition:all .2s ease;background:var(--surface-hover);
+    user-select:none;
+  }
+  .option-check:hover{border-color:var(--border-focus);background:#fff}
+  .option-check.checked{
+    border-color:var(--primary);background:var(--primary-light);
+  }
+  .option-check input{display:none}
+  .check-box{
+    width:20px;height:20px;border-radius:6px;
+    border:2px solid var(--border);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .2s ease;
+  }
+  .option-check.checked .check-box{
+    background:var(--primary);border-color:var(--primary);
+  }
+  .check-box svg{width:12px;height:12px;opacity:0;transition:opacity .2s}
+  .option-check.checked .check-box svg{opacity:1}
+  .option-label{font-size:14px;font-weight:500;color:var(--text)}
+  .option-hint{font-size:12px;color:var(--text-muted);margin-top:1px}
+
+  /* ── Textarea ── */
+  .text-area-wrap{position:relative}
+  .text-area-wrap label{
+    display:block;font-size:13px;font-weight:600;
+    color:var(--text-secondary);margin-bottom:8px;
+    text-transform:uppercase;letter-spacing:.5px;
+  }
+  textarea{
+    width:100%;min-height:180px;padding:16px;
+    border:1.5px solid var(--border);border-radius:var(--radius-sm);
+    font-family:var(--mono);font-size:14px;line-height:1.7;
+    color:var(--text);background:var(--surface);
+    resize:vertical;transition:all .25s ease;
+    outline:none;
+  }
+  textarea::placeholder{color:var(--text-muted)}
+  textarea:focus{border-color:var(--primary);box-shadow:var(--shadow-focus)}
+  .char-count{
+    position:absolute;bottom:12px;right:14px;
+    font-size:12px;color:var(--text-muted);
+    background:var(--surface);padding:2px 8px;border-radius:6px;
+  }
+
+  /* ── Buttons ── */
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:13px 28px;border-radius:var(--radius-sm);
+    font-size:15px;font-weight:600;border:none;cursor:pointer;
+    transition:all .25s ease;font-family:var(--font);
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--primary),#7c3aed);
+    color:#fff;box-shadow:0 4px 14px var(--primary-glow);
+  }
+  .btn-primary:hover{
+    transform:translateY(-1px);
+    box-shadow:0 6px 20px rgba(79,70,229,.3);
+  }
+  .btn-primary:active{transform:translateY(0)}
+  .btn-secondary{
+    background:var(--surface);color:var(--text);
+    border:1.5px solid var(--border);
+  }
+  .btn-secondary:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-light)}
+  .btn-success{background:var(--success);color:#fff}
+  .btn-success:hover{background:#059669;transform:translateY(-1px)}
+  .btn svg{width:18px;height:18px}
+
+  /* ── Result ── */
+  .result-card{
+    background:linear-gradient(135deg,#f8faff 0%,#f0fdf4 100%);
+    border:1.5px solid #d1fae5;border-radius:var(--radius);
+    padding:24px;margin-top:24px;
+    animation:fadeUp .4s ease;
+  }
+  .result-card.has-result{border-color:#a7f3d0}
+  .result-header{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:14px;flex-wrap:wrap;gap:10px;
+  }
+  .result-title{font-size:16px;font-weight:700;color:var(--text)}
+  .result-actions{display:flex;gap:8px}
+  .result-actions .btn{padding:8px 16px;font-size:13px}
+  .result-content{
+    background:var(--surface);border-radius:var(--radius-sm);
+    border:1px solid var(--border);padding:16px;
+    font-family:var(--mono);font-size:14px;line-height:1.8;
+    color:var(--text);max-height:400px;overflow-y:auto;
+    white-space:pre-wrap;word-break:break-word;
+  }
+  .result-content:empty::before{
+    content:'Результат появится здесь...';
+    color:var(--text-muted);font-style:italic;
+  }
+
+  /* ── Stats ── */
+  .stats{
+    display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;
+  }
+  .stat{
+    display:flex;align-items:center;gap:6px;
+    padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;
+  }
+  .stat.blue{background:var(--primary-light);color:var(--primary)}
+  .stat.green{background:var(--success-light);color:var(--success)}
+  .stat.amber{background:var(--warning-light);color:var(--warning)}
+  .stat.cyan{background:var(--accent-light);color:var(--accent)}
+
+  /* ── Toast ── */
+  .toast{
+    position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);
+    background:var(--text);color:#fff;padding:14px 28px;
+    border-radius:50px;font-size:14px;font-weight:600;
+    box-shadow:0 8px 32px rgba(0,0,0,.2);z-index:999;
+    transition:transform .4s cubic-bezier(.16,1,.3,1);
+    pointer-events:none;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0)}
+
+  /* ── Footer ── */
+  .footer{
+    text-align:center;padding:32px 20px 40px;
+    font-size:13px;color:var(--text-muted);
+  }
+  .footer a{color:var(--primary);text-decoration:none;font-weight:600}
+  .footer a:hover{text-decoration:underline}
+
+  /* ── Responsive ── */
+  @media(max-width:640px){
+    .header{padding:36px 16px 44px}
+    .card{padding:20px}
+    .options-grid{grid-template-columns:1fr}
+    .btn-row{flex-direction:column}
+    .btn{width:100%;justify-content:center}
+    .tool-tabs{gap:6px}
+    .tool-tab{padding:10px 16px;font-size:13px}
+  }
+
+  /* ── Scrollbar ── */
+  textarea::-webkit-scrollbar,.result-content::-webkit-scrollbar{width:6px}
+  textarea::-webkit-scrollbar-track,.result-content::-webkit-scrollbar-track{background:transparent}
+  textarea::-webkit-scrollbar-thumb,.result-content::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+  textarea::-webkit-scrollbar-thumb:hover,.result-content::-webkit-scrollbar-thumb:hover{background:var(--text-muted)}
+
+  /* ── Empty state ── */
+  .empty-state{
+    text-align:center;padding:40px 20px;color:var(--text-muted);
+  }
+  .empty-state svg{width:48px;height:48px;margin-bottom:12px;opacity:.4}
+  .empty-state p{font-size:14px}
+
+  /* ── Highlight ── */
+  mark{background:#fef08a;padding:1px 4px;border-radius:4px;color:var(--text)}
+
+  /* ── Sort buttons ── */
+  .sort-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .sort-btn{
+    padding:8px 16px;border-radius:20px;border:1.5px solid var(--border);
+    background:var(--surface);cursor:pointer;font-size:13px;font-weight:600;
+    color:var(--text-secondary);transition:all .2s;font-family:var(--font);
+  }
+  .sort-btn:hover{border-color:var(--primary);color:var(--primary)}
+  .sort-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+  /* ── Extractor tags ── */
+  .extract-result{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .extract-tag{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;
+    font-family:var(--mono);transition:all .2s;cursor:default;
+  }
+  .extract-tag.email{background:#ede9fe;color:#7c3aed}
+  .extract-tag.url{background:#dbeafe;color:#2563eb}
+  .extract-tag.phone{background:#fce7f3;color:#db2777}
+  .extract-tag:hover{transform:scale(1.03)}
+  .extract-tag .copy-icon{opacity:.5;transition:opacity .2s}
+  .extract-tag:hover .copy-icon{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- ════════ HEADER ════════ -->
+<header class="header">
+  <div class="header-content">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      ТекстПро
+    </div>
+    <h1>Универсальный текстовый комбайн</h1>
+    <p>Очистка, дедупликация и извлечение данных из текста — всё в одном месте, бесплатно и без регистрации</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ════════ TOOL TABS ════════ -->
+  <div class="tool-tabs">
+    <div class="tool-tab active" data-tool="cleaner" onclick="switchTool('cleaner')">
+      <span class="tab-icon">🧹</span>
+      Очистка текста
+    </div>
+    <div class="tool-tab" data-tool="dedup" onclick="switchTool('dedup')">
+      <span class="tab-icon">📋</span>
+      Дедупликация
+    </div>
+    <div class="tool-tab" data-tool="extractor" onclick="switchTool('extractor')">
+      <span class="tab-icon">🎯</span>
+      Лид-экстрактор
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!--              TOOL 1: CLEANER               -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="tool-section active" id="tool-cleaner">
+
+    <div class="card">
+      <div class="card-title">
+        <span class="icon blue">🧹</span>
+        Параметры очистки
+      </div>
+      <div class="card-desc">Отметьте нужные функции — результат применит все выбранные фильтры</div>
+
+      <div class="options-grid" id="cleaner-options">
+        <label class="option-check" onclick="toggleCheck(this)">
+          <input type="checkbox" checked>
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><div class="option-label">Удалить HTML-теги</div><div class="option-hint">&lt;br&gt;, &lt;p&gt;, &lt;div&gt; и др.</div></div>
+        </label>
+        <label class="option-check" onclick="toggleCheck(this)">
+          <input type="checkbox" checked>
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><div class="option-label">Убрать лишние пробелы</div><div class="option-hint">Двойные → одинарные</div></div>
+        </label>
+        <label class="option-check" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><div class="option-label">Удалить пустые строки</div><div class="option-hint">Убрать строки без текста</div></div>
+        </label>
+        <label class="option-check" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><div class="option-label">Очистить Markdown</div><div class="option-hint">*, #, >, ~, ` и др.</div></div>
+        </label>
+        <label class="option-check" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><div class="option-label">Удалить эмодзи</div><div class="option-hint">😀🎉👍 и все юникод-символы</div></div>
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="text-area-wrap">
+        <label>📝 Исходный текст</label>
+        <textarea id="cleaner-input" placeholder="Вставьте текст сюда... Например, с HTML-разметкой, лишними пробелами или эмодзи 😊"></textarea>
+        <span class="char-count" id="cleaner-count">0 символов</span>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="processCleaner()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Очистить текст
+        </button>
+        <button class="btn btn-secondary" onclick="clearField('cleaner')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Очистить поле
+        </button>
+      </div>
+
+      <div class="result-card" id="cleaner-result-card" style="display:none">
+        <div class="result-header">
+          <div class="result-title">✨ Результат очистки</div>
+          <div class="result-actions">
+            <button class="btn btn-secondary" onclick="copyResult('cleaner-result')">📋 Копировать</button>
+            <button class="btn btn-secondary" onclick="downloadResult('cleaner-result','cleaned-text.txt')">💾 Скачать</button>
+          </div>
+        </div>
+        <div class="stats" id="cleaner-stats"></div>
+        <div class="result-content" id="cleaner-result"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!--            TOOL 2: DEDUPLICATOR            -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="tool-section" id="tool-dedup">
+
+    <div class="card">
+      <div class="card-title">
+        <span class="icon cyan">📋</span>
+        Дедупликатор списков
+      </div>
+      <div class="card-desc">Вставьте список — каждая строка считается отдельным элементом</div>
+
+      <div class="text-area-wrap">
+        <label>📝 Ваш список</label>
+        <textarea id="dedup-input" placeholder="apple&#10;banana&#10;apple&#10;cherry&#10;banana&#10;date"></textarea>
+        <span class="char-count" id="dedup-count">0 строк</span>
+      </div>
+
+      <div class="sort-row">
+        <button class="sort-btn active" data-sort="none" onclick="setSort(this,'dedup')">Без сортировки</button>
+        <button class="sort-btn" data-sort="az" onclick="setSort(this,'dedup')">А → Я</button>
+        <button class="sort-btn" data-sort="za" onclick="setSort(this,'dedup')">Я → А</button>
+        <button class="sort-btn" data-sort="len" onclick="setSort(this,'dedup')">По длине</button>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="processDedup()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Удалить дубликаты
+        </button>
+        <button class="btn btn-secondary" onclick="clearField('dedup')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Очистить поле
+        </button>
+      </div>
+
+      <div class="result-card" id="dedup-result-card" style="display:none">
+        <div class="result-header">
+          <div class="result-title">✨ Уникальные строки</div>
+          <div class="result-actions">
+            <button class="btn btn-secondary" onclick="copyResult('dedup-result')">📋 Копировать</button>
+            <button class="btn btn-secondary" onclick="downloadResult('dedup-result','unique-list.txt')">💾 Скачать</button>
+          </div>
+        </div>
+        <div class="stats" id="dedup-stats"></div>
+        <div class="result-content" id="dedup-result"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!--            TOOL 3: EXTRACTOR               -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="tool-section" id="tool-extractor">
+
+    <div class="card">
+      <div class="card-title">
+        <span class="icon green">🎯</span>
+        Что извлечь?
+      </div>
+      <div class="card-desc">Выберите типы данных для поиска в тексте</div>
+
+      <div class="options-grid" id="extractor-options">
+        <label class="option-check" onclick="toggleCheck(this)">
+          <input type="checkbox" checked>
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><div class="option-label">📧 Email-адреса</div><div class="option-hint">name@example.com</div></div>
+        </label>
+        <label class="option-check" onclick="toggleCheck(this)">
+          <input type="checkbox" checked>
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><div class="option-label">🔗 Ссылки (URL)</div><div class="option-hint">https://example.com</div></div>
+        </label>
+        <label class="option-check" onclick="toggleCheck(this)">
+          <input type="checkbox" checked>
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><div class="option-label">📱 Номера телефонов</div><div class="option-hint">+7, 8, международные</div></div>
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="text-area-wrap">
+        <label>📝 Исходный текст</label>
+        <textarea id="extractor-input" placeholder="Вставьте большой текст, из которого нужно вытащить контакты, ссылки или телефоны..."></textarea>
+        <span class="char-count" id="extractor-count">0 символов</span>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="processExtractor()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Извлечь данные
+        </button>
+        <button class="btn btn-secondary" onclick="clearField('extractor')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Очистить поле
+        </button>
+      </div>
+
+      <div class="result-card" id="extractor-result-card" style="display:none">
+        <div class="result-header">
+          <div class="result-title">🎯 Найденные данные</div>
+          <div class="result-actions">
+            <button class="btn btn-secondary" onclick="copyAllExtractor()">📋 Копировать всё</button>
+          </div>
+        </div>
+        <div class="stats" id="extractor-stats"></div>
+        <div id="extractor-results"></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ════════ FOOTER ════════ -->
+<footer class="footer">
+  <p>ТекстПро — бесплатный онлайн-инструмент для работы с текстом</p>
+  <p style="margin-top:6px">Все данные обрабатываются в вашем браузере. Ничего не отправляется на сервер.</p>
+</footer>
+
+<!-- ════════ TOAST ════════ -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+//              UTILITIES
+// ═══════════════════════════════════════
+let dedupSort = 'none';
+
+function toggleCheck(el) {
+  const cb = el.querySelector('input[type="checkbox"]');
+  cb.checked = !cb.checked;
+  el.classList.toggle('checked', cb.checked);
+}
+
+// Init checked states
+document.querySelectorAll('.option-check input:checked').forEach(cb => {
+  cb.closest('.option-check').classList.add('checked');
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function switchTool(name) {
+  document.querySelectorAll('.tool-tab').forEach(t => t.classList.toggle('active', t.dataset.tool === name));
+  document.querySelectorAll('.tool-section').forEach(s => s.classList.toggle('active', s.id === 'tool-' + name));
+}
+
+function clearField(tool) {
+  document.getElementById(tool + '-input').value = '';
+  updateCount(tool);
+  const rc = document.getElementById(tool + '-result-card');
+  if (rc) rc.style.display = 'none';
+}
+
+function updateCount(tool) {
+  const ta = document.getElementById(tool + '-input');
+  const counter = document.getElementById(tool + '-count');
+  if (tool === 'dedup') {
+    const lines = ta.value.trim() ? ta.value.split('\n').filter(l => l.trim()).length : 0;
+    counter.textContent = lines + ' строк';
+  } else {
+    counter.textContent = ta.value.length + ' символов';
+  }
+}
+
+document.querySelectorAll('textarea').forEach(ta => {
+  const tool = ta.id.replace('-input', '');
+  ta.addEventListener('input', () => updateCount(tool));
+});
+
+function copyResult(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => showToast('✅ Скопировано в буфер обмена'));
+}
+
+function downloadResult(id, filename) {
+  const text = document.getElementById(id).textContent;
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('💾 Файл скачан');
+}
+
+function setSort(btn, tool) {
+  btn.closest('.sort-row').querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  dedupSort = btn.dataset.sort;
+}
+
+// ═══════════════════════════════════════
+//            TOOL 1: CLEANER
+// ═══════════════════════════════════════
+function processCleaner() {
+  const input = document.getElementById('cleaner-input').value;
+  if (!input.trim()) { showToast('⚠️ Введите текст для очистки'); return; }
+
+  const checks = document.querySelectorAll('#cleaner-options input');
+  let text = input;
+  const originalLen = text.length;
+
+  // HTML tags
+  if (checks[0].checked) {
+    text = text.replace(/<\/?[^>]+(>|$)/g, '');
+    text = text.replace(/&[a-zA-Z0-9#]+;/g, match => {
+      const map = {'&amp;':'&','&lt;':'<','&gt;':'>','&quot;':'"','&#39;':"'",'&nbsp;':' '};
+      return map[match] || match;
+    });
+  }
+
+  // Extra spaces
+  if (checks[1].checked) {
+    text = text.replace(/[ \t]+/g, ' ').replace(/^ /gm, '').replace(/ $/gm, '');
+  }
+
+  // Empty lines
+  if (checks[2].checked) {
+    text = text.replace(/\n\s*\n/g, '\n').replace(/^\s+|\s+$/g, '');
+  }
+
+  // Markdown
+  if (checks[3].checked) {
+    text = text
+      .replace(/^#{1,6}\s+/gm, '')
+      .replace(/\*\*\*(.+?)\*\*\*/g, '$1')
+      .replace(/\*\*(.+?)\*\*/g, '$1')
+      .replace(/\*(.+?)\*/g, '$1')
+      .replace(/~~(.+?)~~/g, '$1')
+      .replace(/`(.+?)`/g, '$1')
+      .replace(/^>\s?/gm, '')
+      .replace(/^[-*_]{3,}$/gm, '')
+      .replace(/^\s*[-*+]\s+/gm, '')
+      .replace(/^\s*\d+\.\s+/gm, '')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/^---$/gm, '');
+  }
+
+  // Emojis
+  if (checks[4].checked) {
+    text = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{200D}\u{20E3}\u{231A}-\u{231B}\u{23E9}-\u{23F3}\u{23F8}-\u{23FA}\u{25AA}-\u{25AB}\u{25B6}\u{25C0}\u{25FB}-\u{25FE}]/gu, '');
+  }
+
+  // Clean up
+  text = text.replace(/\n{3,}/g, '\n\n').trim();
+
+  const resultEl = document.getElementById('cleaner-result');
+  resultEl.textContent = text;
+
+  const stats = document.getElementById('cleaner-stats');
+  const removed = originalLen - text.length;
+  stats.innerHTML = `
+    <span class="stat blue">Было: ${originalLen} символов</span>
+    <span class="stat green">Стало: ${text.length} символов</span>
+    ${removed > 0 ? `<span class="stat amber">Удалено: ${removed} символов</span>` : ''}
+  `;
+
+  document.getElementById('cleaner-result-card').style.display = 'block';
+  showToast('✅ Текст очищен');
+}
+
+// ═══════════════════════════════════════
+//          TOOL 2: DEDUPLICATOR
+// ═══════════════════════════════════════
+function processDedup() {
+  const input = document.getElementById('dedup-input').value;
+  if (!input.trim()) { showToast('⚠️ Вставьте список'); return; }
+
+  const lines = input.split('\n').filter(l => l.trim() !== '');
+  const total = lines.length;
+  const unique = [...new Set(lines.map(l => l.trim()))];
+  const duplicates = total - unique.length;
+
+  let result = [...unique];
+
+  if (dedupSort === 'az') {
+    result.sort((a, b) => a.localeCompare(b, 'ru'));
+  } else if (dedupSort === 'za') {
+    result.sort((a, b) => b.localeCompare(a, 'ru'));
+  } else if (dedupSort === 'len') {
+    result.sort((a, b) => b.length - a.length || a.localeCompare(b, 'ru'));
+  }
+
+  const resultEl = document.getElementById('dedup-result');
+  resultEl.textContent = result.join('\n');
+
+  const stats = document.getElementById('dedup-stats');
+  stats.innerHTML = `
+    <span class="stat blue">Всего строк: ${total}</span>
+    <span class="stat green">Уникальных: ${result.length}</span>
+    ${duplicates > 0 ? `<span class="stat amber">Дубликатов удалено: ${duplicates}</span>` : ''}
+  `;
+
+  document.getElementById('dedup-result-card').style.display = 'block';
+  showToast(`✅ Удалено ${duplicates} дубликатов`);
+}
+
+// ═══════════════════════════════════════
+//          TOOL 3: EXTRACTOR
+// ═══════════════════════════════════════
+function processExtractor() {
+  const input = document.getElementById('extractor-input').value;
+  if (!input.trim()) { showToast('⚠️ Вставьте текст'); return; }
+
+  const checks = document.querySelectorAll('#extractor-options input');
+  const container = document.getElementById('extractor-results');
+  container.innerHTML = '';
+  let totalFound = 0;
+
+  const patterns = {
+    emails: { regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, label: 'Email-адреса', icon: '📧', cls: 'email' },
+    urls: { regex: /https?:\/\/[^\s<>"'`)\]},;]+/g, label: 'Ссылки', icon: '🔗', cls: 'url' },
+    phones: { regex: /(?:\+?\d{1,3}[\s.-]?)?\(?\d{2,4}\)?[\s.-]?\d{3}[\s.-]?\d{2}[\s.-]?\d{2}(?:[\s.-]?\d{2})?/g, label: 'Телефоны', icon: '📱', cls: 'phone' }
+  };
+
+  if (checks[0].checked) {
+    const found = [...new Set(input.match(patterns.emails.regex) || [])];
+    if (found.length) {
+      totalFound += found.length;
+      container.innerHTML += buildExtractSection(patterns.emails, found);
+    }
+  }
+  if (checks[1].checked) {
+    const found = [...new Set(input.match(patterns.urls.regex) || [])];
+    if (found.length) {
+      totalFound += found.length;
+      container.innerHTML += buildExtractSection(patterns.urls, found);
+    }
+  }
+  if (checks[2].checked) {
+    let found = (input.match(patterns.phones.regex) || []).map(p => p.trim());
+    // Filter out too short / too long
+    found = [...new Set(found.filter(p => p.replace(/\D/g, '').length >= 6 && p.replace(/\D/g, '').length <= 15))];
+    if (found.length) {
+      totalFound += found.length;
+      container.innerHTML += buildExtractSection(patterns.phones, found);
+    }
+  }
+
+  if (totalFound === 0) {
+    container.innerHTML = '<div class="empty-state"><p>Ничего не найдено. Попробуйте изменить параметры поиска.</p></div>';
+  }
+
+  const stats = document.getElementById('extractor-stats');
+  stats.innerHTML = `<span class="stat green">Найдено: ${totalFound}</span>`;
+  document.getElementById('extractor-result-card').style.display = 'block';
+  if (totalFound > 0) showToast(`🎯 Найдено ${totalFound} элементов`);
+  else showToast('⚠️ Ничего не найдено');
+}
+
+function buildExtractSection(pattern, items) {
+  const tags = items.map(item =>
+    `<span class="extract-tag ${pattern.cls}" onclick="navigator.clipboard.writeText('${item.replace(/'/g, "\\'")}');showToast('📋 Скопировано')">${item}<span class="copy-icon">📋</span></span>`
+  ).join('');
+
+  return `<div style="margin-bottom:20px">
+    <div style="font-size:14px;font-weight:700;margin-bottom:10px">${pattern.icon} ${pattern.label} <span style="color:var(--text-muted);font-weight:400;font-size:13px">(${items.length})</span></div>
+    <div class="extract-result">${tags}</div>
+  </div>`;
+}
+
+function copyAllExtractor() {
+  const container = document.getElementById('extractor-results');
+  const tags = container.querySelectorAll('.extract-tag');
+  const text = [...tags].map(t => t.textContent.replace('📋', '').trim()).join('\n');
+  if (text) {
+    navigator.clipboard.writeText(text).then(() => showToast('✅ Всё скопировано'));
+  }
+}
+
+// Init counts
+['cleaner', 'dedup', 'extractor'].forEach(updateCount);
+</script>
+</body>
+</html>
