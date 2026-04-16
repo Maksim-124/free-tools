@@ -9,6 +9,14 @@
     <priority>1.0</priority>
   </url>
 
+  <!-- Инструмент: ТекстПро (новый) -->
+  <url>
+    <loc>https://free-tools.ru/tools/ТекстПРО.html</loc>
+    <lastmod>2026-04-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Обзорная страница инструмента (реальный файл) -->
   <url>
     <loc>https://free-tools.ru/carve-photos.html</loc>
