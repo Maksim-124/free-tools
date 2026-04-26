@@ -1,12 +1,29 @@
 <!DOCTYPE html>
 <html lang="ru" class="scroll-smooth">
 <head>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js', 'ym');
+
+    ym(102614891, 'init', {clickmap:true, referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/102614891" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     
     <!-- SEO базовые -->
-    <title>free-tools.ru — Бесплатные онлайн-инструменты, поиск по задачам</title>
-    <meta name="description" content="Бесплатные онлайн-инструменты для офиса, дизайна, разработки, ИИ, конвертации и маркетинга. Умный нечёткий поиск, тёмная тема, каталог полезных сервисов.">
+    <title>free-tools.ru | Каталог бесплатных онлайн-инструментов для любых задач</title>
+    <meta name="description" content="Все нужные сервисы в одном месте: нейросети, редакторы графики, инструменты для SEO, маркетинга и разработки. Поиск по категориям и задачам — найдите решение за пару секунд.">
     <meta name="keywords" content="бесплатные инструменты, онлайн сервисы, ИИ инструменты, конвертация файлов, дизайн онлайн, офисные приложения">
     <meta name="author" content="free-tools.ru">
     <meta name="robots" content="index, follow">
@@ -15,10 +32,10 @@
     <!-- Open Graph / Facebook / VK / Telegram -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://free-tools.ru/">
-    <meta property="og:title" content="free-tools.ru — Подберём инструмент под задачу">
-    <meta property="og:description" content="Каталог бесплатных онлайн-инструментов с нечётким поиском, тёмной темой и аналитикой. Найди то, что нужно!">
+    <meta property="og:title" content="free-tools.ru — Найди идеальный инструмент под свою задачу">
+    <meta property="og:description" content="Огромная база бесплатных сервисов для офиса, дизайна, ИИ и разработки. Больше не нужно искать по всему интернету — всё собрано здесь.">
     <meta property="og:image" content="https://free-tools.ru/og-image.png">
-    <meta property="og:image:alt" content="Превью free-tools.ru — множество инструментов">
+    <meta property="og:image:alt" content="Превью каталога бесплатных онлайн-инструментов">
     <meta property="og:site_name" content="free-tools.ru">
     <meta property="og:locale" content="ru_RU">
     
@@ -74,12 +91,40 @@
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col">
-    <header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-2 text-xl font-bold tracking-tight">🛠️ <span>free-tools</span></a>
-            <button id="themeToggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition" aria-label="Переключить тему">🌓</button>
+    <header class="sticky top-0 z-50 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      
+      <!-- Логотип + Название -->
+      <a href="/" class="flex items-center gap-2 md:gap-3 group shrink-0">
+        <!-- Логотип-собака -->
+        <div class="w-8 h-8 md:w-10 md:h-10 relative flex-shrink-0">
+          <img 
+            src="/assets/mascot.webp" 
+            alt="free-tools.ru" 
+            class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
+            loading="eager"
+          >
         </div>
-    </header>
+        
+        <!-- Название с градиентом под логотип -->
+        <span class="text-xl md:text-2xl lg:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 dark:from-orange-400 dark:via-pink-400 dark:to-purple-500 bg-clip-text text-transparent select-none drop-shadow-sm">
+          free-tools
+        </span>
+      </a>
+
+      <!-- Переключатель темы -->
+      <button 
+        id="themeToggle" 
+        class="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/50 text-xl"
+        aria-label="Переключить тему"
+      >
+        🌙
+      </button>
+
+    </div>
+  </div>
+</header>
 
     <main class="flex-1 max-w-6xl mx-auto px-4 py-8 w-full">
         <section class="text-center mb-10">
