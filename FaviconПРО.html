@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+      (function(m,e,t,r,i,k,a){
+          m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+          m[i].l=1*new Date();
+          for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js', 'ym');
+
+      ym(102614891, 'init', {clickmap:true, referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/102614891" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>FaviconПРО Generator — создай набор иконок для сайта</title>
+<!-- JSZip для упаковки PNG в архив -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --bg: #f4f6fb;
+    --surface: #ffffff;
+    --surface-hover: #f8f9fe;
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-light: #eef2ff;
+    --primary-glow: rgba(79, 70, 229, 0.18);
+    --accent: #06b6d4;
+    --accent-light: #ecfeff;
+    --success: #10b981;
+    --success-light: #ecfdf5;
+    --warning: #f59e0b;
+    --warning-light: #fffbeb;
+    --danger: #ef4444;
+    --text: #1e1b4b;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --border: #e2e5f1;
+    --border-focus: #a5b4fc;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --radius-xs: 8px;
+    --shadow: 0 1px 3px rgba(30, 27, 75, 0.06), 0 4px 16px rgba(30, 27, 75, 0.04);
+    --shadow-lg: 0 4px 24px rgba(30, 27, 75, 0.08), 0 12px 48px rgba(30, 27, 75, 0.05);
+    --shadow-focus: 0 0 0 3px var(--primary-glow);
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Header (градиент как в ТекстПро) ── */
+  .header {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #06b6d4 100%);
+    padding: 48px 24px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 32px;
+    background: var(--bg);
+    border-radius: 32px 32px 0 0;
+  }
+  .header-content {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .logo svg {
+    width: 20px;
+    height: 20px;
+  }
+  .header h1 {
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+  .header p {
+    font-size: 17px;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ── Container ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* ── Card (как в ТекстПро) ── */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    padding: 28px;
+    margin-bottom: 24px;
+    transition: box-shadow 0.3s ease;
+  }
+  .card:hover {
+    box-shadow: var(--shadow-lg);
+  }
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-title .icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .card-title .icon.blue {
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+  .card-title .icon.cyan {
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+  .card-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+
+  /* ── Options Grid (галочки) ── */
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .option-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--surface-hover);
+    user-select: none;
+  }
+  .option-check:hover {
+    border-color: var(--border-focus);
+    background: #fff;
+  }
+  .option-check.checked {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+  .option-check input {
+    display: none;
+  }
+  .check-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  .option-check.checked .check-box {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+  .check-box svg {
+    width: 12px;
+    height: 12px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .option-check.checked .check-box svg {
+    opacity: 1;
+  }
+  .option-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .option-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+
+  /* ── Drag & Drop область ── */
+  .dropzone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-sm);
+    padding: 32px 24px;
+    text-align: center;
+    background: var(--surface-hover);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    margin-bottom: 16px;
+  }
+  .dropzone.drag-over {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+  .dropzone-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+  .dropzone-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .dropzone-text strong {
+    color: var(--primary);
+  }
+
+  /* ── Предпросмотр ── */
+  .preview-area {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+  .preview-img {
+    width: 64px;
+    height: 64px;
+    background: repeating-conic-gradient(#e5e7eb 0% 25%, #fff 0% 50%);
+    background-size: 20px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .preview-img img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  .preview-info {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  /* ── Кнопки ── */
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 28px;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: var(--font);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), #7c3aed);
+    color: #fff;
+    box-shadow: 0 4px 14px var(--primary-glow);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1.5px solid var(--border);
+  }
+  .btn-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
+  }
+  .btn-success {
+    background: var(--success);
+    color: #fff;
+  }
+  .btn-success:hover {
+    background: #059669;
+    transform: translateY(-1px);
+  }
+  .btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* ── Результат: галерея иконок ── */
+  .result-card {
+    background: linear-gradient(135deg, #f8faff 0%, #f0fdf4 100%);
+    border: 1.5px solid #d1fae5;
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-top: 24px;
+    animation: fadeUp 0.4s ease;
+  }
+  .result-card.has-result {
+    border-color: #a7f3d0;
+  }
+  .result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .result-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .result-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .result-actions .btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .icon-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 12px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .icon-card:hover {
+    transform: scale(1.02);
+    box-shadow: var(--shadow);
+  }
+  .icon-preview {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: repeating-conic-gradient(#e5e7eb 0% 25%, #fff 0% 50%);
+    background-size: 20px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .icon-preview img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+  }
+  .icon-label {
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--mono);
+    color: var(--text-secondary);
+  }
+  .icon-size {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  /* ── Прогресс бар ── */
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    margin: 16px 0;
+    overflow: hidden;
+  }
+  .progress-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    transition: width 0.2s;
+  }
+
+  /* ── Toast уведомления ── */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--text);
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 32px 20px 40px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  /* ── Анимации ── */
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .header {
+      padding: 36px 16px 44px;
+    }
+    .card {
+      padding: 20px;
+    }
+    .options-grid {
+      grid-template-columns: 1fr;
+    }
+    .btn-row {
+      flex-direction: column;
+    }
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+    .icon-grid {
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-content">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+        <polyline points="21 15 16 10 5 21"></polyline>
+      </svg>
+      FaviconПРО
+    </div>
+    <h1>Генератор фавиконов</h1>
+    <p>Преврати свой логотип в полный набор иконок для сайта. Никакой загрузки на сервер, всё прямо в браузере.</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Карточка с выбором размеров -->
+  <div class="card">
+    <div class="card-title">
+      <span class="icon blue">🎨</span>
+      Какие размеры нужны?
+    </div>
+    <div class="card-desc">Отметьте необходимые размеры иконок. Чем больше размеров, тем универсальнее набор.</div>
+
+    <div class="options-grid" id="sizes-options">
+      <!-- Галочки будут добавлены через JS, но можно и статически -->
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="select-all-sizes">✅ Выбрать все</button>
+      <button class="btn btn-secondary" id="deselect-all-sizes">❌ Снять все</button>
+    </div>
+  </div>
+
+  <!-- Карточка загрузки изображения -->
+  <div class="card">
+    <div class="card-title">
+      <span class="icon cyan">🖼️</span>
+      Загрузите логотип
+    </div>
+    <div class="card-desc">Поддерживаются PNG, JPEG, WEBP, SVG (растровый). Изображение будет автоматически вписано в квадрат с прозрачным фоном.</div>
+
+    <div class="dropzone" id="dropzone">
+      <div class="dropzone-icon">📂</div>
+      <div class="dropzone-text">Перетащите файл сюда или <strong>нажмите для выбора</strong></div>
+      <input type="file" id="fileInput" accept="image/png, image/jpeg, image/webp, image/svg+xml" style="display: none;">
+    </div>
+
+    <div id="preview-container" style="display: none;">
+      <div class="preview-area">
+        <div class="preview-img">
+          <img id="preview-image" alt="Предпросмотр">
+        </div>
+        <div class="preview-info">
+          <span id="preview-filename"></span><br>
+          <span id="preview-dimensions"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="generateBtn" disabled>✨ Сгенерировать фавиконы</button>
+      <button class="btn btn-secondary" id="clearBtn">🗑️ Очистить</button>
+    </div>
+
+    <!-- Прогресс -->
+    <div class="progress-bar" id="progressBar" style="display: none;">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <!-- Область результата -->
+  <div id="resultArea" style="display: none;">
+    <div class="result-card">
+      <div class="result-header">
+        <div class="result-title">📦 Готовый набор иконок</div>
+        <div class="result-actions">
+          <button class="btn btn-success" id="downloadZipBtn">💾 Скачать все (ZIP)</button>
+        </div>
+      </div>
+      <div id="iconGallery" class="icon-grid"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <p>Генератор фавиконов — бесплатный инструмент, работающий полностью в вашем браузере</p>
+  <p style="margin-top:6px">Никакие изображения не отправляются на сервер — всё остаётся приватным.</p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ---------- Конфигурация ----------
+  const defaultSizes = [16, 32, 48, 64, 128, 180, 192, 512];
+  let selectedSizes = new Set(defaultSizes);
+  let currentImageFile = null;
+  let currentImageBitmap = null;
+  let generatedBlobs = new Map(); // размер -> Blob
+
+  // DOM элементы
+  const sizesContainer = document.getElementById('sizes-options');
+  const selectAllBtn = document.getElementById('select-all-sizes');
+  const deselectAllBtn = document.getElementById('deselect-all-sizes');
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const previewContainer = document.getElementById('preview-container');
+  const previewImg = document.getElementById('preview-image');
+  const previewFilename = document.getElementById('preview-filename');
+  const previewDimensions = document.getElementById('preview-dimensions');
+  const generateBtn = document.getElementById('generateBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const resultArea = document.getElementById('resultArea');
+  const iconGallery = document.getElementById('iconGallery');
+  const downloadZipBtn = document.getElementById('downloadZipBtn');
+  const progressBar = document.getElementById('progressBar');
+  const progressFill = document.getElementById('progressFill');
+
+  // Вспомогательные функции
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  function updateProgress(percent) {
+    progressBar.style.display = 'block';
+    progressFill.style.width = percent + '%';
+    if (percent >= 100) {
+      setTimeout(() => { progressBar.style.display = 'none'; }, 500);
+    }
+  }
+
+  // Рендер чекбоксов для размеров
+  function renderSizeOptions() {
+    sizesContainer.innerHTML = '';
+    for (const size of defaultSizes) {
+      const isChecked = selectedSizes.has(size);
+      const optionDiv = document.createElement('div');
+      optionDiv.className = `option-check ${isChecked ? 'checked' : ''}`;
+      optionDiv.setAttribute('data-size', size);
+      optionDiv.innerHTML = `
+        <input type="checkbox" ${isChecked ? 'checked' : ''}>
+        <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <div>
+          <div class="option-label">${size} × ${size} px</div>
+          <div class="option-hint">${size === 16 ? 'вкладка браузера' : size === 32 ? 'панель задач' : size === 180 ? 'Apple Touch Icon' : size === 512 ? 'PWA / магазин' : 'стандартный'}</div>
+        </div>
+      `;
+      optionDiv.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const cb = optionDiv.querySelector('input');
+        cb.checked = !cb.checked;
+        if (cb.checked) {
+          selectedSizes.add(size);
+          optionDiv.classList.add('checked');
+        } else {
+          selectedSizes.delete(size);
+          optionDiv.classList.remove('checked');
+        }
+        // если нет выбранных размеров, блокируем генерацию
+        generateBtn.disabled = (selectedSizes.size === 0) || !currentImageBitmap;
+      });
+      sizesContainer.appendChild(optionDiv);
+    }
+  }
+
+  // Выбрать все размеры
+  function selectAllSizes() {
+    selectedSizes.clear();
+    for (const size of defaultSizes) selectedSizes.add(size);
+    renderSizeOptions();
+    generateBtn.disabled = !currentImageBitmap;
+  }
+
+  // Снять все размеры
+  function deselectAllSizes() {
+    selectedSizes.clear();
+    renderSizeOptions();
+    generateBtn.disabled = true;
+  }
+
+  // Обработка загруженного файла
+  async function handleFile(file) {
+    if (!file) return;
+    if (!file.type.match('image.*')) {
+      showToast('❌ Пожалуйста, загрузите изображение (PNG, JPEG, WEBP)');
+      return;
+    }
+    currentImageFile = file;
+    // Создаём превью
+    const objectUrl = URL.createObjectURL(file);
+    previewImg.src = objectUrl;
+    previewImg.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      previewDimensions.innerText = `${previewImg.naturalWidth} × ${previewImg.naturalHeight} px`;
+    };
+    previewFilename.innerText = file.name;
+    previewContainer.style.display = 'block';
+
+    // Создаём ImageBitmap для дальнейшей работы
+    try {
+      if (currentImageBitmap) currentImageBitmap.close();
+      currentImageBitmap = await createImageBitmap(file);
+      generateBtn.disabled = (selectedSizes.size === 0);
+    } catch (err) {
+      showToast('❌ Не удалось декодировать изображение');
+      console.error(err);
+      generateBtn.disabled = true;
+    }
+  }
+
+  // Очистка всего
+  function clearAll() {
+    currentImageFile = null;
+    if (currentImageBitmap) {
+      currentImageBitmap.close();
+      currentImageBitmap = null;
+    }
+    previewContainer.style.display = 'none';
+    resultArea.style.display = 'none';
+    generatedBlobs.clear();
+    generateBtn.disabled = true;
+    fileInput.value = '';
+    showToast('🗑️ Очищено');
+  }
+
+  // Генерация иконок
+  async function generateFavicons() {
+    if (!currentImageBitmap || selectedSizes.size === 0) {
+      showToast('⚠️ Сначала выберите размеры и загрузите изображение');
+      return;
+    }
+
+    const sizes = Array.from(selectedSizes).sort((a,b) => a-b);
+    generatedBlobs.clear();
+    updateProgress(0);
+
+    // Подготавливаем canvas для каждого размера
+    for (let i = 0; i < sizes.length; i++) {
+      const size = sizes[i];
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      
+      // Очищаем (прозрачный фон)
+      ctx.clearRect(0, 0, size, size);
+      
+      // Рисуем изображение с сохранением пропорций, центрируем
+      const imgW = currentImageBitmap.width;
+      const imgH = currentImageBitmap.height;
+      let drawW, drawH, offsetX = 0, offsetY = 0;
+      
+      if (imgW > imgH) {
+        drawW = size;
+        drawH = (imgH / imgW) * size;
+        offsetY = (size - drawH) / 2;
+      } else {
+        drawH = size;
+        drawW = (imgW / imgH) * size;
+        offsetX = (size - drawW) / 2;
+      }
+      
+      ctx.drawImage(currentImageBitmap, 0, 0, imgW, imgH, offsetX, offsetY, drawW, drawH);
+      
+      // Конвертируем в PNG Blob
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      generatedBlobs.set(size, blob);
+      
+      updateProgress(((i + 1) / sizes.length) * 100);
+    }
+
+    // Отображаем галерею
+    displayGallery();
+    resultArea.style.display = 'block';
+    showToast(`✅ Сгенерировано ${generatedBlobs.size} иконок`);
+  }
+
+  // Отображение галереи с превью каждой иконки
+  function displayGallery() {
+    iconGallery.innerHTML = '';
+    const sorted = Array.from(generatedBlobs.keys()).sort((a,b)=>a-b);
+    for (const size of sorted) {
+      const blob = generatedBlobs.get(size);
+      const url = URL.createObjectURL(blob);
+      const card = document.createElement('div');
+      card.className = 'icon-card';
+      card.innerHTML = `
+        <div class="icon-preview">
+          <img src="${url}" alt="${size}x${size}">
+        </div>
+        <div class="icon-label">${size}×${size}</div>
+        <div class="icon-size">PNG</div>
+      `;
+      card.addEventListener('click', () => {
+        // скачать один файл
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `favicon-${size}x${size}.png`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        showToast(`📥 Скачан favicon-${size}x${size}.png`);
+      });
+      iconGallery.appendChild(card);
+      // отзываем URL после рендера? не сразу, а при клике. Но для экономии памяти можно хранить URL'ы в массив и отзывать при новой генерации
+    }
+  }
+
+  // Скачать все в ZIP
+  async function downloadAllAsZip() {
+    if (generatedBlobs.size === 0) {
+      showToast('Нет сгенерированных иконок');
+      return;
+    }
+    const zip = new JSZip();
+    for (const [size, blob] of generatedBlobs.entries()) {
+      zip.file(`favicon-${size}x${size}.png`, blob);
+    }
+    // Добавим также apple-touch-icon.png (если есть 180)
+    if (generatedBlobs.has(180)) {
+      zip.file('apple-touch-icon.png', generatedBlobs.get(180));
+    }
+    const content = await zip.generateAsync({ type: 'blob' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(content);
+    link.download = 'favicons.zip';
+    link.click();
+    URL.revokeObjectURL(link.href);
+    showToast('📦 Архив favicons.zip скачан');
+  }
+
+  // Инициализация драг-н-дропа
+  function initDragAndDrop() {
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('drag-over');
+    });
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('drag-over');
+    });
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('drag-over');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleFile(files[0]);
+      }
+    });
+    fileInput.addEventListener('change', (e) => {
+      if (fileInput.files.length) handleFile(fileInput.files[0]);
+    });
+  }
+
+  // События кнопок
+  selectAllBtn.addEventListener('click', selectAllSizes);
+  deselectAllBtn.addEventListener('click', deselectAllSizes);
+  generateBtn.addEventListener('click', generateFavicons);
+  clearBtn.addEventListener('click', clearAll);
+  downloadZipBtn.addEventListener('click', downloadAllAsZip);
+
+  // Запуск
+  renderSizeOptions();
+  initDragAndDrop();
+  generateBtn.disabled = true;
+</script>
+</body>
+</html>
