@@ -1,17 +1,32 @@
 // uiManager.js
-// Отвечает за рендер палитры, пример интерфейса, генерацию Tailwind/CSS кода
-
 window.UIManager = class UIManager {
     constructor() {
+        // Элементы палитры и кода
         this.paletteGrid = document.getElementById('paletteGrid');
-        this.demoButton = document.getElementById('demoButton');
-        this.demoText = document.getElementById('demoText');
-        this.demoBadge = document.getElementById('demoBadge');
-        this.demoGradient = document.getElementById('demoGradient');
         this.codePanel = document.getElementById('codePanel');
         this.tabTailwindBtn = document.getElementById('tabTailwindBtn');
         this.tabCssBtn = document.getElementById('tabCssBtn');
+
+        // НОВЫЕ элементы расширенного демо
+        this.navLogo = document.getElementById('navLogo');
+        this.navLink1 = document.getElementById('navLink1');
+        this.demoNavBtn = document.getElementById('demoNavBtn');
+        this.cardGradient = document.getElementById('cardGradient');
+        this.cardTitle = document.getElementById('cardTitle');
+        this.cardPrice = document.getElementById('cardPrice');
+        this.cardButton = document.getElementById('cardButton');
+        this.avatarBadge = document.getElementById('avatarBadge');
+        this.tagPrimary = document.getElementById('tagPrimary');
+        this.subscribeBlock = document.getElementById('subscribeBlock');
+        this.subscribeBtn = document.getElementById('subscribeBtn');
         
+        // Элементы лайка (добавлены в расширенное демо)
+        this.likeHeartNew = document.getElementById('likeHeartNew');
+        this.likeCountSpan = document.getElementById('likeCount');
+        this.isLiked = false;
+        this.likeCount = 0;
+        
+        // Состояние цветов
         this.hexPalette = [];
         this.currentPrimary = '#4f46e5';
         this.currentSecondary = '#06b6d4';
@@ -26,18 +41,77 @@ window.UIManager = class UIManager {
         this.updateUIAndCode = this.updateUIAndCode.bind(this);
         this.renderPalette = this.renderPalette.bind(this);
         
-        // События вкладок
+        // Вкладки
         this.tabTailwindBtn.addEventListener('click', () => this.switchCodeTab('tailwind'));
         this.tabCssBtn.addEventListener('click', () => this.switchCodeTab('css'));
+        
+        // Инициализация лайка
+        this.initNewLikeButton();
     }
     
+    // Инициализация кнопки лайка (сердечко в карточке отзыва)
+    initNewLikeButton() {
+        if (!this.likeHeartNew) return;
+        this.likeHeartNew.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!this.isLiked) {
+                this.isLiked = true;
+                this.likeCount++;
+                this.likeHeartNew.style.color = this.currentAccent;
+                this.likeHeartNew.querySelector('path').setAttribute('fill', this.currentAccent);
+                this.likeHeartNew.classList.add('liked');
+                if (this.likeCountSpan) this.likeCountSpan.textContent = this.likeCount;
+            } else {
+                this.isLiked = false;
+                this.likeCount--;
+                this.likeHeartNew.style.color = '';
+                this.likeHeartNew.querySelector('path').setAttribute('fill', 'none');
+                this.likeHeartNew.classList.remove('liked');
+                if (this.likeCountSpan) this.likeCountSpan.textContent = this.likeCount;
+            }
+            // Анимация
+            this.likeHeartNew.style.transform = 'scale(1.2)';
+            setTimeout(() => { if (this.likeHeartNew) this.likeHeartNew.style.transform = ''; }, 200);
+        });
+    }
+    
+    // Обновление всех UI-компонентов и генерация кода
     updateUIAndCode() {
-        this.demoButton.style.backgroundColor = this.currentPrimary;
-        this.demoBadge.style.backgroundColor = this.currentAccent;
-        this.demoText.style.color = this.currentText;
-        const grad = `linear-gradient(135deg, ${this.currentPrimary}, ${this.currentAccent})`;
-        this.demoGradient.style.background = grad;
+        // Навигация
+        if (this.navLogo) this.navLogo.style.backgroundColor = this.currentPrimary;
+        if (this.navLink1) this.navLink1.style.color = this.currentPrimary;
+        if (this.demoNavBtn) this.demoNavBtn.style.backgroundColor = this.currentAccent;
         
+        // Карточка товара
+        const grad = `linear-gradient(135deg, ${this.currentPrimary}, ${this.currentAccent})`;
+        if (this.cardGradient) this.cardGradient.style.background = grad;
+        if (this.cardTitle) this.cardTitle.style.color = this.currentText;
+        if (this.cardPrice) this.cardPrice.style.color = this.currentPrimary;
+        if (this.cardButton) this.cardButton.style.backgroundColor = this.currentPrimary;
+        
+        // Аватар / бейдж
+        if (this.avatarBadge) this.avatarBadge.style.backgroundColor = this.currentPrimary;
+        if (this.tagPrimary) {
+            this.tagPrimary.style.backgroundColor = this.currentPrimary;
+            this.tagPrimary.style.color = '#ffffff';
+        }
+        
+        // Форма подписки
+        if (this.subscribeBlock) {
+            this.subscribeBlock.style.background = `linear-gradient(135deg, ${this.currentPrimary}, ${this.currentAccent})`;
+        }
+        if (this.subscribeBtn) {
+            this.subscribeBtn.style.backgroundColor = '#ffffff';
+            this.subscribeBtn.style.color = this.currentPrimary;
+        }
+        
+        // Если лайк активен – обновить его цвет при смене акцента
+        if (this.isLiked && this.likeHeartNew) {
+            this.likeHeartNew.style.color = this.currentAccent;
+            this.likeHeartNew.querySelector('path').setAttribute('fill', this.currentAccent);
+        }
+        
+        // Генерация кода
         this.currentTailwindCode = `module.exports = {
   theme: {
     extend: {
@@ -82,6 +156,7 @@ window.UIManager = class UIManager {
         }
     }
     
+    // Переключение между вкладками Tailwind / CSS
     switchCodeTab(mode) {
         this.currentCodeMode = mode;
         if (mode === 'tailwind') {
@@ -99,6 +174,7 @@ window.UIManager = class UIManager {
         }
     }
     
+    // Рендер палитры (без изменений)
     renderPalette(hexArray, activeAccentHex, onAccentChange, onCopyHex) {
         this.paletteGrid.innerHTML = '';
         hexArray.forEach(hex => {

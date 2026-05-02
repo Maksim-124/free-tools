@@ -49,6 +49,79 @@
       transform: scale(1.02);
       transition: all 0.2s;
     }
+
+    /* == Дополнительные анимации для расширенного демо == */
+    /* Базовые переходы */
+    button, .btn-like, .card-item, .nav-link, .color-card, #paletteGrid > div {
+        transition: all 0.2s ease-in-out;
+    }
+    /* Кнопки: hover и active */
+    button:active, .btn-like:active {
+        transform: scale(0.97);
+    }
+    /* Элементы навигации */
+    .nav-link {
+        transition: color 0.2s, border-bottom 0.2s;
+    }
+    .nav-link:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+    /* Карточки товаров и отзывов */
+    .demo-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .demo-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.15);
+    }
+    /* Аватар / бейдж */
+    .avatar-hover:hover {
+        filter: brightness(0.9);
+        transform: scale(1.05);
+    }
+    /* Теги */
+    .demo-tag {
+        transition: all 0.2s;
+    }
+    .demo-tag:hover {
+        filter: brightness(0.9);
+        transform: translateY(-1px);
+    }
+    /* Форма подписки: кнопка и поле ввода */
+    .subscribe-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3);
+    }
+    .subscribe-btn-hover:hover {
+        filter: brightness(0.95);
+        transform: scale(1.02);
+    }
+    /* Плавное появление результата */
+    .fade-up {
+        animation: fadeUp 0.4s ease forwards;
+    }
+    /* Улучшенный hover для палитры */
+    #paletteGrid > div:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.1);
+    }
+
+        /* Стили для лайка (сердечко) */
+    .like-icon {
+        cursor: pointer;
+        transition: transform 0.2s, color 0.2s;
+        display: inline-flex;
+    }
+    .like-icon:hover {
+        transform: scale(1.1);
+    }
+    .like-icon.liked svg {
+        fill: currentColor;
+    }
+    .like-icon svg {
+        transition: fill 0.2s, stroke 0.2s;
+    }
   </style>
 </head>
 <body class="bg-[#f4f6fb] font-sans text-[#1e1b4b] antialiased">
@@ -99,29 +172,93 @@
     </div>
 
     <div id="resultArea" class="hidden fade-up">
-      <div class="bg-white rounded-2xl border border-[#e2e5f1] p-6 mb-6 shadow-sm">
-        <h3 class="text-md font-bold text-[#1e1b4b] mb-4">🎨 Ваша палитра (нажмите на цвет, чтобы сделать его <strong class="text-indigo-600">акцентным</strong>)</h3>
-        <div id="paletteGrid" class="flex flex-wrap gap-4 justify-center sm:justify-start"></div>
-        <p class="text-xs text-gray-400 mt-3 text-center">Кликните по любому цвету — он станет главным акцентом (обновится пример и код).</p>
-      </div>
+  <!-- Палитра -->
+  <div class="bg-white rounded-2xl border border-[#e2e5f1] p-6 mb-6 shadow-sm">
+    <h3 class="text-md font-bold text-[#1e1b4b] mb-4">🎨 Ваша палитра (нажмите на цвет, чтобы сделать его <strong class="text-indigo-600">акцентным</strong>)</h3>
+    <div id="paletteGrid" class="flex flex-wrap gap-4 justify-center sm:justify-start"></div>
+    <p class="text-xs text-gray-400 mt-3 text-center">Кликните по любому цвету — он станет главным акцентом (обновится пример и код).</p>
+  </div>
 
-      <div class="bg-white rounded-2xl border border-[#e2e5f1] p-6 mb-6 shadow-sm">
-        <h3 class="text-md font-bold text-[#1e1b4b] mb-2">✨ Как это выглядит в интерфейсе</h3>
-        <p class="text-sm text-gray-500 mb-5">Цвета из вашей палитры применены к кнопке, карточке и акценту.</p>
-        <div class="bg-slate-100 rounded-xl p-5">
-          <div id="uiDemo" class="max-w-sm mx-auto bg-white rounded-2xl shadow p-5 transition-colors">
-            <div class="flex justify-between items-center mb-3">
-              <span class="text-sm font-semibold" id="demoBadge" style="background-color: #06b6d4; color: white; padding: 4px 12px; border-radius: 30px;">Новинка</span>
-              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-            </div>
-            <div class="mb-4">
-              <div class="w-full h-32 rounded-lg bg-gradient-to-br" id="demoGradient"></div>
-            </div>
-            <button id="demoButton" class="w-full py-2 rounded-full text-white font-semibold mb-3 transition" style="background-color: #4f46e5;">Подробнее</button>
-            <p id="demoText" class="text-sm" style="color: #1e1b4b;">Это пример карточки, стилизованной под вашу цветовую схему. Цвета взяты из доминирующей палитры загруженного изображения.</p>
-          </div>
+  <!-- РАСШИРЕННЫЙ ДЕМО-ИНТЕРФЕЙС -->
+  <div class="bg-white rounded-2xl border border-[#e2e5f1] shadow-sm overflow-hidden mb-6">
+    <div class="border-b border-[#e2e5f1] bg-white p-5">
+      <h3 class="text-md font-bold text-[#1e1b4b] mb-1">✨ Готовая тема для вашего сайта</h3>
+      <p class="text-sm text-gray-500">Все элементы ниже используют цвета из вашей палитры. Акцентный цвет можно менять кликом выше.</p>
+    </div>
+
+    <!-- Живой пример интерфейса (динамически перекрашивается) -->
+    <div id="fullDemo" class="p-5 bg-gray-50">
+  <!-- Навигация -->
+  <nav class="rounded-xl mb-6" id="demoNav" style="background-color: #ffffff; border: 1px solid #e2e5f1;">
+    <div class="px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg" id="navLogo" style="background-color: #4f46e5;"></div>
+        <span class="font-bold text-[#1e1b4b]">КолорПро</span>
+      </div>
+      <div class="flex gap-3 text-sm font-medium">
+        <a href="#" class="nav-link hover:underline" id="navLink1" style="color: #4f46e5;">Главная</a>
+        <a href="#" class="nav-link" style="color: #6b7280;">Каталог</a>
+        <a href="#" class="nav-link" style="color: #6b7280;">О нас</a>
+      </div>
+      <button id="demoNavBtn" class="btn-like px-4 py-1.5 rounded-full text-sm font-semibold text-white" style="background-color: #f59e0b;">Войти</button>
+    </div>
+  </nav>
+
+  <!-- Карточка товара / услуги -->
+  <div class="grid md:grid-cols-2 gap-6 mb-8">
+    <div class="demo-card bg-white rounded-xl border border-[#e2e5f1] overflow-hidden shadow-sm transition hover:shadow-md">
+      <div class="h-40 bg-gradient-to-r" id="cardGradient"></div>
+      <div class="p-4">
+        <h4 class="font-bold text-lg" id="cardTitle" style="color: #1e1b4b;">Дизайн-система</h4>
+        <p class="text-sm text-gray-500 mt-1">Готовый набор компонентов на основе вашего бренда</p>
+        <div class="flex justify-between items-center mt-4">
+          <span class="text-xl font-bold" id="cardPrice" style="color: #4f46e5;">₽2 490</span>
+          <button class="btn-like px-4 py-2 rounded-full text-sm font-semibold text-white transition" id="cardButton" style="background-color: #4f46e5;">Купить</button>
         </div>
       </div>
+    </div>
+    <div class="demo-card bg-white rounded-xl border border-[#e2e5f1] p-5">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="avatar-hover w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" id="avatarBadge" style="background-color: #4f46e5;">П</div>
+        <div>
+          <div class="font-semibold" style="color: #1e1b4b;">Анна Иванова</div>
+          <div class="text-xs text-gray-400">Подписчик</div>
+        </div>
+      </div>
+      <p class="text-sm mb-3" style="color: #4b5563;">“Цвета идеально подошли под наш стиль! Рекомендую.”</p>
+      <div class="flex gap-2">
+        <span class="demo-tag px-2 py-1 text-xs rounded-full" id="tagPrimary" style="background-color: #4f46e5; color:white;">Акцент</span>
+        <span class="demo-tag px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-600">Отзыв</span>
+      </div>
+            <div class="flex justify-between items-center mt-4 pt-2 border-t border-gray-100">
+        <div class="flex items-center gap-1">
+          <svg id="likeHeartNew" class="like-icon w-5 h-5 text-gray-400 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transition: all 0.2s;">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+          <span id="likeCount" class="text-xs text-gray-500">0</span>
+        </div>
+        <span class="text-xs text-gray-400">Оцените отзыв</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Форма подписки -->
+  <div class="rounded-xl p-5 text-white" id="subscribeBlock" style="background: linear-gradient(135deg, #4f46e5, #f59e0b);">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div>
+        <h4 class="font-bold text-lg">Будьте в курсе</h4>
+        <p class="text-sm opacity-90">Подпишитесь на новости о новых цветовых схемах</p>
+      </div>
+      <div class="flex gap-2 w-full md:w-auto">
+        <input type="email" placeholder="Ваш email" class="subscribe-input px-4 py-2 rounded-full text-gray-800 w-full md:w-64" style="background: white; border: none;">
+        <button class="subscribe-btn-hover btn-like px-5 py-2 rounded-full font-semibold" id="subscribeBtn" style="background: white; color: #4f46e5;">Подписаться</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="text-center text-xs text-gray-400 mt-6">* Все цвета меняются динамически при выборе акцента в палитре</p>
+</div>
+  </div>
 
       <div class="bg-white rounded-2xl border border-[#e2e5f1] p-6 shadow-sm">
         <div class="flex border-b border-[#e2e5f1] gap-4 mb-3">

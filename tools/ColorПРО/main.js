@@ -76,6 +76,7 @@
             );
             
             resultArea.classList.remove('hidden');
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
             showToast(`🎨 Палитра готова! ${hexColors.length} цветов. Кликните на любой цвет, чтобы изменить акцент.`);
         } catch (err) {
             console.error(err);
