@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+      (function(m,e,t,r,i,k,a){
+          m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+          m[i].l=1*new Date();
+          for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js', 'ym');
+
+      ym(102614891, 'init', {clickmap:true, referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/102614891" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>КолорПро — генератор цветовой схемы и готовой темы из изображения</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Color Thief -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.min.js"></script>
+  <style>
+    .toast {
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up {
+      animation: fadeUp 0.4s ease forwards;
+    }
+    .dropzone.drag-over {
+      border-color: #4f46e5 !important;
+      background-color: #eef2ff !important;
+    }
+    .code-block {
+      background-color: #1e1e2f;
+      color: #e2e8f0;
+    }
+    .color-card.active-accent {
+      outline: 3px solid #4f46e5;
+      outline-offset: 2px;
+      transform: scale(1.02);
+      transition: all 0.2s;
+    }
+  </style>
+</head>
+<body class="bg-[#f4f6fb] font-sans text-[#1e1b4b] antialiased">
+
+  <header class="relative bg-gradient-to-r from-[#4f46e5] via-[#7c3aed] to-[#06b6d4] pt-12 pb-14 text-center overflow-hidden">
+    <div class="absolute inset-0 opacity-5 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.2"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+    <div class="relative z-10 max-w-3xl mx-auto px-4">
+      <div class="inline-flex items-center gap-2 text-white/80 text-sm uppercase tracking-wider font-bold mb-4">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        КолорПРО
+      </div>
+      <h1 class="text-white text-4xl sm:text-5xl font-extrabold tracking-tight mb-3">Генератор цветовой схемы</h1>
+      <p class="text-white/80 text-lg max-w-xl mx-auto">Преврати свой логотип в готовую тему оформления. Палитра, пример интерфейса и код для Tailwind/CSS — без отправки на сервер.</p>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-8 bg-[#f4f6fb] rounded-t-[32px]"></div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-4 pb-16">
+    <div class="bg-white rounded-2xl border border-[#e2e5f1] shadow-sm p-6 md:p-7 mb-6 transition-shadow hover:shadow-lg">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">🖼️</div>
+        <h2 class="text-lg font-bold text-[#1e1b4b]">Загрузите логотип или любое изображение</h2>
+      </div>
+      <p class="text-sm text-gray-500 mb-5">PNG, JPEG, WEBP. Изображение останется на вашем устройстве, мы ничего не отправляем на сервер.</p>
+
+      <div id="dropzone" class="dropzone border-2 border-dashed border-[#e2e5f1] rounded-xl p-8 text-center bg-[#f8f9fe] cursor-pointer transition-all hover:border-indigo-300">
+        <div class="text-5xl mb-3">📂</div>
+        <div class="text-sm text-gray-500">Перетащите файл сюда или <strong class="text-indigo-600">нажмите для выбора</strong></div>
+        <input type="file" id="fileInput" accept="image/png, image/jpeg, image/webp" class="hidden">
+      </div>
+
+      <div id="previewContainer" class="hidden mt-5 pt-5 border-t border-[#e2e5f1]">
+        <div class="flex gap-5 flex-wrap items-center">
+          <div class="w-20 h-20 rounded-xl bg-[repeating-conic-gradient(#e5e7eb_0%_25%,#fff_0%_50%)] bg-[length:20px_20px] flex items-center justify-center shadow-sm overflow-hidden">
+            <img id="previewImage" class="max-w-full max-h-full object-contain" alt="Предпросмотр">
+          </div>
+          <div class="text-sm text-gray-500">
+            <span id="previewFilename"></span><br>
+            <span id="previewDimensions"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-3 flex-wrap mt-6">
+        <button id="generateBtn" class="bg-gradient-to-r from-indigo-600 to-purple-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>✨ Извлечь палитру и тему</button>
+        <button id="clearBtn" class="bg-white border border-[#e2e5f1] text-[#1e1b4b] px-6 py-3 rounded-xl font-semibold hover:border-indigo-500 hover:text-indigo-600 transition">🗑️ Очистить</button>
+      </div>
+    </div>
+
+    <div id="resultArea" class="hidden fade-up">
+      <div class="bg-white rounded-2xl border border-[#e2e5f1] p-6 mb-6 shadow-sm">
+        <h3 class="text-md font-bold text-[#1e1b4b] mb-4">🎨 Ваша палитра (нажмите на цвет, чтобы сделать его <strong class="text-indigo-600">акцентным</strong>)</h3>
+        <div id="paletteGrid" class="flex flex-wrap gap-4 justify-center sm:justify-start"></div>
+        <p class="text-xs text-gray-400 mt-3 text-center">Кликните по любому цвету — он станет главным акцентом (обновится пример и код).</p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-[#e2e5f1] p-6 mb-6 shadow-sm">
+        <h3 class="text-md font-bold text-[#1e1b4b] mb-2">✨ Как это выглядит в интерфейсе</h3>
+        <p class="text-sm text-gray-500 mb-5">Цвета из вашей палитры применены к кнопке, карточке и акценту.</p>
+        <div class="bg-slate-100 rounded-xl p-5">
+          <div id="uiDemo" class="max-w-sm mx-auto bg-white rounded-2xl shadow p-5 transition-colors">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-sm font-semibold" id="demoBadge" style="background-color: #06b6d4; color: white; padding: 4px 12px; border-radius: 30px;">Новинка</span>
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            </div>
+            <div class="mb-4">
+              <div class="w-full h-32 rounded-lg bg-gradient-to-br" id="demoGradient"></div>
+            </div>
+            <button id="demoButton" class="w-full py-2 rounded-full text-white font-semibold mb-3 transition" style="background-color: #4f46e5;">Подробнее</button>
+            <p id="demoText" class="text-sm" style="color: #1e1b4b;">Это пример карточки, стилизованной под вашу цветовую схему. Цвета взяты из доминирующей палитры загруженного изображения.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-[#e2e5f1] p-6 shadow-sm">
+        <div class="flex border-b border-[#e2e5f1] gap-4 mb-3">
+          <button id="tabTailwindBtn" class="tab-btn pb-2 text-sm font-semibold text-indigo-600 border-b-2 border-indigo-600">🐼 Tailwind config</button>
+          <button id="tabCssBtn" class="tab-btn pb-2 text-sm font-semibold text-gray-500 hover:text-indigo-500">🎨 CSS variables</button>
+        </div>
+        <div id="codePanel" class="code-block rounded-lg p-4 font-mono text-sm overflow-x-auto whitespace-pre-wrap bg-[#1e1e2f] text-gray-200"></div>
+        <button id="copyCodeBtn" class="mt-3 bg-white border border-gray-300 text-gray-700 text-xs px-4 py-2 rounded-full hover:border-indigo-400 transition">📋 Скопировать код</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center text-gray-400 text-xs py-8 border-t border-gray-200">
+    <p>КолорПро — бесплатный генератор цветовых схем. Всё работает локально в вашем браузере, изображения никуда не передаются.</p>
+  </footer>
+
+  <div id="toast" class="toast fixed bottom-8 left-1/2 -translate-x-1/2 translate-y-24 bg-[#1e1b4b] text-white px-6 py-3 rounded-full text-sm font-semibold shadow-lg z-[999] pointer-events-none">Сообщение</div>
+
+  <!-- Подключение скриптов: порядок важен! -->
+  <script src="colorExtractor.js"></script>
+  <script src="uiManager.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
