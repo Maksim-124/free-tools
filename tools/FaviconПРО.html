@@ -714,6 +714,10 @@
   // Обработка загруженного файла
   async function handleFile(file) {
     if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('❌ Файл слишком большой(макс. 10 мб)');
+      return;
+    }
     if (!file.type.match('image.*')) {
       showToast('❌ Пожалуйста, загрузите изображение (PNG, JPEG, WEBP)');
       return;
