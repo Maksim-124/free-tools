@@ -409,6 +409,14 @@
           <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
           <div><div class="option-label">Удалить эмодзи</div><div class="option-hint">😀🎉👍 и все юникод-символы</div></div>
         </label>
+        <label class="option-check" onclick="toggleCheck(this)">
+          <input type="checkbox">
+          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div>
+            <div class="option-label">Заменить переносы на пробелы</div>
+            <div class="option-hint">\n, \r\n → « » (схлопывает текст)</div>
+          </div>
+        </label>
       </div>
     </div>
 
@@ -695,6 +703,10 @@ function processCleaner() {
 
   // Clean up
   text = text.replace(/\n{3,}/g, '\n\n').trim();
+  // Replace line breaks with spaces
+  if (checks[5].checked) {
+    text = text.replace(/\r?\n|\r/g, ' ');
+  }
 
   const resultEl = document.getElementById('cleaner-result');
   resultEl.textContent = text;
